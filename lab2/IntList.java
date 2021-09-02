@@ -65,6 +65,10 @@ public class IntList {
         IntList L1 = list(1, 2, 3, 4, 5);
 
         //TODO:  Print out L1 using IntelliJ's 'sout' command.
+
+        int sumL1 = sum(L1);
+        System.out.println(sumL1);
+        IntList myList = IntList.list(0, 1, 2, 3);
     }
 
     /** DO NOT MODIFY ANYTHING BELOW THIS LINE! In fact, I wouldn't even
@@ -115,7 +119,7 @@ public class IntList {
         int sum = 0;
         IntList p = L;
         while (p != null) {
-            sum = p.head;
+            sum += p.head;
             p = p.tail;
         }
         return sum;

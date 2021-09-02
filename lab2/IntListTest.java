@@ -21,6 +21,7 @@ public class IntListTest {
     @Test
     public void testSum() {
         assertEquals(15, IntList.sum(IntList.list(1, 2, 3, 4, 5)));
+        assertEquals(10, IntList.sum(IntList.list(3,4,3)));
     }
 
     @Test
@@ -40,12 +41,16 @@ public class IntListTest {
      */
     
     @Test
-    public void testSquareListRecursive() {
+    public void testSquareListRecursive()
+    {
         // TODO: test for correctness
         // TODO: test for non-destructiveness
         
         // TODO: remove the placeholder line below
-        assertTrue(false);
+        IntList L = IntList.list(1, 2, 3);
+        IntList X = IntList.squareListRecursive(L);
+        assertEquals(IntList.list(1, 2, 3), L);
+        assertEquals(IntList.list(1, 4, 9), X);
     }
 
     /* Run the unit tests in this file. */
