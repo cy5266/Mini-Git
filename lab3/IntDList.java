@@ -13,14 +13,16 @@ public class IntDList {
     /**
      * An empty list.
      */
-    public IntDList() {
+    public IntDList()
+    {
         _front = _back = null;
     }
 
     /**
      * @param values the ints to be placed in the IntDList.
      */
-    public IntDList(Integer... values) {
+    public IntDList(Integer... values)
+    {
         _front = _back = null;
         for (int val : values) {
             insertBack(val);
@@ -46,9 +48,16 @@ public class IntDList {
     /**
      * @return The number of elements in this list.
      */
-    public int size() {
-        // TODO: Implement this method and return correct value
-        return 0;
+    public int size()
+    {
+        int count = 0;
+        DNode test = _front;
+        while (test != null)
+        {
+            count += 1;
+            test = test._next;
+        }
+        return count;
     }
 
     /**
@@ -63,8 +72,30 @@ public class IntDList {
      * @return The node at index index
      */
     private DNode getNode(int index) {
-        // TODO: Implement this method and return correct node
-        return null;
+        if (index == 0 && _front != null)
+        {
+            return _front;
+        }
+        if (index < 0)
+        {
+            DNode startBack = _back;
+            while (index != -1)
+            {
+                startBack = startBack._prev;
+                index += 1;
+            }
+            return startBack;
+        }
+        else
+        {
+            DNode startFront = _front;
+            while (index != 0)
+            {
+                startFront = startFront._next;
+                index -= 1;
+            }
+            return startFront;
+        }
     }
 
     /**
@@ -79,22 +110,50 @@ public class IntDList {
      * @return The integer value at index index
      */
     public int get(int index) {
-        // TODO: Implement this method (Hint: use `getNode`)
-        return 0;
+
+        int value = getNode(index)._val;
+        return value;
     }
 
     /**
      * @param d value to be inserted in the front
      */
-    public void insertFront(int d) {
-        // TODO: Implement this method
+    public void insertFront(int d)
+    {
+        DNode insert = new DNode(d);
+        if (_front == null)
+        {
+            _front = insert;
+            _back = insert;
+        }
+        else
+        {
+            insert._next = _front;
+            _front._prev = insert;
+            _front = insert;
+        }
+
     }
 
     /**
      * @param d value to be inserted in the back
      */
     public void insertBack(int d) {
-        // TODO: Implement this method
+        DNode insert = new DNode( d);
+        if (_front == null)
+        {
+            _front = insert;
+            _back = insert;
+
+        }
+        else
+        {
+            _back._next = insert;
+            insert._prev = _back;
+            _back = insert;
+        }
+
+
     }
 
     /**
@@ -109,7 +168,33 @@ public class IntDList {
      *              and -(size+1) <= index <= -1 for negative indices.
      */
     public void insertAtIndex(int d, int index) {
-        // TODO: Implement this method
+        DNode insertNode = new DNode(d);
+
+        if (index == 0)
+        {
+            insertFront(d);
+        }
+        if (index < 0)
+        {
+            DNode startBack = _back;
+            while (index != -1)
+            {
+                startBack = startBack._prev;
+                index += 1;
+            }
+        }
+        else
+        {
+            DNode startFront = _front;
+            while (index != 0)
+            {
+                startFront = startFront._next;
+                index -= 1;
+            }
+            _front._next = startFront._next;
+            _front._prev = startFront;
+        }
+
     }
 
     /**
@@ -119,8 +204,9 @@ public class IntDList {
      * @return the item that was deleted
      */
     public int deleteFront() {
-        // TODO: Implement this method and return correct value
-        return 0;
+        int firstItem = _front._val;
+        _front = _front._next;
+        return firstItem;
     }
 
     /**
@@ -130,8 +216,26 @@ public class IntDList {
      * @return the item that was deleted
      */
     public int deleteBack() {
-        // TODO: Implement this method and return correct value
-        return 0;
+        int backValue = _back._val;
+
+//        _back = _back._prev;
+//        if (_back._next != null)
+//        {
+//            _back._next = null;
+//        }
+//        System.out.println(_back._next._val);
+
+        if (_front == _back)
+        {
+            _front = null;
+            _back = null;
+        }
+        else {
+            _back = _back._prev;
+            _back._next = null;
+        }
+
+        return backValue;
     }
 
     /**
@@ -146,8 +250,30 @@ public class IntDList {
      * @return the item that was deleted
      */
     public int deleteAtIndex(int index) {
-        // TODO: Implement this method and return correct value
-        return 0;
+        DNode delete = getNode(index);
+        int value = delete._val;
+        if (delete._prev == null && delete._next == null)
+        {
+            deleteBack();
+        }
+
+        else if (delete._prev == null)
+        {
+            deleteFront();
+        }
+        else if (delete._next == null)
+        {
+            deleteBack();
+        }
+        else
+        {
+            delete._prev._next = delete._next;
+            delete._next._prev = delete._prev;
+            delete._prev = null;
+            delete._next = null;
+        }
+
+        return value;
     }
 
     /**
@@ -159,8 +285,16 @@ public class IntDList {
      * System.out.println(a); //prints ab
      */
     public String toString() {
-        // TODO: Implement this method to return correct value
-        return null;
+        if (size() == 0) {
+            return "[]";
+        }
+        String str = "[";
+        DNode curr = _front;
+        for (; curr._next != null; curr = curr._next) {
+            str += curr._val + ", ";
+        }
+        str += curr._val +"]";
+        return str;
     }
 
     /**

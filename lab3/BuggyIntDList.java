@@ -67,19 +67,22 @@ public class BuggyIntDList extends IntDList {
         DNode p = _front;
 
         // HINT: What does this while loop do? Use Debugger and Java Visualizer to figure out.
-        while (p != null) {
+        while (p != null)
+        {
             temp = p._prev;
             p._prev = p._next;
             p._next = temp;
-            p = p._next;        // FIXME: Replace this line (if needed). HINT: Use debugger and Java Visualizer to figure out what it does.
+            p = p._prev;        // FIXME: Replace this line (if needed). HINT: Use debugger and Java Visualizer to figure out what it does.
         }
 
         // HINT: What does this if block do? Use Debugger and Java Visualizer to figure out.
-        if (temp != null) {
-            // ------ WRITE ADDITIONAL CODE HERE AND ONLY HERE (IF NEEDED) -----
-
-            // -----------------------------------------------------------------
-            _front = temp._next;    // FIXME: Replace this line (if needed). HINT: Use debugger and Java Visualizer to figure out what it does.
+        if (temp != null)
+        {
+            while (_back._next != null)
+            {
+                _back = _back._next;
+            }
+            _front = temp._prev;    // FIXME: Replace this line (if needed). HINT: Use debugger and Java Visualizer to figure out what it does.
         }
     }
 }
