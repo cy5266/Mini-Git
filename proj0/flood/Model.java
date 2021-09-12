@@ -108,7 +108,7 @@ class Model {
 
     /** Apply ACTION.accept method to all four orthogonal neighbors of PLACE. */
     void forNeighbors(Place place, Consumer<Place> action) {
-        // FIXME
+        action.accept(place);
     }
 
     /** Return to initial board, removing any marks. */
@@ -141,7 +141,20 @@ class Model {
     /** Returns an array with ncolors() elements, such that colors[c] iff
      *  there is a cell with color c present on the board. */
     boolean[] colorsPresent() {
-        return null; // FIXME
+        boolean colors[] = new boolean[_ncolors];
+
+        for (int count = 0; count < _ncolors; count++)
+        {
+            for (int i = 0; i < _cells.length; i++) {
+                for (int j = 0; j < _cells[i].length; j++) {
+                    if (_cells[i][j] == count)
+                    {
+                        colors[count] = true;
+                    }
+                }
+            }
+        }
+        return colors;
     }
 
     /** Returns the size of the active region. */
@@ -151,7 +164,14 @@ class Model {
 
     /** Returns true iff the puzzle is solved. */
     final boolean solved() {
-        return false; // FIXME
+        if (activeRegionSize() == height())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /** Returns true if this puzzle round is over: the puzzle is solved or
