@@ -4,7 +4,8 @@ package arrays;
  *  integers.
  *  @author P. N. Hilfinger
  */
-public class IntList {
+public class IntList
+{
     /** First element of list. */
     public int head;
     /** Remaining elements of list. */

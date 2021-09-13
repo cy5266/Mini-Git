@@ -39,7 +39,8 @@ public class IntListList {
 
         IntListList p;
         p = sentinel;
-        for (int[] x : A) {
+        for (int[] x : A)
+        {
             p.tail = new IntListList(IntList.list(x), null);
             p = p.tail;
         }

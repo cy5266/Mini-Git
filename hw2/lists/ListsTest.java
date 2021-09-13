@@ -1,5 +1,7 @@
 package lists;
 
+import arrays.Arrays;
+import arrays.IntListList;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -9,8 +11,19 @@ import static org.junit.Assert.*;
  */
 
 public class ListsTest {
-    /** FIXME
-     */
+    @Test
+    public void naturalRunsTest()
+    {
+
+        int[][] arr = new int[][]{{1, 3, 7}, {5}, {4, 6, 9, 10}, {10,11}};
+        IntListList list = IntListList.list(arr);
+
+        int[] A = new int[]{1, 3, 7, 5, 4, 6, 9, 10, 10, 11};
+        IntList testA = IntList.list(A);
+
+        assertEquals(list, Lists.naturalRuns(testA));
+
+    }
 
     // It might initially seem daunting to try to set up
     // IntListList expected.
