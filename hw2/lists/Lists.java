@@ -82,8 +82,9 @@ class Lists {
         }
 
         System.out.println(arr);
-//        IntListList list = IntListList.list(arr);
+        IntListList list = IntListList.list(arr);
         IntListList finallist = IntListList.list(arr);
+
 
         return finallist;
     }

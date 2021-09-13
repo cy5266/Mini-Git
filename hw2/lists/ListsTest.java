@@ -21,8 +21,7 @@ public class ListsTest {
         int[] A = new int[]{1, 3, 7, 5, 4, 6, 9, 10, 10, 11};
         IntList testA = IntList.list(A);
 
-        assertEquals(list, Lists.naturalRuns(testA));
-
+        assertEquals(list.toString(), Lists.naturalRuns(testA).toString());
     }
 
     // It might initially seem daunting to try to set up

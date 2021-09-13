@@ -59,30 +59,92 @@ public class Arrays
      *  {{1, 3, 7}, {5}, {4, 6, 9, 10}}. */
     static int[][] naturalRuns(int[] A)
     {
-        int[][] test;
-        if (A.length == 0)
+//        int[][] test;
+//        if (A.length == 0)
+//        {
+//            return new int[0][];
+//        }
+//        else
+//        {
+//            int numelements = 1;
+//            for (int i = 0; i < A.length-1; i ++)
+//            {
+//                if (A[i+1] < A[i])
+//                {
+//                    numelements += 1;
+//                }
+//            }
+//            test = new int[numelements][];
+//
+//            for (int row = 0; row < test.length; row ++)
+//            {
+//
+//            }
+//
+//            return test;
+//
+//        }
+
+        ArrayList<ArrayList> test = new ArrayList<ArrayList>();
+        ArrayList<Integer> A1 = new ArrayList<Integer>();
+        int temp = A[0];
+
+        while (A.length >=2)
         {
-            return new int[0][];
+
+            if (A[0] >= temp && A[0] < A[1])
+            {
+                A1.add(A[0]);
+                temp = A[1];
+            }
+            else if (A[0] > A[1] && A[0] >= temp)
+            {
+                A1.add(A[0]);
+            }
+            else if (A[0] == A[1])
+            {
+                A1.add(A[0]);
+                temp = A[0];
+                test.add(A1);
+//                System.out.println(test);
+                A1 = new ArrayList<Integer>();
+            }
+            else
+            {
+//                System.out.println(A1);
+                test.add(A1);
+//                System.out.println(test);
+                A1 = new ArrayList<Integer>();
+                A1.add(A[0]);
+                temp = A[0];
+//                System.out.println(test);
+            }
+
+            int[] transfer = new int[A.length];
+            transfer = A;
+            A = new int[A.length-1];
+            System.arraycopy(transfer, 1, A, 0, transfer.length-1);
         }
-        else
+        A1.add(A[0]);
+        test.add(A1);
+
+//        System.out.println(test);
+        test.toArray();
+
+        int[][] arr = new int[test.size()][];
+
+        for (int i = 0; i < test.size(); i ++)
         {
-            int numelements = 1;
-            for (int i = 0; i < A.length-1; i ++)
+            int[] blah = new int[test.get(i).size()];
+            for (int j = 0; j < test.get(i).size(); j ++)
             {
-                if (A[i+1] < A[i])
-                {
-                    numelements += 1;
-                }
-            }
-            test = new int[numelements][];
-
-            for (int row = 0; row < test.length; row ++)
-            {
-
+//                System.out.println(Integer.valueOf((test.get(i).get(j)).toString()));
+                blah[j] = Integer.valueOf((test.get(i).get(j)).toString());
             }
 
-            return test;
-
+            arr[i] = blah;
         }
+        return arr;
     }
+
 }
