@@ -5,7 +5,7 @@ import java.util.Random;
 import static flood.Utils.*;
 
 /** A creator of random Flood puzzles.
- *  @author
+ *  @author Cindy Yang
  */
 class PuzzleGenerator implements PuzzleSource {
 

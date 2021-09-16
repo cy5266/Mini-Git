@@ -1,7 +1,7 @@
 package flood;
 
 /** Functions for solving a Flood puzzle.
- *  @author
+ *  @author Cindy Yang
  */
 class Solver {
 
@@ -32,8 +32,7 @@ class Solver {
     /** Returns an estimate of the number of moves needed to solve the
      *  puzzle depicted by MODEL. This estimate is always correct if it is
      *  possible to solve the puzzle in SEARCH_DEPTH moves. */
-    static int movesNeeded(Model model)
-    {
+    static int movesNeeded(Model model) {
         Model work = new Model(model);
         int num;
         num = 0;
@@ -91,30 +90,17 @@ class Solver {
         int bestMove, maxSize;
         bestMove = -1;
         maxSize = -1;
-//        Model work = new Model(model);
 
-        for (int i = 0; i < model.ncolors(); i ++)
-        {
-            if (model.adjacentCells(i).size() > maxSize && (i != model.get(0,0)))
-            {
+        for (int i = 0; i < model.ncolors(); i++) {
+            if (model.adjacentCells(i).size() > maxSize
+                    && (i != model.get(0, 0))) {
                 maxSize = model.adjacentCells(i).size();
                 bestMove = i;
             }
         }
 
-//                for (int i = 0; i < model.ncolors(); i ++)
-//        {
-//            work.setActiveRegionColor(i);
-//            if (work.activeRegionSize() > maxSize )
-////                        if (work.activeRegionSize() > maxSize )
-//            {
-//                maxSize = work.activeRegionSize();
-//                bestMove = i;
-//            }
-//        }
-
-        return new int[]
-                { bestMove, maxSize };
+        return new int[]{
+            bestMove, maxSize };
     }
 
 }

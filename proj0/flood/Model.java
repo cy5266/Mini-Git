@@ -163,7 +163,7 @@ class Model {
     /** Returns an array with ncolors() elements, such that colors[c] iff
      *  there is a cell with color c present on the board. */
     boolean[] colorsPresent() {
-        boolean colors[] = new boolean[_ncolors];
+        boolean[] colors = new boolean[_ncolors];
 
         for (int count = 0; count < _ncolors; count++) {
             for (int i = 0; i < _cells.length; i++) {
@@ -226,8 +226,7 @@ class Model {
     /** Add to RESULT the coordinates of all cells whose color is COLOR that are
      *  reachable by an orthogonal path from START without traversing cells
      *  in RESULT. Returns RESULT. */
-    HashSet<Place> findRegion(Place start, int color, HashSet<Place> result)
-    {
+    HashSet<Place> findRegion(Place start, int color, HashSet<Place> result) {
 
         HashSet<Place> nextTo = new HashSet<>();
         if (get(start) == color) {
