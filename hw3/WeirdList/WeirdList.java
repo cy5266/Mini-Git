@@ -34,7 +34,7 @@ public class WeirdList
      *  sequence, and return a WeirdList of the resulting values. */
     public WeirdList map(IntUnaryFunction func)
     {
-        return new WeirdList(func.apply(this.head), tail);
+        return new WeirdList(func.apply(this.head), tail.map(func));
     }
 
     /*
