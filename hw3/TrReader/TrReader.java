@@ -39,7 +39,8 @@ public class TrReader extends Reader {
         }
 
 
-        for (int i = off; i < len; i ++)
+        for (int i = off; i < stop + off; i ++)
+
         {
 //            int c = str.read();
             int temp = from.indexOf(cbuf[i]);
