@@ -16,7 +16,7 @@ class WeirdListClient {
         WeirdListSum totalSum = new WeirdListSum();
         WeirdList temp = L.map(totalSum);
         String test = temp.toString();
-        String[] arrOfStr = test.split(" ", test.length()-1);
+        String[] arrOfStr = test.split(" ", -1);
         System.out.println(arrOfStr);
         return Integer.parseInt(arrOfStr[arrOfStr.length-1]);
     }
