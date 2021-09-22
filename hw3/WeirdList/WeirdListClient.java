@@ -14,10 +14,8 @@ class WeirdListClient {
     /** Return the sum of all the elements in L. */
     static int sum(WeirdList L) {
         WeirdListSum totalSum = new WeirdListSum();
-        WeirdList temp = L.map(totalSum);
-        String test = temp.toString();
-//        String[] arrOfStr = test.split(" ", -1);
-//        System.out.println(arrOfStr);
+        L.map(totalSum);
+
         return totalSum.sum;
     }
 
