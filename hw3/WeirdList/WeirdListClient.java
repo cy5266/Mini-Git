@@ -4,13 +4,17 @@ class WeirdListClient {
     /** Return the result of adding N to each element of L. */
     static WeirdList add(WeirdList L, int n)
     {
-
-        return null; // TODO: REPLACE THIS LINE
+        WeirdListExtra function = new WeirdListExtra(n);
+        return L.map(function);
     }
 
     /** Return the sum of all the elements in L. */
     static int sum(WeirdList L) {
-        return 0; // TODO: REPLACE THIS LINE
+        WeirdListSum totalSum = new WeirdListSum();
+        WeirdList temp = L.map(totalSum);
+        String test = temp.toString();
+        String[] arrOfStr = test.split(" ", 0);
+        return Integer.parseInt(arrOfStr[arrOfStr.length-1]);
     }
 
     /* IMPORTANT: YOU ARE NOT ALLOWED TO USE RECURSION IN ADD AND SUM

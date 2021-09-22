@@ -17,4 +17,10 @@ public class extra extends WeirdList
     public String toString() {
         return "";
     }
+
+    @Override
+    public WeirdList map(IntUnaryFunction func)
+    {
+        return new extra();
+    }
 }

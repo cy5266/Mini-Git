@@ -28,6 +28,18 @@ public class WeirdListClientTest {
         assertEquals((6 + 4) + (5 + 4), WeirdListClient.sum(nwl));
     }
 
+    @Test
+    public void testAdd() {
+        WeirdList wl1 = new WeirdList(5, WeirdList.EMPTY);
+        WeirdList wl2 = new WeirdList(6, wl1);
+        WeirdList wl3 = new WeirdList(10, wl2);
+
+        WeirdList wl4 = WeirdListClient.add(wl3, 3);
+
+        assertEquals(" 13 9 8", wl4.toString());
+        assertEquals(" 10 6 5", wl3.toString());
+    }
+
     public static void main(String[] args) {
         System.exit(textui.runClasses(WeirdListClientTest.class));
     }
