@@ -18,7 +18,7 @@ class WeirdListClient {
         String test = temp.toString();
         String[] arrOfStr = test.split(" ", -1);
         System.out.println(arrOfStr);
-        return Integer.parseInt(arrOfStr[arrOfStr.length-1]);
+        return Integer.valueOf(arrOfStr[arrOfStr.length-1]);
     }
 
     /* IMPORTANT: YOU ARE NOT ALLOWED TO USE RECURSION IN ADD AND SUM
