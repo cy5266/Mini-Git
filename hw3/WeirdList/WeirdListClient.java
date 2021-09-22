@@ -14,7 +14,11 @@ class WeirdListClient {
         WeirdList temp = L.map(totalSum);
         String test = temp.toString();
         String[] arrOfStr = test.split(" ", 0);
-        return Integer.parseInt(arrOfStr[arrOfStr.length-1]);
+        if (arrOfStr[arrOfStr.length-1] != "")
+        {
+            return Integer.parseInt(arrOfStr[arrOfStr.length-1]);
+        }
+        return 0;
     }
 
     /* IMPORTANT: YOU ARE NOT ALLOWED TO USE RECURSION IN ADD AND SUM
