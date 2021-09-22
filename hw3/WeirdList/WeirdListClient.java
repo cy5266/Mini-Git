@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /** Functions to increment and sum the elements of a WeirdList. */
 class WeirdListClient {
 
@@ -13,12 +16,8 @@ class WeirdListClient {
         WeirdListSum totalSum = new WeirdListSum();
         WeirdList temp = L.map(totalSum);
         String test = temp.toString();
-        String[] arrOfStr = test.split(" ", 0);
-        if (arrOfStr[arrOfStr.length-1] != "")
-        {
-            return Integer.parseInt(arrOfStr[arrOfStr.length-1]);
-        }
-        return 0;
+        String[] arrOfStr = test.split(" ", test.length());
+        return Integer.parseInt(arrOfStr[arrOfStr.length-1]);
     }
 
     /* IMPORTANT: YOU ARE NOT ALLOWED TO USE RECURSION IN ADD AND SUM
