@@ -3,16 +3,27 @@
  *
  * @author Matthew Owen
  */
-public class SubstringFilter extends TableFilter {
+public class SubstringFilter extends TableFilter
+{
+
+    String colName;
+    String subStr;
+    int colindex;
+    Table.TableRow nextRow;
 
     public SubstringFilter(Table input, String colName, String subStr) {
         super(input);
-        // FIXME: Add your code here.
+        this.colName = colName;
+        this.subStr = subStr;
+        colindex = input.colNameToIndex(colName);
     }
 
     @Override
     protected boolean keep() {
-        // FIXME: Replace this line with your code.
+        nextRow = candidateNext();
+        if (nextRow.getValue(colindex).contains(subStr)) {
+            return true;
+        }
         return false;
     }
 

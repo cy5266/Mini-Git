@@ -12,7 +12,8 @@ class PuzzleGenerator {
         _random = new Random(seed);
     }
 
-    public Model getPuzzle(int width, int height, int ncolors, int extra) {
+    public Model getPuzzle(int width, int height, int ncolors, int extra)
+    {
         int[][] puzzle = new int[height][width];
         for (int[] row : puzzle) {
             for (int col = 0; col < height; col += 1) {

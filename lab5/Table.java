@@ -217,6 +217,21 @@ public class Table implements Iterable<Table.TableRow> {
         @Override
         public boolean hasNext() {
             if (_nextRow == null) {
+
+                if (_tableIter2.hasNext())
+                {
+                    _nextRow = TableRow.joinRows(_currRow1, _tableIter2.next());
+                }
+                else if (_tableIter1.hasNext())
+                {
+                    _currRow1 = _tableIter1.next();
+                    _tableIter2 = _table2.iterator();
+//                    right now, tableIter2 is pointing to the head (not the first value, so we need to do .next for it to
+//                    point to the first value)
+                    _nextRow = TableRow.joinRows(_currRow1, _tableIter2.next());
+                }
+
+
                 // FIXME: Fill in the hasNext method to update the _nextRow
                 //        variable to be the next joined row to be returned
                 //        by the iterator. The rows should be returned in the
