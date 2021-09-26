@@ -51,4 +51,57 @@ public class PermutationTest {
         checkPerm("identity", UPPER_STRING, UPPER_STRING);
     }
 
+    @Test
+    public void cycleTest()
+    {
+        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", UPPER);
+        String[] testArray = new String[]{"AELTPHQXRU", "BKNW", "CMOY", "DFG", "IV", "JZ", "S"};
+        assertArrayEquals(testArray, testCycle._cycles);
+
+    }
+
+    @Test
+    public void permuteTest()
+    {
+        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", UPPER);
+//        String[] testArray = new String[]{"AELTPHQXRU", "BKNW", "CMOY", "DFG", "IV", "JZ", "S"};
+        assertEquals('E', testCycle.permute('A'));
+        assertEquals('A', testCycle.permute('U'));
+        assertEquals('N', testCycle.permute('K'));
+        assertEquals('J', testCycle.permute('Z'));
+        assertEquals('Z', testCycle.permute('J'));
+        assertEquals('S', testCycle.permute('S'));
+
+    }
+
+    @Test
+    public void invertTest()
+    {
+        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", UPPER);
+        assertEquals('A', testCycle.invert('E'));
+        assertEquals('R', testCycle.invert('U'));
+        assertEquals('U', testCycle.invert('A'));
+        assertEquals('J', testCycle.invert('Z'));
+        assertEquals('Z', testCycle.invert('J'));
+        assertEquals('S', testCycle.invert('S'));
+
+    }
+
+    @Test
+    public void invertIntTest() {
+        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", UPPER);
+        assertEquals(20, testCycle.invert(0));
+        assertEquals(4, testCycle.invert(11));
+
+    }
+
+    @Test
+    public void permuteIntTest() {
+        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", UPPER);
+        assertEquals(4, testCycle.permute(0));
+        assertEquals(20, testCycle.permute(17));
+        assertEquals(0, testCycle.permute(20));
+
+    }
+
 }

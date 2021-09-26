@@ -51,7 +51,7 @@ class Rotor {
 
     /** Set setting() to POSN.  */
     void set(int posn) {
-        // FIXME
+        _setting = posn;
     }
 
     /** Set setting() to character CPOSN. */
@@ -91,6 +91,8 @@ class Rotor {
 
     /** The permutation implemented by this rotor in its 0 position. */
     private Permutation _permutation;
+
+    private Integer _setting;
 
     // FIXME: ADDITIONAL FIELDS HERE, AS NEEDED
 
