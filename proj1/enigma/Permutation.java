@@ -109,6 +109,12 @@ class Permutation {
 //            }
 //        }
 //        return false;
+
+        for (String s: _cycles) {
+            if (s.length() == 1) {
+                return true;
+            }
+        }
         return false;
     }
 
