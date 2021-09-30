@@ -196,16 +196,6 @@ public abstract class PermutationTest {
 
 
     @Test(expected = EnigmaException.class)
-    public void strangeCharacters()
-    {
-        Permutation p = getNewPermutation("(!-+.)", getNewAlphabet("!+-."));
-        p.invert('a');
-        p.permute('B');
-        p.invert('-');
-        p.permute(1);
-    }
-
-    @Test(expected = EnigmaException.class)
     public void badParenthesis()
     {
         Permutation p = getNewPermutation("{ABCD}", getNewAlphabet("ABCD"));
@@ -231,6 +221,17 @@ public abstract class PermutationTest {
         p.invert('D');
         p.permute('B');
     }
+
+
+    @Test
+    public void mapItself()
+    {
+        Permutation p = getNewPermutation("(ACB)", getNewAlphabet("ABCD"));
+        assertEquals('D', p.permute('D'));
+        assertEquals('D', p.invert('D'));
+    }
+
+
 
 
 
