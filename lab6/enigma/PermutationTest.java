@@ -168,13 +168,13 @@ public abstract class PermutationTest {
 
     }
 
-    @Test(expected = EnigmaException.class)
-    public void permuteIntTestBuggy()
-    {
-        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
-        p.permute(2000);
-        p.permute(-1);
-    }
+//    @Test(expected = EnigmaException.class)
+//    public void permuteIntTestBuggy()
+//    {
+//        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
+//        p.permute(2000);
+//        p.permute(-1);
+//    }
 
 
     // FIXME: Add tests here that pass on a correct Permutation and fail on buggy Permutations.
