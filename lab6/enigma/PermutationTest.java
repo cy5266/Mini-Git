@@ -105,12 +105,20 @@ public abstract class PermutationTest {
     }
 
     @Test(expected = EnigmaException.class)
-    public void permuteTestBuggy()
-    {
+    public void testNotInAlphabet() {
         Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
         p.invert('F');
-        p.invert('1');
+        p.permute('G');
     }
+
+//
+//    @Test(expected = EnigmaException.class)
+//    public void permuteTestBuggy()
+//    {
+//        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
+//        p.invert('F');
+//        p.invert('1');
+//    }
 
 
     @Test
@@ -133,9 +141,6 @@ public abstract class PermutationTest {
         Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
         p.invert('F');
         p.invert('1');
-
-        Permutation g = getNewPermutation("(B EFC)", getNewAlphabet("ABCD"));
-        g.invert('B');
     }
 
     @Test
@@ -145,14 +150,14 @@ public abstract class PermutationTest {
         assertEquals(4, p.invert(11));
 
     }
-
-    @Test(expected = EnigmaException.class)
-    public void invertIntTestBuggy()
-    {
-        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
-        p.invert(2000);
-        p.invert('5');
-    }
+//
+//    @Test(expected = EnigmaException.class)
+//    public void invertIntTestBuggy()
+//    {
+//        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
+//        p.invert(2000);
+//        p.invert('5');
+//    }
 
     @Test
     public void permuteIntTest() {
@@ -168,7 +173,7 @@ public abstract class PermutationTest {
     {
         Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
         p.permute(2000);
-        p.permute('5');
+        p.permute(-1);
     }
 
 
