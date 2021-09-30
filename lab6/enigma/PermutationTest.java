@@ -150,14 +150,6 @@ public abstract class PermutationTest {
         assertEquals(4, p.invert(11));
 
     }
-//
-//    @Test(expected = EnigmaException.class)
-//    public void invertIntTestBuggy()
-//    {
-//        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
-//        p.invert(2000);
-//        p.invert('5');
-//    }
 
     @Test
     public void permuteIntTest() {
@@ -182,6 +174,18 @@ public abstract class PermutationTest {
         p.invert('D');
         p.permute('C');
     }
+
+
+    @Test(expected = EnigmaException.class)
+    public void invertIntTestBuggy()
+    {
+        Permutation p = getNewPermutation("(FGHI)", getNewAlphabet("ABCD"));
+        p.invert('H');
+        p.permute('G');
+        p.invert(3);
+        p.permute(2);
+    }
+
 
 
     // FIXME: Add tests here that pass on a correct Permutation and fail on buggy Permutations.
