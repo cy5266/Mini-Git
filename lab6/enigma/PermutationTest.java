@@ -186,6 +186,52 @@ public abstract class PermutationTest {
         p.permute(2);
     }
 
+    @Test(expected = EnigmaException.class)
+    public void callCapsNotLocked()
+    {
+        Permutation p = getNewPermutation("(abcd)", getNewAlphabet("ABCD"));
+        p.invert('a');
+        p.permute('B');
+    }
+
+
+    @Test(expected = EnigmaException.class)
+    public void strangeCharacters()
+    {
+        Permutation p = getNewPermutation("(!-+.)", getNewAlphabet("!+-."));
+        p.invert('a');
+        p.permute('B');
+        p.invert('-');
+        p.permute(1);
+    }
+
+    @Test(expected = EnigmaException.class)
+    public void badParenthesis()
+    {
+        Permutation p = getNewPermutation("{ABCD}", getNewAlphabet("ABCD"));
+        p.invert('a');
+        p.permute('B');
+        p.invert('-');
+        p.permute(1);
+    }
+
+
+    @Test(expected = EnigmaException.class)
+    public void lettertwice()
+    {
+        Permutation p = getNewPermutation("(AABCD)", getNewAlphabet("ABCD"));
+        p.invert('A');
+        p.permute('B');
+    }
+
+    @Test(expected = EnigmaException.class)
+    public void lettertwice2()
+    {
+        Permutation p = getNewPermutation("(ACBD)", getNewAlphabet("ABBCD"));
+        p.invert('D');
+        p.permute('B');
+    }
+
 
 
     // FIXME: Add tests here that pass on a correct Permutation and fail on buggy Permutations.
