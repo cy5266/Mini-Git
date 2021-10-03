@@ -232,12 +232,6 @@ public abstract class PermutationTest {
     }
 
 
-    @Test
-    public void derangementTest()
-    {
-        Permutation p = getNewPermutation("SE", getNewAlphabet("SE"));
-        assertEquals(false, p.derangement());
-    }
 
 
 
