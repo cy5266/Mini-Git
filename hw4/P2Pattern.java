@@ -4,13 +4,13 @@
 
 public class P2Pattern {
     /* Pattern to match a valid date of the form MM/DD/YYYY. Eg: 9/22/2019 */
-    public static String P1 = ""; //FIXME: Add your regex here
+    public static String P1 = "((0\\d|1[0-2])|\\b\\d\\b)\\/((0\\d|1\\d|2\\d|3[0-1])|\\b\\d\\b)\\/[1-2]\\d\\d\\d";
 
     /** Pattern to match 61b notation for literal IntLists. */
-    public static String P2 = ""; //FIXME: Add your regex here
+    public static String P2 = "\\(\\b[0-9, ]+[0-9]\\)";
 
     /* Pattern to match a valid domain name. Eg: www.support.facebook-login.com */
-    public static String P3 = ""; //FIXME: Add your regex here
+    public static String P3 = "[a-zA-Z]|[0-9]|\\b."; //FIXME: Add your regex here
 
     /* Pattern to match a valid java variable name. Eg: _child13$ */
     public static String P4 = ""; //FIXME: Add your regex here

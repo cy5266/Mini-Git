@@ -34,7 +34,7 @@ public class ReadInts {
         Scanner s = new Scanner(input);
         while (s.hasNext()) {
             int nextInt = s.nextInt();
-            // FIXME
+            L.add(nextInt);
         }
         return L;
     }
@@ -48,7 +48,13 @@ public class ReadInts {
      *  from Scanner. Is there a way to skip over non-integers, instead of
      *  trying to read them and getting an exception? */
     public static List<Integer> smartReadInts(String input) {
-        // FIXME
-        return null;
+        ArrayList<Integer> L = new ArrayList<Integer>();
+        Scanner s = new Scanner(input).useDelimiter("[^0-9]+");;
+        while (s.hasNext())
+        {
+            int nextInt = s.nextInt();
+            L.add(nextInt);
+        }
+        return L;
     }
 }
