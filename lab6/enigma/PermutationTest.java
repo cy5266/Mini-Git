@@ -14,7 +14,7 @@ import static enigma.TestUtils.*;
  * this class concrete by removing the 4 abstract keywords and implementing the
  * 3 abstract methods.
  *
- *  @author
+ *  @author Isabelle Liu
  */
 public abstract class PermutationTest {
 
@@ -62,18 +62,18 @@ public abstract class PermutationTest {
         for (int i = 0; i < N; i += 1) {
             char c = fromAlpha.charAt(i), e = toAlpha.charAt(i);
             assertEquals(msg(testId, "wrong translation of '%c'", c),
-                         e, perm.permute(c));
+                    e, perm.permute(c));
             assertEquals(msg(testId, "wrong inverse of '%c'", e),
-                         c, perm.invert(e));
+                    c, perm.invert(e));
             int ci = alpha.toInt(c), ei = alpha.toInt(e);
             assertEquals(msg(testId, "wrong translation of %d", ci),
-                         ei, perm.permute(ci));
+                    ei, perm.permute(ci));
             assertEquals(msg(testId, "wrong inverse of %d", ei),
-                         ci, perm.invert(ei));
+                    ci, perm.invert(ei));
         }
     }
 
-    /* ***** TESTS ***** */
+    /* *** TESTS *** */
 
     @Test
     public void checkIdTransform() {
@@ -83,159 +83,86 @@ public abstract class PermutationTest {
     }
 
     @Test
-    public void testInvertChar() {
-        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
-        assertEquals('B', p.invert('A'));
-        assertEquals('A', p.invert('C'));
-        assertEquals('D', p.invert('B'));
-
+    public void checkPermutationChar()
+    {
+        Permutation perm = getNewPermutation("(ABCD) (EFG)", getNewAlphabet());
+        assertEquals('F', perm.permute('E'));
+        assertEquals('E', perm.permute('G'));
+        //checkPerm("check permute", "AJDOSL", "ABCDEF", perm);
     }
 
     @Test
-    public void permuteTest()
+    public void checkInvertChar()
     {
-        Permutation p = getNewPermutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", getNewAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-        assertEquals('E', p.permute('A'));
-        assertEquals('A', p.permute('U'));
-        assertEquals('N', p.permute('K'));
-        assertEquals('J', p.permute('Z'));
-        assertEquals('Z', p.permute('J'));
-        assertEquals('S', p.permute('S'));
+        Permutation perm = getNewPermutation("(ABCD) (EFG)", getNewAlphabet());
+        assertEquals('C', perm.invert('D'));
+        assertEquals('G', perm.invert('E'));
+        assertEquals('Z', perm.invert('Z'));
+    }
 
+    @Test
+    public void checkPermuteInt() {
+        Permutation perm = getNewPermutation("(ABCD) (EFG)", getNewAlphabet());
+        assertEquals(3, perm.permute(2));
+        assertEquals(2, perm.permute(1));
+    }
+
+    @Test
+    public void checkDerangement() {
+        Permutation perm = getNewPermutation("(ABCD) (EFG)", getNewAlphabet());
+        assertEquals(false, perm.derangement());
+        Permutation p = getNewPermutation("(ABCD)", getNewAlphabet("ABCD"));
+        assertEquals(true, p.derangement());
+    }
+
+    @Test
+    public void checkSize(){
+        Permutation perm = getNewPermutation("(ABCD) (EFG)", getNewAlphabet());
+        assertEquals(26, perm.size());
+        Permutation p = getNewPermutation("(ABCD)", getNewAlphabet("ABCD"));
+        assertEquals(4, p.size());
     }
 
     @Test(expected = EnigmaException.class)
     public void testNotInAlphabet() {
         Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
         p.invert('F');
-        p.permute('G');
-    }
-
-//
-//    @Test(expected = EnigmaException.class)
-//    public void permuteTestBuggy()
-//    {
-//        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
-//        p.invert('F');
-//        p.invert('1');
-//    }
-
-
-    @Test
-    public void invertTest()
-    {
-        Permutation p = getNewPermutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", getNewAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-        assertEquals('A', p.invert('E'));
-        assertEquals('R', p.invert('U'));
-        assertEquals('U', p.invert('A'));
-        assertEquals('J', p.invert('Z'));
-        assertEquals('Z', p.invert('J'));
-        assertEquals('S', p.invert('S'));
-
-    }
-
-
-    @Test(expected = EnigmaException.class)
-    public void invertTestBuggy()
-    {
-        Permutation p = getNewPermutation("(BACD)", getNewAlphabet("ABCD"));
-        p.invert('F');
-        p.invert('1');
-    }
-
-    @Test
-    public void invertIntTest() {
-        Permutation p = getNewPermutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", getNewAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-        assertEquals(20, p.invert(0));
-        assertEquals(4, p.invert(11));
-
-    }
-
-    @Test
-    public void permuteIntTest() {
-        Permutation p = getNewPermutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", getNewAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-        assertEquals(4, p.permute(0));
-        assertEquals(20, p.permute(17));
-        assertEquals(0, p.permute(20));
-
-    }
-
-
-    @Test(expected = EnigmaException.class)
-    public void badCycle() {
-        Permutation p = getNewPermutation("(B ACD)", getNewAlphabet("ABCD"));
-        p.invert('A');
-        p.permute('B');
+        p.permute('#');
     }
 
     @Test(expected = EnigmaException.class)
-    public void badCycle2() {
-        Permutation p = getNewPermutation("(BACD)) ", getNewAlphabet("ABCD"));
-        p.invert('D');
-        p.permute('C');
-    }
-
-
-    @Test(expected = EnigmaException.class)
-    public void invertIntTestBuggy()
-    {
-        Permutation p = getNewPermutation("(FGHI)", getNewAlphabet("ABCD"));
-        p.invert('H');
-        p.permute('G');
-        p.invert(3);
-        p.permute(2);
+    public void testWeirdSpacing() {
+        Permutation p1 = getNewPermutation("(BACD ) (E P L)", getNewAlphabet());
+        p1.permute('P');
+        p1.invert('B');
     }
 
     @Test(expected = EnigmaException.class)
-    public void callCapsNotLocked()
-    {
-        Permutation p = getNewPermutation("(abcd)", getNewAlphabet("ABCD"));
-        p.invert('a');
-        p.permute('B');
-    }
-
-
-    @Test(expected = EnigmaException.class)
-    public void badParenthesis()
-    {
-        Permutation p = getNewPermutation("{ABCD}", getNewAlphabet("ABCD"));
-        p.invert('a');
-        p.permute('B');
-        p.invert('-');
-        p.permute(1);
-    }
-
-
-    @Test(expected = EnigmaException.class)
-    public void lettertwice()
-    {
-        Permutation p = getNewPermutation("(AABCD)", getNewAlphabet("ABCD"));
-        p.invert('A');
-        p.permute('B');
+    public void testWeirdParen(){
+        Permutation p2 = getNewPermutation("(BACD)) ) (E( P L)", getNewAlphabet());
+        p2.invert(3);
+        p2.permute('P');
     }
 
     @Test(expected = EnigmaException.class)
-    public void lettertwice2()
-    {
-        Permutation p = getNewPermutation("(ACBD)", getNewAlphabet("ABBCD"));
-        p.invert('D');
-        p.permute('B');
+    public void testUpperCase(){
+        Permutation p2 = getNewPermutation("(BACK) (EPZD)", getNewAlphabet());
+        p2.invert('d');
+        p2.permute('b');
     }
 
-
-    @Test
-    public void mapItself()
-    {
-        Permutation p = getNewPermutation("(ACB)", getNewAlphabet("ABCD"));
-        assertEquals('D', p.permute('D'));
-        assertEquals('D', p.invert('D'));
+    @Test(expected = EnigmaException.class)
+    public void invalidChar(){
+        Permutation p2 = getNewPermutation("(BACK) (EPZ¥)", getNewAlphabet());
+        p2.invert('d');
+        p2.permute('Z');
     }
 
+    @Test(expected = EnigmaException.class)
+    public void cycleLetterRepeat(){
+        Permutation p2 = getNewPermutation("(KACK) (EPKD)", getNewAlphabet());
+        p2.invert('K');
+        p2.permute('K');
+    }
 
-
-
-
-
-
-    // FIXME: Add tests here that pass on a correct Permutation and fail on buggy Permutations.
 }
