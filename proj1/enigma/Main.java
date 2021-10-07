@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import static enigma.EnigmaException.*;
 
 /** Enigma simulator.
- *  @author
+ *  @author Cindy Yang
  */
 public final class Main {
 
@@ -77,25 +78,112 @@ public final class Main {
      *  file _config and apply it to the messages in _input, sending the
      *  results to _output. */
     private void process() {
-        // FIXME
+        Machine M = readConfig();
+        //gotta get settings line
+//        while (input.has)
+        //make a scanner of settings
+        //call next line from input
+        //might want to check that it's settings line
+        String settingsLine = _input.nextLine();
+        //check to see the length of the input is > 0
+        if (settingsLine.charAt(0) == '*'){
+            setUp(M, settingsLine);
+        }
+        //should not convert settings line
+        while (_input.hasNextLine()){
+            String nextLine = _input.nextLine();
+            if (nextLine.length() == 0){
+                printMessageLine(" ");
+            }
+            else if (nextLine.charAt(0) == '*' && nextLine.length() > 1){
+                setUp(M, nextLine);
+            }
+            else{
+
+                String settingString = nextLine.replaceAll(" ", "");
+                printMessageLine(M.convert(settingString));
+                //                String [] notSetting = nextLine.split(" ");
+//                String settingString = "";
+//;               for (String word: notSetting){
+//                    settingString += word;
+//                }
+                //get rid of white spaces and convert into one string
+                //printmessage line the converted version
+                ///
+//                printMessageLine(M.convert(_input.nextLine()));
+            }
+
+        }
+
+
+        //first call readconfig and turn it into a machine
+        //then build the machine call setup
+        //think of output as a terminal print
+
+
+
+        //gonna call set up machine
+        // call readconfig
+        //
+
     }
 
     /** Return an Enigma machine configured from the contents of configuration
      *  file _config. */
+    //returns a machine
     private Machine readConfig() {
         try {
             // FIXME
-            _alphabet = new Alphabet();
-            return new Machine(_alphabet, 2, 1, null);
+            String alphabet = _config.next();
+            _alphabet= new Alphabet(alphabet);
+            int numRotors = _config.nextInt();
+            int numPawls = _config.nextInt();
+            ArrayList<Rotor> _allRotors = new ArrayList<>();
+
+            while (_config.hasNext()){
+                _allRotors.add(readRotor());
+            }
+            return new Machine(_alphabet, numRotors, numPawls, _allRotors);
         } catch (NoSuchElementException excp) {
             throw error("configuration file truncated");
         }
     }
 
     /** Return a rotor, reading its description from _config. */
+    //
     private Rotor readRotor() {
         try {
-            return null; // FIXME
+            String name = _config.next();
+            String typeandnotches = _config.next();
+            String type = typeandnotches.substring(0,1);
+            String notches = "";
+
+            if (type.equals("M")) {
+                notches = typeandnotches.substring(1);
+            }
+
+            String cycles = "";
+
+            while(_config.hasNext("\\(.+\\)")){
+                cycles += _config.next();
+            }
+            Permutation perm = new Permutation(cycles, _alphabet);
+
+            if (type.equals("M")){
+                return new MovingRotor(name, perm, notches);//at moving rotor
+            }
+
+            else if (type.equals("R")){
+                return new Reflector(name, perm);
+            }
+
+//            if (type.equals("N")){
+                return new FixedRotor(name, perm);
+//            }
+
+
+//
+//            return null; // FIXME
         } catch (NoSuchElementException excp) {
             throw error("bad rotor description");
         }
@@ -104,12 +192,54 @@ public final class Main {
     /** Set M according to the specification given on SETTINGS,
      *  which must have the format specified in the assignment. */
     private void setUp(Machine M, String settings) {
+        int numRotors = M.numRotors();
+        String[] _newRotors = new String[numRotors];
+        String _settings[] = settings.substring(2).split(" "); //do we want reflector???
+        int i = 0;
+
+        String plugs = "";
+        String setting = "";
+
+        ArrayList <Rotor> selectedRotors = M.get_selectedRotors();
+
+        for (Rotor r: selectedRotors){
+            hashRotor.put(r.name(), r);
+        }
+
+        for (String element : _settings){
+            if (!hashRotor.containsKey(element)){
+                if (element.charAt(0) != '('){
+                    setting = element;
+                }
+                else{
+                    plugs += element + " ";
+                }
+            }
+            else{
+                _newRotors[i] = element;
+                i ++;
+            }
+        }
+
+        M.insertRotors(_newRotors);
+        M.setRotors(setting);
+        M.setPlugboard(new Permutation(plugs, _alphabet));
+
+
         // FIXME
     }
 
     /** Print MSG in groups of five (except that the last group may
      *  have fewer letters). */
     private void printMessageLine(String msg) {
+        for (int i = 0; i < msg.length(); i += 5){
+            if (i + 5 > msg.length()){
+                _output.println(msg.substring(i,msg.length()));
+            }
+            else{
+                _output.println(msg.substring(i, i + 5));
+            }
+        }
         // FIXME
     }
 
@@ -124,4 +254,6 @@ public final class Main {
 
     /** File for encoded/decoded messages. */
     private PrintStream _output;
+
+    private HashMap<String, Rotor> hashRotor =  new HashMap<>();
 }

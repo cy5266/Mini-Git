@@ -100,16 +100,6 @@ class Permutation {
      *  permutation for which no value maps to itself). */
     boolean derangement()
     {
-//        int numletters = _alphabet.size();
-//        for (int i = 0; i < numletters; i++)
-//        {
-//            if (_cycles.indexOf(_alphabet.toChar(i)) == -1)
-//            {
-//                return true;
-//            }
-//        }
-//        return false;
-
         for (String s: _cycles) {
             if (s.length() == 1) {
                 return true;

@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import static enigma.TestUtils.*;
 
 /** The suite of all JUnit tests for the Permutation class.
- *  @author
+ *  @author Cindy Yang
  */
 public class PermutationTest {
 
@@ -103,5 +103,7 @@ public class PermutationTest {
         assertEquals(0, testCycle.permute(20));
 
     }
+
+
 
 }

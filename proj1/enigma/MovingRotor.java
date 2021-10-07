@@ -18,16 +18,27 @@ class MovingRotor extends Rotor
         _notches = notches;
     }
 
-    // FIXME?
-
     @Override
     void advance() {
-        if (super.atNotch())
-        {
-            super._setting += 1;
-        }
+            set(permutation().wrap(_setting+1));
     }
 
+    @Override
+    boolean atNotch()
+    {
+        if (_notches.contains(String.valueOf(alphabet().toChar(_setting))))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    boolean rotates()
+    {
+        return true;
+    }
     private String _notches;
+//    private int _setting;
 
 }

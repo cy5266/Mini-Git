@@ -14,9 +14,4 @@ class FixedRotor extends Rotor
         super(name, perm);
     }
 
-    @Override
-    boolean atNotch()
-    {
-        return false;
-    }
 }
