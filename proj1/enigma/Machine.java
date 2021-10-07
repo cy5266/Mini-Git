@@ -38,9 +38,9 @@ class Machine {
      *  Initially, all rotors are set at their 0 setting. */
     void insertRotors(String[] rotors)
     {
-        if (_numRotors != _allRotors.size()) {
-            throw new EnigmaException("not the correct size");
-        }
+//        if (_numRotors != _allRotors.size()) {
+//            throw new EnigmaException("not the correct size");
+//        }
         for (String element: rotors) {
             for (Rotor r: _allRotors) {
                 if (r.name().equals(element)) {
