@@ -54,9 +54,9 @@ class Machine {
      *  numRotors()-1 characters in my alphabet. The first letter refers
      *  to the leftmost rotor setting (not counting the reflector).  */
     void setRotors(String setting) {
-        if (setting.length() != numRotors()-1) {
-            throw new EnigmaException("length not equal");
-        }
+//        if (setting.length() != numRotors()-1) {
+//            throw new EnigmaException("length not equal");
+//        }
         for (int i = 0; i < _selectedRotors.size(); i ++) {
             _selectedRotors.get(i).set(_alphabet.toInt(setting.charAt(i -1)));
         }
@@ -112,6 +112,10 @@ class Machine {
 
     public ArrayList<Rotor> get_selectedRotors(){
         return _selectedRotors;
+    }
+
+    public Collection<Rotor> getallRotors(){
+        return _allRotors;
     }
 
     /** Common alphabet of my rotors. */

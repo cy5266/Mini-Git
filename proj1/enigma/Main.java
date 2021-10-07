@@ -102,15 +102,7 @@ public final class Main {
 
                 String settingString = nextLine.replaceAll(" ", "");
                 printMessageLine(M.convert(settingString));
-                //                String [] notSetting = nextLine.split(" ");
-//                String settingString = "";
-//;               for (String word: notSetting){
-//                    settingString += word;
-//                }
-                //get rid of white spaces and convert into one string
-                //printmessage line the converted version
-                ///
-//                printMessageLine(M.convert(_input.nextLine()));
+
             }
 
         }
@@ -194,30 +186,60 @@ public final class Main {
     private void setUp(Machine M, String settings) {
         int numRotors = M.numRotors();
         String[] _newRotors = new String[numRotors];
-        String _settings[] = settings.substring(2).split(" "); //do we want reflector???
+//        String _settings[] = settings.substring(2).split(" "); //do we want reflector???
         int i = 0;
 
         String plugs = "";
         String setting = "";
 
-        ArrayList <Rotor> selectedRotors = M.get_selectedRotors();
+//        M.insertRotors(_settings);
+////        M.setRotors(_settings);
 
-        for (Rotor r: selectedRotors){
-            hashRotor.put(r.name(), r);
+//        ArrayList <Rotor> selectedRotors = M.get_selectedRotors();
+//
+//        for (Rotor r: selectedRotors){
+//            hashRotor.put(r.name(), r);
+//        }
+
+//        for (String element : _settings){
+//            if (!hashRotor.containsKey(element)){
+//                if (element.charAt(0) != '('){
+//                    setting = element;
+//                }
+//                else{
+//                    plugs += element + " ";
+//                }
+//            }
+//            else{
+//        for (int i = 0; i < numRotors; i ++){
+//            if (i == numRotors - 1){
+//                setting = _settings[i];
+//            }
+//            else if (_settings[i].charAt(0))
+//        }
+
+        if (settings.charAt(0) != '*'){
+            throw new EnigmaException("not a valid setting");
+        }
+        Scanner testScan = new Scanner(settings);
+        if (testScan.hasNext()) {
+            testScan.next();
         }
 
-        for (String element : _settings){
-            if (!hashRotor.containsKey(element)){
-                if (element.charAt(0) != '('){
-                    setting = element;
-                }
-                else{
-                    plugs += element + " ";
-                }
+        while (testScan.hasNext()){
+            String next = testScan.next();
+            if (M.getallRotors().contains(next)){
+                _newRotors[i] = next;
+                i ++;
+            }
+            else if (!M.getallRotors().contains(next) && next.charAt(0) != '('){
+                setting = next;
+            }
+            else if (next.charAt(0) != '('){
+                plugs += next + " ";
             }
             else{
-                _newRotors[i] = element;
-                i ++;
+                throw new EnigmaException("not a rotor, plug, or setting");
             }
         }
 
@@ -233,8 +255,8 @@ public final class Main {
      *  have fewer letters). */
     private void printMessageLine(String msg) {
         for (int i = 0; i < msg.length(); i += 5){
-            if (i + 5 > msg.length()){
-                _output.print(msg.substring(i,msg.length()) + "\n");
+            if (i + 5 > msg.length() || i + 5 == msg.length()){
+                _output.println(msg.substring(i,msg.length()));
             }
             else{
                 _output.print(msg.substring(i, i + 5) + " ");
