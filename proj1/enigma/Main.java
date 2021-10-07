@@ -234,10 +234,10 @@ public final class Main {
     private void printMessageLine(String msg) {
         for (int i = 0; i < msg.length(); i += 5){
             if (i + 5 > msg.length()){
-                _output.print(msg.substring(i,msg.length()) + " ");
+                _output.print(msg.substring(i,msg.length()) + "\n");
             }
             else{
-                _output.println(msg.substring(i, i + 5));
+                _output.print(msg.substring(i, i + 5) + " ");
             }
         }
         // FIXME
