@@ -79,12 +79,7 @@ public final class Main {
      *  results to _output. */
     private void process() {
         Machine M = readConfig();
-        //gotta get settings line
-//        while (input.has)
-        //make a scanner of settings
-        //call next line from input
-        //might want to check that it's settings line
-        //should not convert settings line
+
         while (_input.hasNextLine()){
             String nextLine = _input.nextLine();
             if (nextLine.length() == 0){
@@ -100,26 +95,12 @@ public final class Main {
 
             }
         }
-
-
-        //first call readconfig and turn it into a machine
-        //then build the machine call setup
-        //think of output as a terminal print
-
-
-
-        //gonna call set up machine
-        // call readconfig
-        //
-
     }
 
     /** Return an Enigma machine configured from the contents of configuration
      *  file _config. */
-    //returns a machine
     private Machine readConfig() {
         try {
-            // FIXME
             String alphabet = _config.next();
             _alphabet= new Alphabet(alphabet);
             int numRotors = _config.nextInt();
@@ -136,7 +117,6 @@ public final class Main {
     }
 
     /** Return a rotor, reading its description from _config. */
-    //
     private Rotor readRotor() {
         try {
             String name = _config.next();
@@ -150,11 +130,19 @@ public final class Main {
 
             String cycles = "";
 
+            HashMap<String, Boolean> contains = new HashMap<>();
+
             while(_config.hasNext("\\(.+\\)")){
                 cycles += _config.next();
             }
             Permutation perm = new Permutation(cycles, _alphabet);
 
+            if (contains.containsKey(type)){
+                throw error("duplicate rotor");
+            }
+            else{
+                contains.put(type, true);
+            }
             if (type.equals("M")){
                 return new MovingRotor(name, perm, notches);//at moving rotor
             }
@@ -163,13 +151,9 @@ public final class Main {
                 return new Reflector(name, perm);
             }
 
-//            if (type.equals("N")){
+//            else if (type.equals("N")){
                 return new FixedRotor(name, perm);
 //            }
-
-
-//
-//            return null; // FIXME
         } catch (NoSuchElementException excp) {
             throw error("bad rotor description");
         }
@@ -180,37 +164,10 @@ public final class Main {
     private void setUp(Machine M, String settings) {
         int numRotors = M.numRotors();
         String[] _newRotors = new String[numRotors];
-//        String _settings[] = settings.substring(2).split(" "); //do we want reflector???
         int i = 0;
 
         String plugs = "";
         String setting = "";
-
-//        M.insertRotors(_settings);
-////        M.setRotors(_settings);
-
-//        ArrayList <Rotor> selectedRotors = M.get_selectedRotors();
-//
-//        for (Rotor r: selectedRotors){
-//            hashRotor.put(r.name(), r);
-//        }
-
-//        for (String element : _settings){
-//            if (!hashRotor.containsKey(element)){
-//                if (element.charAt(0) != '('){
-//                    setting = element;
-//                }
-//                else{
-//                    plugs += element + " ";
-//                }
-//            }
-//            else{
-//        for (int i = 0; i < numRotors; i ++){
-//            if (i == numRotors - 1){
-//                setting = _settings[i];
-//            }
-//            else if (_settings[i].charAt(0))
-//        }
 
         if (settings.charAt(0) != '*'){
             throw new EnigmaException("not a valid setting");
@@ -222,10 +179,6 @@ public final class Main {
 
         while (testScan.hasNext()){
             String next = testScan.next();
-//            if (M.getallRotors().contains(next)){
-//                _newRotors[i] = next;
-//                i ++;
-//            }
 
             for (Rotor r: M.getallRotors()){
                 if (r.name().equals(next)){
@@ -244,23 +197,13 @@ public final class Main {
                     throw new EnigmaException("not a rotor, plug, or setting");
                 }
             }
-//            if (!M.getallRotors().contains(next) && next.charAt(0) != '('){
-//                setting = next;
-//            }
-//            else if (next.charAt(0) != '('){
-//                plugs += next + " ";
-//            }
-//            else{
-//                throw new EnigmaException("not a rotor, plug, or setting");
-//            }
+
         }
 
         M.insertRotors(_newRotors);
         M.setRotors(setting);
         M.setPlugboard(new Permutation(plugs, _alphabet));
 
-
-        // FIXME
     }
 
     /** Print MSG in groups of five (except that the last group may
