@@ -84,11 +84,6 @@ public final class Main {
         //make a scanner of settings
         //call next line from input
         //might want to check that it's settings line
-        String settingsLine = _input.nextLine();
-        //check to see the length of the input is > 0
-        if (settingsLine.charAt(0) == '*'){
-            setUp(M, settingsLine);
-        }
         //should not convert settings line
         while (_input.hasNextLine()){
             String nextLine = _input.nextLine();
@@ -104,7 +99,6 @@ public final class Main {
                 printMessageLine(M.convert(settingString));
 
             }
-
         }
 
 
@@ -228,19 +222,37 @@ public final class Main {
 
         while (testScan.hasNext()){
             String next = testScan.next();
-            if (M.getallRotors().contains(next)){
-                _newRotors[i] = next;
-                i ++;
+//            if (M.getallRotors().contains(next)){
+//                _newRotors[i] = next;
+//                i ++;
+//            }
+
+            for (Rotor r: M.getallRotors()){
+                if (r.name().equals(next)){
+                    _newRotors[i] = next;
+                    i ++;
+                }
+                else if (next.charAt(0) != '(')
+                {
+                    setting = next;
+                }
+                else if (next.charAt(0) == '(')
+                {
+                    plugs += next + " ";
+                }
+                else{
+                    throw new EnigmaException("not a rotor, plug, or setting");
+                }
             }
-            else if (!M.getallRotors().contains(next) && next.charAt(0) != '('){
-                setting = next;
-            }
-            else if (next.charAt(0) != '('){
-                plugs += next + " ";
-            }
-            else{
-                throw new EnigmaException("not a rotor, plug, or setting");
-            }
+//            if (!M.getallRotors().contains(next) && next.charAt(0) != '('){
+//                setting = next;
+//            }
+//            else if (next.charAt(0) != '('){
+//                plugs += next + " ";
+//            }
+//            else{
+//                throw new EnigmaException("not a rotor, plug, or setting");
+//            }
         }
 
         M.insertRotors(_newRotors);

@@ -63,7 +63,7 @@ public class PermutationTest {
     @Test
     public void permuteTest()
     {
-        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", UPPER);
+        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ)", UPPER);
 //        String[] testArray = new String[]{"AELTPHQXRU", "BKNW", "CMOY", "DFG", "IV", "JZ", "S"};
         assertEquals('E', testCycle.permute('A'));
         assertEquals('A', testCycle.permute('U'));
@@ -77,7 +77,7 @@ public class PermutationTest {
     @Test
     public void invertTest()
     {
-        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ) (S)", UPPER);
+        Permutation testCycle = new Permutation("(AELTPHQXRU) (BKNW) (CMOY) (DFG) (IV) (JZ)", UPPER);
         assertEquals('A', testCycle.invert('E'));
         assertEquals('R', testCycle.invert('U'));
         assertEquals('U', testCycle.invert('A'));
@@ -101,6 +101,7 @@ public class PermutationTest {
         assertEquals(4, testCycle.permute(0));
         assertEquals(20, testCycle.permute(17));
         assertEquals(0, testCycle.permute(20));
+        assertEquals(4, testCycle.permute(26));
 
     }
 

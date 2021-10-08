@@ -17,6 +17,7 @@ class Alphabet {
         this("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     }
 
+
     /** Returns the size of the alphabet. */
     int size() {
         return _chars.length();

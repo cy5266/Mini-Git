@@ -18,10 +18,33 @@ class Permutation {
         _alphabet = alphabet;
         cycles = cycles.replace(" ", "");
         _cycles = cycles.split("\\)");
-        for (int i = 0; i < _cycles.length; i++)
-        {
-            _cycles[i] = _cycles[i].replace("(", "");
+
+//        for (int i = 0; i < _cycles.length; i++)
+//        {
+//            _cycles[i] = _cycles[i].replace("(", "");
+//        }
+        int i = 0;
+        for (String s: _cycles){
+            if (s.length() <= 1){
+                _cycles[i] = "";
+            }
+            else{
+                _cycles[i] = _cycles[i].substring(1);
+            }
+            i += 1;
         }
+
+
+//        for (int i = 0; i < _alphabet.; i++)
+//        {
+//            _cycles[i] = _cycles[i].replace("(", "");
+//        }
+
+//        for (int i = 0; i < _alphabet.size(); i++) {
+//            if (!testCycles.contains(_alphabet.toChar(i))) {
+//                _cycles.add(String.valueOf(_alphabet.toChar(i)));
+//            }
+//        }
     }
 
 
@@ -49,13 +72,13 @@ class Permutation {
      *  alphabet size. */
     int permute(int p)
     {
-        return _alphabet.toInt(permute(_alphabet.toChar(p)));
+        return _alphabet.toInt(permute(_alphabet.toChar(p% alphabet().size())));
     }
 
     /** Return the result of applying the inverse of this permutation
      *  to  C modulo the alphabet size. */
     int invert(int c) {
-        return _alphabet.toInt(invert(_alphabet.toChar(c)));
+        return _alphabet.toInt(invert(_alphabet.toChar(c % alphabet().size())));
 
     }
 
@@ -65,30 +88,61 @@ class Permutation {
     {
         for (String loop: _cycles)
         {
-            if (loop.indexOf(p) != -1 )
+            if (loop.indexOf(_alphabet.toInt(p)) != -1 )
             {
-                return loop.charAt((loop.indexOf(p) + 1) % loop.length());
+
+//                int index = loop.indexOf(p) + 1;
+//
+//                if (index < 0)
+//                {
+//                    index = index + loop.length();
+//                }
+//                return loop.charAt(wrap(index));
+
+                return loop.charAt((loop.indexOf(_alphabet.toInt(p)) + 1) % loop.length());
             }
         }
         return p;
+//        for (String s: _cycles){
+//            if (s.indexOf(p) > -1){
+//                if (s.indexOf(p) != s.length() -1){
+//                    return s.charAt(s.indexOf(p) + 1);
+//                }
+//                else{
+//                    return s.charAt(0);
+//                }
+//            }
+//        }
+//        throw error("rip");
     }
 
     /** Return the result of applying the inverse of this permutation to C. */
     char invert(char c) {
         for (String loop: _cycles)
         {
-            if (loop.indexOf(c) != -1 )
+            if (loop.indexOf(_alphabet.toInt(c)) != -1 )
             {
-                int index = loop.indexOf(c) -1;
+                int index = loop.indexOf(_alphabet.toInt(c)) -1;
 
                 if (index < 0)
                 {
                     index = index + loop.length();
                 }
-                return loop.charAt(index % loop.length());
+                return loop.charAt(wrap(index));
             }
         }
         return c;
+//        for (String s: _cycles){
+//            if (s.indexOf(c) > -1){
+//                if (s.indexOf(c) != 0){
+//                    return s.charAt(s.indexOf(c) -1);
+//                }
+//                else{
+//                    return s.charAt(s.length() -1);
+//                }
+//            }
+//        }
+//        throw error ("rip2");
     }
 
     /** Return the alphabet used to initialize this Permutation. */

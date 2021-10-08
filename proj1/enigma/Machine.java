@@ -41,6 +41,7 @@ class Machine {
 //        if (_numRotors != _allRotors.size()) {
 //            throw new EnigmaException("not the correct size");
 //        }
+//        _selectedRotors.clear();
         for (String element: rotors) {
             for (Rotor r: _allRotors) {
                 if (r.name().equals(element)) {
@@ -54,11 +55,11 @@ class Machine {
      *  numRotors()-1 characters in my alphabet. The first letter refers
      *  to the leftmost rotor setting (not counting the reflector).  */
     void setRotors(String setting) {
-//        if (setting.length() != numRotors()-1) {
-//            throw new EnigmaException("length not equal");
-//        }
-        for (int i = 0; i < _selectedRotors.size(); i ++) {
-            _selectedRotors.get(i).set(_alphabet.toInt(setting.charAt(i -1)));
+        if (setting.length() != numRotors()-1) {
+            throw new EnigmaException("length not equal");
+        }
+        for (int i = 1; i < numRotors(); i ++) {
+            _selectedRotors.get(i).set(_alphabet.toInt(setting.charAt(i - 1)));
         }
     }
 
@@ -72,26 +73,82 @@ class Machine {
      *  the machine. */
     int convert(int c) {
         int plugNum = _plugboard.permute(c);
-        for (int i = 0; i < _selectedRotors.size(); i ++) {
-            //if it's the right most rotor OR the one on the right is at a notch AND it rotates, then rotate
-            //if it's NOT at the right most rotar, then you advance the right one, and SKIP i
-            Rotor r = _selectedRotors.get(i);
-            if (r.rotates() && (i == _selectedRotors.size()-1
-                    || _selectedRotors.get(i+1).atNotch())){
-                r.advance();
+//        Boolean [] isRotate = new Boolean[numPawls()];
+
+
+//        for (int i = 0; i < _selectedRotors.size(); i ++) {
+//            //if it's the right most rotor OR the one on the right is at a notch AND it rotates, then rotate
+//            //if it's NOT at the right most rotar, then you advance the right one, and SKIP i
+//            Rotor r = _selectedRotors.get(i);
+//            if (r.rotates() && (i == _selectedRotors.size()-1
+//                    || _selectedRotors.get(i+1).atNotch())){
+//                r.advance();
+//
+//                if (i < _selectedRotors.size()-1)
+//                {
+//                    _selectedRotors.get(i+1).advance();
+//                    i ++;
+//                }
+//            }
+//
+//        }
+
+
+
+//        int num = _selectedRotors.size() - numPawls();
+//
+//        for (int i = _selectedRotors.size() - numPawls(); i < _selectedRotors.size(); i ++){
+//            if (i == _selectedRotors.size() -1){
+//                isRotate[i - num] = true;
+//            }
+//            else if (_selectedRotors.get(i + 1).atNotch()){
+//                isRotate[i - num] = true;
+//            }
+//            else if (_selectedRotors.get(i).atNotch() && _selectedRotors.get(i - 1).rotates()){
+//                isRotate[i - num] = true;
+//            }
+//        }
+//
+//        for (int i = 0; i < isRotate.length; i++){
+//            if (isRotate[i]){
+//                _selectedRotors.get(i + num).advance();
+//            }
+//        }
+        boolean[] rotateBool = new boolean[_selectedRotors.size()];
+        for (int i = 0; i < _selectedRotors.size(); i++) {
+            Rotor rot = _selectedRotors.get(i);
+//            if(rot.rotates() &&
+//                    (i == _selectedRotors.size() - 1 || _selectedRotors.get(i+1).atNotch())){
+//                rotateBool[i]  = true;
+//                if(i != _selectedRotors.size()-1){
+//                    rotateBool[i+1] = true;
+//                    i += 1;
+//                }
+//            }
+            if (rot.rotates()){
+                if (i == _selectedRotors.size() -1){
+                    rotateBool[i] = true;
+                }
+                else if (_selectedRotors.get(i + 1).atNotch()){
+                    rotateBool[i] = true;
+                }
+                else if (rot.atNotch() && _selectedRotors.get(i - 1).rotates()){
+                    rotateBool[i] = true;
+                }
             }
-            if (i < _selectedRotors.size()-1){
-                _selectedRotors.get(i+1).advance();
-                i ++;
+
+        }
+        for(int i = 0; i < rotateBool.length; i ++){
+            if (rotateBool[i]){
+                _selectedRotors.get(i).advance();
             }
         }
-
         for (int i = _selectedRotors.size() - 1; i >= 0; i--) {
-            _selectedRotors.get(i).convertForward(plugNum);
+            plugNum = _selectedRotors.get(i).convertForward(plugNum);
         }
 
         for (int i = 1; i < _selectedRotors.size() - 1; i ++) {
-            _selectedRotors.get(i).convertBackward(plugNum);
+            plugNum = _selectedRotors.get(i).convertBackward(plugNum);
         }
 
     return _plugboard.permute(plugNum);
