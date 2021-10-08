@@ -38,6 +38,7 @@ class Machine {
      *  Initially, all rotors are set at their 0 setting. */
     void insertRotors(String[] rotors)
     {
+        _selectedRotors.clear();
 //        if (_numRotors != _allRotors.size()) {
 //            throw new EnigmaException("not the correct size");
 //        }
@@ -147,7 +148,7 @@ class Machine {
             plugNum = _selectedRotors.get(i).convertForward(plugNum);
         }
 
-        for (int i = 1; i < _selectedRotors.size() - 1; i ++) {
+        for (int i = 1; i < _selectedRotors.size(); i ++) {
             plugNum = _selectedRotors.get(i).convertBackward(plugNum);
         }
 
