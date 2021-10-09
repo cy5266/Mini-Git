@@ -1,5 +1,7 @@
 package enigma;
 
+import java.util.ArrayList;
+
 /** An alphabet of encodable characters.  Provides a mapping from characters
  *  to and from indices into the alphabet.
  *  @author Cindy Yang
@@ -9,6 +11,14 @@ class Alphabet {
     /** A new alphabet containing CHARS. The K-th character has index
      *  K (numbering from 0). No character may be duplicated. */
     Alphabet(String chars) {
+//        for (int i = 0; i < chars.length(); i++){
+//            if (testAlphabet.contains(chars.charAt(i))){
+//                throw new EnigmaException("duplicate characters in alphabet");
+//            }
+//            else{
+//                testAlphabet.add(chars.charAt(i));
+//            }
+//        }
         _chars = chars;
     }
 
@@ -45,4 +55,5 @@ class Alphabet {
     }
 
     private String _chars;
+    ArrayList<Character> testAlphabet;
 }

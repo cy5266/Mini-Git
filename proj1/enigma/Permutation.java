@@ -24,7 +24,15 @@ class Permutation {
 //            _cycles[i] = _cycles[i].replace("(", "");
 //        }
         int i = 0;
+
+//        for (int c = 0 ; c < cycles.length(); c ++){
+//            if (!_alphabet.contains(cycles.charAt(c))){
+//                throw new EnigmaException("character not in alphabet");
+//            }
+//        }
+
         for (String s: _cycles){
+
             if (s.length() <= 1){
                 _cycles[i] = "";
             }
@@ -33,6 +41,8 @@ class Permutation {
             }
             i += 1;
         }
+
+
 
 
 //        for (int i = 0; i < _alphabet.; i++)
