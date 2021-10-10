@@ -82,6 +82,9 @@ class Machine {
      *  the machine. */
     int convert(int c) {
 
+        if (_plugboard == null){
+            throw new EnigmaException("nothing in plugboard");
+        }
         int plugNum = _plugboard.permute(c);
 
         boolean[] rotateBool = new boolean[_selectedRotors.size()];
