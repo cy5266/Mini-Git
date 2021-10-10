@@ -67,6 +67,9 @@ class Machine {
             }
         }
         for (int i = 1; i < numRotors(); i ++) {
+            if (!_alphabet.contains(setting.charAt(i-1))){
+                throw new EnigmaException("setting character not in alphabet");
+            }
             _selectedRotors.get(i).set(_alphabet.toInt(setting.charAt(i - 1)));
         }
     }
