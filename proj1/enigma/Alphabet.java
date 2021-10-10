@@ -45,6 +45,9 @@ class Alphabet {
     /** Returns character number INDEX in the alphabet, where
      *  0 <= INDEX < size(). */
     char toChar(int index) {
+        if (index < 0){
+            throw new EnigmaException("index too big");
+        }
         return (_chars.charAt(index));
     }
 
