@@ -40,17 +40,18 @@ class Machine {
      *  Initially, all rotors are set at their 0 setting. */
     void insertRotors(String[] rotors)
     {
+
         _selectedRotors.clear();
-//        if (_numRotors != _allRotors.size()) {
-//            throw new EnigmaException("not the correct size");
-//        }
-//        _selectedRotors.clear();
         for (String element: rotors) {
             for (Rotor r: _allRotors) {
                 if (r.name().equals(element)) {
                     _selectedRotors.add(r);
                 }
             }
+        }
+//        _selectedRotors.clear();
+        if (rotors.length != _selectedRotors.size()) {
+            throw new EnigmaException("not the correct size");
         }
     }
 
@@ -67,9 +68,6 @@ class Machine {
             }
         }
         for (int i = 1; i < numRotors(); i ++) {
-            if (!_alphabet.contains(setting.charAt(i-1))){
-                throw new EnigmaException("setting character not in alphabet");
-            }
             _selectedRotors.get(i).set(_alphabet.toInt(setting.charAt(i - 1)));
         }
     }
