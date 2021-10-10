@@ -25,11 +25,13 @@ class Permutation {
 //        }
         int i = 0;
 
-//        for (int c = 0 ; c < cycles.length(); c ++){
-//            if (!_alphabet.contains(cycles.charAt(c))){
-//                throw new EnigmaException("character not in alphabet");
-//            }
-//        }
+        String testcycles = cycles.replace("(", "");
+        testcycles = testcycles.replace(")", "");
+        for (int c = 0 ; c < testcycles.length(); c ++){
+            if (!_alphabet.contains(testcycles.charAt(c))){
+                throw new EnigmaException("character not in alphabet");
+            }
+        }
 
         //hello
         //test
