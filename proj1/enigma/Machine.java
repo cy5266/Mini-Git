@@ -1,5 +1,7 @@
 package enigma;
 
+import jdk.jshell.spi.ExecutionControl;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +62,9 @@ class Machine {
             throw new EnigmaException("length not equal");
         }
         for (int i = 1; i < numRotors(); i ++) {
+            if (!_alphabet.contains(setting.charAt(i))){
+                throw new EnigmaException("setting character not in alphabet");
+            }
             _selectedRotors.get(i).set(_alphabet.toInt(setting.charAt(i - 1)));
         }
     }
