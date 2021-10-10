@@ -51,8 +51,7 @@ class Rotor {
 
     /** Set setting() to POSN.  */
     void set(int posn) {
-        if (posn > alphabet().size())
-        {
+        if (posn > alphabet().size()) {
             throw new EnigmaException("");
         }
         _setting = posn;
@@ -67,27 +66,44 @@ class Rotor {
      *  according to my permutation. */
     int convertForward(int p) {
         int updateSetting = _permutation.wrap(_setting + p);
-        return _permutation.wrap(_permutation.permute(updateSetting) - _setting);
+        return _permutation.wrap(
+                _permutation.permute(updateSetting) - _setting);
     }
 
     /** Return the conversion of E (an integer in the range 0..size()-1)
      *  according to the inverse of my permutation. */
     int convertBackward(int e) {
         int updateSetting = _permutation.wrap(_setting + e);
-        return _permutation.wrap(_permutation.invert(updateSetting) - _setting);
+        return _permutation.wrap(
+                _permutation.invert(updateSetting) - _setting);
     }
 
     /** Returns true iff I am positioned to allow the rotor to my left
      *  to advance. */
-    boolean atNotch()
-    {
+    boolean atNotch() {
         return false;
     }
 
     /** Advance me one position, if possible. By default, does nothing. */
-    void advance()
-    {
+    void advance() {
 
+    }
+
+    /** Returns setting. */
+    Integer getSetting() {
+        return _setting;
+    }
+
+    /** Returns setting incremented.
+     * @param i increment amount */
+    Integer setSetting(int i) {
+        return _setting + i;
+    }
+
+    /** Increments setting.
+     * @param i increment amount */
+    void setSetting2(int i) {
+        _setting += i;
     }
 
     @Override
@@ -101,8 +117,6 @@ class Rotor {
     /** The permutation implemented by this rotor in its 0 position. */
     private Permutation _permutation;
 
-    public Integer _setting;
-
-    // FIXME: ADDITIONAL FIELDS HERE, AS NEEDED
-
+    /** setting. */
+    private Integer _setting;
 }

@@ -132,28 +132,26 @@ public final class Main {
 
             HashMap<String, Boolean> contains = new HashMap<>();
 
-            while(_config.hasNext("\\(.+\\)")){
+            while(_config.hasNext("\\(.+\\)")) {
                 cycles += _config.next();
             }
             Permutation perm = new Permutation(cycles, _alphabet);
 
-            if (contains.containsKey(type)){
+            if (contains.containsKey(type)) {
                 throw error("duplicate rotor");
             }
             else{
                 contains.put(type, true);
             }
-            if (type.equals("M")){
+            if (type.equals("M")) {
                 return new MovingRotor(name, perm, notches);//at moving rotor
             }
 
-            else if (type.equals("R")){
+            else if (type.equals("R")) {
                 return new Reflector(name, perm);
             }
 
-//            else if (type.equals("N")){
-                return new FixedRotor(name, perm);
-//            }
+            return new FixedRotor(name, perm);
         } catch (NoSuchElementException excp) {
             throw error("bad rotor description");
         }

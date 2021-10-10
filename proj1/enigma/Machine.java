@@ -1,13 +1,7 @@
 package enigma;
 
-import jdk.jshell.spi.ExecutionControl;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Collection;
-
-import static enigma.EnigmaException.*;
 
 /** Class that represents a complete enigma machine.
  *  @author Cindy Yang
@@ -38,9 +32,7 @@ class Machine {
     /** Set my rotor slots to the rotors named ROTORS from my set of
      *  available rotors (ROTORS[0] names the reflector).
      *  Initially, all rotors are set at their 0 setting. */
-    void insertRotors(String[] rotors)
-    {
-
+    void insertRotors(String[] rotors) {
         _selectedRotors.clear();
         for (String element: rotors) {
             for (Rotor r: _allRotors) {
@@ -59,15 +51,15 @@ class Machine {
      *  numRotors()-1 characters in my alphabet. The first letter refers
      *  to the leftmost rotor setting (not counting the reflector).  */
     void setRotors(String setting) {
-        if (setting.length() != numRotors()-1) {
+        if (setting.length() != numRotors() - 1) {
             throw new EnigmaException("length not equal");
         }
-        for (int i = 0; i < setting.length(); i ++){
-            if (!_alphabet.contains(setting.charAt(i))){
+        for (int i = 0; i < setting.length(); i++) {
+            if (!_alphabet.contains(setting.charAt(i))) {
                 throw new EnigmaException("setting character not in alphabet");
             }
         }
-        for (int i = 1; i < numRotors(); i ++) {
+        for (int i = 1; i < numRotors(); i++) {
             _selectedRotors.get(i).set(_alphabet.toInt(setting.charAt(i - 1)));
         }
     }
@@ -82,7 +74,7 @@ class Machine {
      *  the machine. */
     int convert(int c) {
 
-        if (_plugboard == null){
+        if (_plugboard == null) {
             throw new EnigmaException("nothing in plugboard");
         }
         int plugNum = _plugboard.permute(c);
@@ -91,21 +83,20 @@ class Machine {
         for (int i = 0; i < _selectedRotors.size(); i++) {
             Rotor rot = _selectedRotors.get(i);
 
-            if (rot.rotates()){
-                if (i == _selectedRotors.size() -1){
+            if (rot.rotates()) {
+                if (i == _selectedRotors.size() - 1) {
                     rotateBool[i] = true;
-                }
-                else if (_selectedRotors.get(i + 1).atNotch()){
+                } else if (_selectedRotors.get(i + 1).atNotch()) {
                     rotateBool[i] = true;
-                }
-                else if (rot.atNotch() && _selectedRotors.get(i - 1).rotates()){
+                } else if (rot.atNotch()
+                        && _selectedRotors.get(i - 1).rotates()) {
                     rotateBool[i] = true;
                 }
             }
 
         }
-        for(int i = 0; i < rotateBool.length; i ++){
-            if (rotateBool[i]){
+        for (int i = 0; i < rotateBool.length; i++) {
+            if (rotateBool[i]) {
                 _selectedRotors.get(i).advance();
             }
         }
@@ -113,40 +104,47 @@ class Machine {
             plugNum = _selectedRotors.get(i).convertForward(plugNum);
         }
 
-        for (int i = 1; i < _selectedRotors.size(); i ++) {
+        for (int i = 1; i < _selectedRotors.size(); i++) {
             plugNum = _selectedRotors.get(i).convertBackward(plugNum);
         }
 
-    return _plugboard.permute(plugNum);
+        return _plugboard.permute(plugNum);
     }
 
     /** Returns the encoding/decoding of MSG, updating the state of
      *  the rotors accordingly. */
     String convert(String msg) {
         String finalStr = "";
-       char[] chars = msg.toCharArray();
-       for (char c: chars){
-           int passIn = _alphabet.toInt(c);
-           char newChar = _alphabet.toChar(convert(passIn));
-           finalStr += newChar;
-       }
+        char[] chars = msg.toCharArray();
+        for (char c: chars) {
+            int passIn = _alphabet.toInt(c);
+            char newChar = _alphabet.toChar(convert(passIn));
+            finalStr += newChar;
+        }
         return finalStr;
     }
 
-    public ArrayList<Rotor> get_selectedRotors(){
+    /** Returns my selected rotors. */
+    public ArrayList<Rotor> getSelectedRotors() {
         return _selectedRotors;
     }
 
-    public Collection<Rotor> getallRotors(){
+    /** Returns all rotors. */
+    public Collection<Rotor> getallRotors() {
         return _allRotors;
     }
 
     /** Common alphabet of my rotors. */
     private final Alphabet _alphabet;
+    /** Number of Rotors. */
     private int _numRotors;
+    /** Number of pawls. */
     private int _pawls;
+    /** Collection of all rotors. */
     private Collection<Rotor> _allRotors;
-    ArrayList<Rotor> _selectedRotors = new ArrayList<Rotor>();
+    /** Collection of selected Rotors. */
+    private ArrayList<Rotor> _selectedRotors = new ArrayList<Rotor>();
+    /** Plugboard. */
     private Permutation _plugboard;
 
 }
