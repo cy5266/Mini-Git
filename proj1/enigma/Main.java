@@ -80,19 +80,15 @@ public final class Main {
     private void process() {
         Machine M = readConfig();
 
-        while (_input.hasNextLine()){
+        while (_input.hasNextLine()) {
             String nextLine = _input.nextLine();
-            if (nextLine.length() == 0){
+            if (nextLine.length() == 0) {
                 printMessageLine(" ");
-            }
-            else if (nextLine.charAt(0) == '*' && nextLine.length() > 1){
+            } else if (nextLine.charAt(0) == '*' && nextLine.length() > 1) {
                 setUp(M, nextLine);
-            }
-            else{
-
+            } else {
                 String settingString = nextLine.replaceAll(" ", "");
                 printMessageLine(M.convert(settingString));
-
             }
         }
     }
@@ -102,15 +98,15 @@ public final class Main {
     private Machine readConfig() {
         try {
             String alphabet = _config.next();
-            _alphabet= new Alphabet(alphabet);
+            _alphabet = new Alphabet(alphabet);
             int numRotors = _config.nextInt();
             int numPawls = _config.nextInt();
-            ArrayList<Rotor> _allRotors = new ArrayList<>();
+            ArrayList<Rotor> allRotors = new ArrayList<>();
 
-            while (_config.hasNext()){
-                _allRotors.add(readRotor());
+            while (_config.hasNext()) {
+                allRotors.add(readRotor());
             }
-            return new Machine(_alphabet, numRotors, numPawls, _allRotors);
+            return new Machine(_alphabet, numRotors, numPawls, allRotors);
         } catch (NoSuchElementException excp) {
             throw error("configuration file truncated");
         }
@@ -121,7 +117,7 @@ public final class Main {
         try {
             String name = _config.next();
             String typeandnotches = _config.next();
-            String type = typeandnotches.substring(0,1);
+            String type = typeandnotches.substring(0, 1);
             String notches = "";
 
             if (type.equals("M")) {
@@ -132,22 +128,19 @@ public final class Main {
 
             HashMap<String, Boolean> contains = new HashMap<>();
 
-            while(_config.hasNext("\\(.+\\)")) {
+            while (_config.hasNext("\\(.+\\)")) {
                 cycles += _config.next();
             }
             Permutation perm = new Permutation(cycles, _alphabet);
 
             if (contains.containsKey(type)) {
                 throw error("duplicate rotor");
-            }
-            else{
+            } else {
                 contains.put(type, true);
             }
             if (type.equals("M")) {
-                return new MovingRotor(name, perm, notches);//at moving rotor
-            }
-
-            else if (type.equals("R")) {
+                return new MovingRotor(name, perm, notches);
+            } else if (type.equals("R")) {
                 return new Reflector(name, perm);
             }
 
@@ -161,13 +154,13 @@ public final class Main {
      *  which must have the format specified in the assignment. */
     private void setUp(Machine M, String settings) {
         int numRotors = M.numRotors();
-        String[] _newRotors = new String[numRotors];
+        String[] newRotors = new String[numRotors];
         int i = 0;
 
         String plugs = "";
         String setting = "";
 
-        if (settings.charAt(0) != '*'){
+        if (settings.charAt(0) != '*') {
             throw new EnigmaException("not a valid setting");
         }
         Scanner testScan = new Scanner(settings);
@@ -175,30 +168,25 @@ public final class Main {
             testScan.next();
         }
 
-        while (testScan.hasNext()){
+        while (testScan.hasNext()) {
             String next = testScan.next();
 
-            for (Rotor r: M.getallRotors()){
-                if (r.name().equals(next)){
-                    _newRotors[i] = next;
-                    i ++;
-                }
-                else if (next.charAt(0) != '(')
-                {
+            for (Rotor r: M.getallRotors()) {
+                if (r.name().equals(next)) {
+                    newRotors[i] = next;
+                    i++;
+                } else if (next.charAt(0) != '(') {
                     setting = next;
-                }
-                else if (next.charAt(0) == '(')
-                {
+                } else if (next.charAt(0) == '(') {
                     plugs += next + " ";
-                }
-                else{
+                } else {
                     throw new EnigmaException("not a rotor, plug, or setting");
                 }
             }
 
         }
 
-        M.insertRotors(_newRotors);
+        M.insertRotors(newRotors);
         M.setRotors(setting);
         M.setPlugboard(new Permutation(plugs, _alphabet));
 
@@ -207,15 +195,13 @@ public final class Main {
     /** Print MSG in groups of five (except that the last group may
      *  have fewer letters). */
     private void printMessageLine(String msg) {
-        for (int i = 0; i < msg.length(); i += 5){
-            if (i + 5 > msg.length() || i + 5 == msg.length()){
-                _output.println(msg.substring(i,msg.length()));
-            }
-            else{
+        for (int i = 0; i < msg.length(); i += 5) {
+            if (i + 5 > msg.length() || i + 5 == msg.length()) {
+                _output.println(msg.substring(i, msg.length()));
+            } else {
                 _output.print(msg.substring(i, i + 5) + " ");
             }
         }
-        // FIXME
     }
 
     /** Alphabet used in this machine. */
@@ -229,6 +215,4 @@ public final class Main {
 
     /** File for encoded/decoded messages. */
     private PrintStream _output;
-
-    private HashMap<String, Rotor> hashRotor =  new HashMap<>();
 }

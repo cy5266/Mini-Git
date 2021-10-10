@@ -5,8 +5,7 @@ import static enigma.EnigmaException.*;
 /** Class that represents a rotor that has no ratchet and does not advance.
  *  @author Cindy Yang
  */
-class FixedRotor extends Rotor
-{
+class FixedRotor extends Rotor {
 
     /** A non-moving rotor named NAME whose permutation at the 0 setting
      * is given by PERM. */
