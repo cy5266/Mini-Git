@@ -61,10 +61,12 @@ class Machine {
         if (setting.length() != numRotors()-1) {
             throw new EnigmaException("length not equal");
         }
-        for (int i = 1; i < numRotors(); i ++) {
+        for (int i = 0; i < setting.length(); i ++){
             if (!_alphabet.contains(setting.charAt(i))){
                 throw new EnigmaException("setting character not in alphabet");
             }
+        }
+        for (int i = 1; i < numRotors(); i ++) {
             _selectedRotors.get(i).set(_alphabet.toInt(setting.charAt(i - 1)));
         }
     }
