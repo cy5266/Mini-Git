@@ -80,26 +80,6 @@ class Permutation {
      *  in ALPHABET, and converting the result to a character of ALPHABET. */
     char permute(char p)
     {
-//        for (String loop: _cycles)
-//        {
-////            int temp = _alphabet.toInt(p);
-////            System.out.println(temp);
-//            if (loop.indexOf(p) != -1 )
-//            {
-//
-////                int index = loop.indexOf(p) + 1;
-////
-////                if (index < 0)
-////                {
-////                    index = index + loop.length();
-////                }
-////                return loop.charAt(wrap(index));
-//
-//                return loop.charAt((loop.indexOf((p) + 1) % loop.length()));
-//            }
-//        }
-//        return p;
-
 
         for (String loop: _cycles)
         {
@@ -107,8 +87,13 @@ class Permutation {
             {
                 return loop.charAt((loop.indexOf(p) + 1) % loop.length());
             }
+
         }
-        return p;
+        if (_alphabet.contains(p)){
+            return p;
+        }
+//        return p; //if not in loop but in alphabet
+
 
 
 //        for (String s: _cycles){
@@ -121,7 +106,7 @@ class Permutation {
 //                }
 //            }
 //        }
-//        throw error("rip");
+        throw new EnigmaException("letter not in alphabet");
     }
 
     /** Return the result of applying the inverse of this permutation to C. */

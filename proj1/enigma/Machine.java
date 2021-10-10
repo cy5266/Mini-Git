@@ -49,7 +49,7 @@ class Machine {
                 }
             }
         }
-//        _selectedRotors.clear();
+
         if (rotors.length != _selectedRotors.size()) {
             throw new EnigmaException("not the correct size");
         }
@@ -81,59 +81,13 @@ class Machine {
      *  index in the range 0..alphabet size - 1), after first advancing
      *  the machine. */
     int convert(int c) {
+
         int plugNum = _plugboard.permute(c);
-//        Boolean [] isRotate = new Boolean[numPawls()];
 
-
-//        for (int i = 0; i < _selectedRotors.size(); i ++) {
-//            //if it's the right most rotor OR the one on the right is at a notch AND it rotates, then rotate
-//            //if it's NOT at the right most rotar, then you advance the right one, and SKIP i
-//            Rotor r = _selectedRotors.get(i);
-//            if (r.rotates() && (i == _selectedRotors.size()-1
-//                    || _selectedRotors.get(i+1).atNotch())){
-//                r.advance();
-//
-//                if (i < _selectedRotors.size()-1)
-//                {
-//                    _selectedRotors.get(i+1).advance();
-//                    i ++;
-//                }
-//            }
-//
-//        }
-
-
-
-//        int num = _selectedRotors.size() - numPawls();
-//
-//        for (int i = _selectedRotors.size() - numPawls(); i < _selectedRotors.size(); i ++){
-//            if (i == _selectedRotors.size() -1){
-//                isRotate[i - num] = true;
-//            }
-//            else if (_selectedRotors.get(i + 1).atNotch()){
-//                isRotate[i - num] = true;
-//            }
-//            else if (_selectedRotors.get(i).atNotch() && _selectedRotors.get(i - 1).rotates()){
-//                isRotate[i - num] = true;
-//            }
-//        }
-//
-//        for (int i = 0; i < isRotate.length; i++){
-//            if (isRotate[i]){
-//                _selectedRotors.get(i + num).advance();
-//            }
-//        }
         boolean[] rotateBool = new boolean[_selectedRotors.size()];
         for (int i = 0; i < _selectedRotors.size(); i++) {
             Rotor rot = _selectedRotors.get(i);
-//            if(rot.rotates() &&
-//                    (i == _selectedRotors.size() - 1 || _selectedRotors.get(i+1).atNotch())){
-//                rotateBool[i]  = true;
-//                if(i != _selectedRotors.size()-1){
-//                    rotateBool[i+1] = true;
-//                    i += 1;
-//                }
-//            }
+
             if (rot.rotates()){
                 if (i == _selectedRotors.size() -1){
                     rotateBool[i] = true;
@@ -173,7 +127,7 @@ class Machine {
            char newChar = _alphabet.toChar(convert(passIn));
            finalStr += newChar;
        }
-        return finalStr; // FIXME
+        return finalStr;
     }
 
     public ArrayList<Rotor> get_selectedRotors(){
@@ -191,5 +145,5 @@ class Machine {
     private Collection<Rotor> _allRotors;
     ArrayList<Rotor> _selectedRotors = new ArrayList<Rotor>();
     private Permutation _plugboard;
-    // FIXME: ADDITIONAL FIELDS HERE, IF NEEDED.
+
 }
