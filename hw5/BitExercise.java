@@ -11,7 +11,9 @@ public class BitExercise {
     * should return 4, which in binary is 0b100.
     */
     public static int lastBit(int x) {
-        return 0; //TODO: Your code here
+
+        int test = x & ~x + 1;
+        return test;
     }
 
     /** Fill in the function below so that it returns 
@@ -29,6 +31,13 @@ public class BitExercise {
     * absolute(-1) should return 1.
     */
     public static int absolute(int x) {
-        return 0; //TODO: your code here
+        //ints are 32 bits
+        //Hint: A bit XOR 0 yields the same bit. A bit XOR 1 yields the flipped bit
+
+        int test = x >> 31;
+
+        int returnNum = x ^ test;
+        System.out.println(returnNum);
+        return returnNum; //TODO: your code here
     } 
 }
