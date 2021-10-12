@@ -25,7 +25,22 @@ public class Nybbles {
         if (k < 0 || k >= _n) {
             throw new IndexOutOfBoundsException();
         } else {
-            return 0; // REPLACE WITH SOLUTION
+
+            int left_shift= 0;
+
+            int increment = k / 8;
+            left_shift =  _data[increment] << ((7-k) * 4);
+            int val = left_shift >>> (28);
+//            int mask = 1111;
+//            val = val & mask;
+//            System.out.println(_data[increment]);
+
+            if (val >>> 3 == 1) {
+//                System.out.println(val);
+                val = ~(val - 1) + 1;
+//                val = ~(val * (-1)) ;
+            }
+            return val;
         }
     }
 
@@ -37,7 +52,15 @@ public class Nybbles {
         } else if (val < (-MAX_VALUE - 1) || val > MAX_VALUE) {
             throw new IllegalArgumentException();
         } else {
-            _data[0] = 0; // REPLACE WITH SOLUTION
+            int increment = k / 8;
+            int mask = 1111;
+            System.out.println(val);
+            mask = mask << (k % 8) * 4;
+//            _data[increment] = _data[increment] ___ maak
+            val = val << (k % 8) * 4;
+
+            _data[increment] = _data[increment] |  val;
+
         }
     }
 
