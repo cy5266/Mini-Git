@@ -37,7 +37,8 @@ public class BitExercise {
         int test = x >> 31;
 
         int returnNum = x ^ test;
-        System.out.println(returnNum);
-        return returnNum; //TODO: your code here
+//        System.out.println(returnNum);
+//        System.out.println(test);
+        return returnNum - test; //TODO: your code here
     } 
 }
