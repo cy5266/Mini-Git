@@ -44,10 +44,6 @@ public class Nybbles {
             throw new IllegalArgumentException();
         } else {
             int increment = k / 8;
-//            int mask = 1111;
-//            System.out.println(val);
-//            mask = mask << (k % 8) * 4;
-//            _data[increment] = _data[increment] ___ maak
             val = val << (k % 8) * 4;
 
             _data[increment] = _data[increment] |  val;

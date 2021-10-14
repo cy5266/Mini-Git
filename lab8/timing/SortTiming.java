@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SortTiming {
 
-    private static final int N_TRIALS = 50;
+    private static final int N_TRIALS = 100;
     private static final int BY = 100;
     private static final int N_REPEATS = 10;
 
