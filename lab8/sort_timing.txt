@@ -11,10 +11,10 @@ Q: For any given sorting algorithm, does increasing the array size always mean t
 A: Usually, yes. However, the time doesn't really change for the Coutning Sorter
 
 Q: How does changing nrepeats change the plot?
-A: No
+A: No, because they seem the same during the plots
 
 Q: Is your plot the exact same as your partner's plot, even with the same values of ntrials, by, and nrepeats?
-A: Yes
+A: no, because some machines might run faster than others
 
 Q: Optional: Look at the source code for BubbleSorter to WipingBubbleSorter. After looking at the plots, can you intuitively explain why WipingBubbleSorter is usually 2x as fast as BubbleSorter? (Hint: Consider the immobility of some elements when the swapping passes are single directional (i.e. only going forward), and how this "Wiping" strategy helps deal with that issue.) Can you come up with an example that shows the difference in runtime?
 A:
