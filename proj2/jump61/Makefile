@@ -28,13 +28,15 @@ JFLAGS = -g -Xlint:unchecked -Xlint:deprecation
 
 CLASSDEST = ..
 
+CPATH = "..:$(CLASSPATH):;..;$(CLASSPATH)"
+
 # All .java files in this directory.
 SRCS := $(wildcard *.java)
 
 # As a convenience, you can compile a single Java file X.java in this directory
 # with 'make X.class'
 %.class: %.java
-	javac $(JFLAGS) -cp ..:$(CLASSPATH) $<
+	javac $(JFLAGS) -cp $(CPATH) $<
 
 # First, and therefore default, target.
 default: Main.class
@@ -46,7 +48,7 @@ check: unit acceptance
 
 # Unit testing
 unit: Main.class
-	java -ea -cp ..:$(CLASSPATH) jump61.UnitTest
+	java -ea -cp $(CPATH) jump61.UnitTest
 
 # Acceptance testing
 acceptance:
