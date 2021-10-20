@@ -10,11 +10,11 @@ class ECHashStringSet implements StringSet {
 
     private ArrayList<String>[] buckets; //array of arraylists
     private int numBucketSize = 10;
-    private int numItems;
+    private int numItems = 0;
 
     public ECHashStringSet() {
 
-        numItems = 0;
+//        numItems = 0;
 //        numBucketSize = 10;
         //(ArrayList<String>[])
         buckets = (ArrayList<String>[]) new ArrayList[numBucketSize];
@@ -28,33 +28,26 @@ class ECHashStringSet implements StringSet {
     public void put(String s) {
         //if we have reached the load limit, we should resize
         // if (number of items / number of buckets) > 5
-        numItems += 1;
+
         if (s != null) {
             if (numItems / numBucketSize > 5) {
                 resize();
             }
 
-            //figure out which index i bucket to go to
-            //whichBucket
-
             int index = whichBucket(s);
-//            ArrayList<String> test = buckets[index];
-////        test = new ArrayList<String>();
-//            test = test.add(s);
+            ArrayList<String> test = buckets[index];
+            test = new ArrayList<String>();
+            test.add(s);
+            numItems += 1;
+            buckets[index] = test;
 
-//            buckets[index] = test;
+//            if (!buckets[index].contains(s)) {
+//            System.out.println(index);
+//            System.out.println(buckets.length);
+//            numItems += 1;
+//            buckets[index].add(s);
 
-//            if (buckets[index].size() != 0 && !buckets[index].contains(s)) {
-//                buckets[index].add(s);
 //            }
-//            else if (buckets[index].size() == 0) {
-//                buckets[index].add(s);
-//            }
-
-            if (!buckets[index].contains(s)) {
-                buckets[index].add(s);
-            }
-
             // get arraylist at bucket[i]
             //add s to the linkedlist
             // FIXME

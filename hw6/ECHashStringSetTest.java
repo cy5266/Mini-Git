@@ -18,6 +18,7 @@ public class ECHashStringSetTest  {
         HashSet newSet = new HashSet();
         String element = "hi";
         testSet.put(element);
+        testSet.put("54");
         newSet.add(element);
 
         assertEquals(true, testSet.contains(element));
