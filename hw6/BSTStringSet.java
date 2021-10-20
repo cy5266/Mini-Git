@@ -51,10 +51,10 @@ public class BSTStringSet implements StringSet, Iterable<String> {
         }
 
         Node temp = _root;
-
+        Node returnResult = null;
 
         while (true) {
-            Node returnResult = null;
+
             if (temp.s.compareTo(s) > 0) {
                 returnResult = temp.left;
             }
@@ -85,7 +85,6 @@ public class BSTStringSet implements StringSet, Iterable<String> {
         while (test.hasNext()) {
             finalList.add(test.next());
         }
-        System.out.println(finalList);
         return finalList;
 //        return null; // FIXME: PART A. MUST BE IN SORTED ORDER, ASCENDING
     }
