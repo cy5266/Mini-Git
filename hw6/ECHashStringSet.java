@@ -7,13 +7,13 @@ import java.util.List;
 class ECHashStringSet implements StringSet {
 
     private ArrayList<String>[] buckets; //array of arraylists
-    private int numBucketSize;
+    private int numBucketSize = 10;
     private int numItems;
 
     public ECHashStringSet() {
 
         numItems = 0;
-        numBucketSize = 10;
+//        numBucketSize = 10;
         //(ArrayList<String>[])
         buckets = (ArrayList<String>[]) new ArrayList[numBucketSize];
 
@@ -37,6 +37,7 @@ class ECHashStringSet implements StringSet {
         int index = whichBucket(s);
         ArrayList<String> test = buckets[index];
         test.add(s);
+        numItems += 1;
         buckets[index] = test;
 
         // get arraylist at bucket[i]
