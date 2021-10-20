@@ -8,7 +8,7 @@ import java.util.Stack;
  * Implementation of a BST based String Set.
  * @author
  */
-public class BSTStringSet implements StringSet, Iterable<String> {
+public class BSTStringSet implements SortedStringSet, Iterable<String> {
     /** Creates a new empty set. */
     public BSTStringSet() {
         _root = null;
