@@ -93,10 +93,13 @@ class ECHashStringSet implements StringSet {
         // take all of the elements from the hashset we already have and figure out
         // which bucket to put them in the new list
 
-        for (int i = 0; i < buckets.length; i ++) {
-            for (String element: buckets[i]) {
+        ArrayList<String>[] forN = buckets;
+        buckets = buckets2;
+
+        for (int i = 0; i < forN.length; i ++) {
+            for (String element: forN[i]) {
                 int bucketIndex = whichBucket(element);
-                buckets2[bucketIndex].add(element);
+                buckets[bucketIndex].add(element);
             }
         }
 
