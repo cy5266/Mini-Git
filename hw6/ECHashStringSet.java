@@ -85,7 +85,14 @@ class ECHashStringSet implements StringSet {
     }
 
     private int whichBucket(String s) {
-        return s.hashCode() % numBucketSize;
+        int hashCode = s.hashCode();
+        if (hashCode < 0) {
+            hashCode = (s.hashCode() & 0x7fffffff) % numBucketSize;
+        }
+        else {
+            hashCode = hashCode % numBucketSize;
+        }
+        return hashCode;
         //returns which bucket i the string should be in
         //call the default string hashcode, as in s.hashCode()
         //figure out a way to make that default hashcode wrap or fit within the range 0-numbuckets-1
