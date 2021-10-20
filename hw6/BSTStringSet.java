@@ -51,19 +51,20 @@ public class BSTStringSet implements StringSet, Iterable<String> {
         }
 
         Node temp = _root;
+        Node returnResult = temp;
 
         while (true) {
-            if (temp == null) {
-                return null;
-            }
-            else if (temp.s.compareTo(s) > 0) {
-                temp = _root.left;
+            if (temp.s.compareTo(s) > 0) {
+                returnResult = temp.left;
             }
             else if (temp.s.compareTo(s) < 0) {
-                temp = _root.right;
+                returnResult = temp.right;
             }
-            else if (temp.s.compareTo(s) == 0){
+            else if (temp.s.compareTo(s) == 0 || returnResult == null){
                 return temp;
+            }
+            else {
+                temp = returnResult;
             }
         }
 
