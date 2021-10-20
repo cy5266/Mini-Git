@@ -9,7 +9,7 @@ import java.util.List;
 class ECHashStringSet implements StringSet {
 
     private ArrayList<String>[] buckets; //array of arraylists
-    private int numBucketSize = 10;
+    private int numBucketSize = 2;
     private int numItems = 0;
 
     public ECHashStringSet() {
@@ -35,11 +35,11 @@ class ECHashStringSet implements StringSet {
             }
 
             int index = whichBucket(s);
-            ArrayList<String> test = buckets[index];
-            test = new ArrayList<String>();
-            test.add(s);
             numItems += 1;
-            buckets[index] = test;
+//            buckets[index] = test;
+            if (!buckets[index].contains(s)) {
+                buckets[index].add(s);
+            }
 
 //            if (!buckets[index].contains(s)) {
 //            System.out.println(index);
@@ -58,7 +58,7 @@ class ECHashStringSet implements StringSet {
 //        int newNumBucketSize = numBucketSize*2;
 //        ECHashStringSet buckets2 =  new ECHashStringSet();
 //        buckets2.numBucketSize = newNumBucketSize;
-//
+////
 //        for (int i = 0; i <buckets.length; i++) {
 //            for (String element: buckets[i]) {
 //                buckets2.put(element);
@@ -75,7 +75,7 @@ class ECHashStringSet implements StringSet {
 //                buckets2[bucketIndex].add(element);
 //            }
 //        }
-
+//
 //        buckets = buckets2.buckets;
 //        numBucketSize = newNumBucketSize;
         //make a new array to move everything to
@@ -84,10 +84,10 @@ class ECHashStringSet implements StringSet {
         // which bucket to put them in the new list
 
 
-        ArrayList<String>[] buckets2 =  new ArrayList[numBucketSize*2];
+        ArrayList<String>[] buckets2 =  (ArrayList<String>[]) new ArrayList[numBucketSize * 2];
 
-        for (int i = 0; i <buckets.length; i++) {
-            buckets[i] = new ArrayList<String>();
+        for (int i = 0; i <buckets2.length; i++) {
+            buckets2[i] = new ArrayList<String>();
         }
 
         // take all of the elements from the hashset we already have and figure out
@@ -110,14 +110,17 @@ class ECHashStringSet implements StringSet {
         if (s == null) {
             return false;
         }
+//        if (numItems / numBucketSize > 5) {
+//            resize();
+//        }
 
-            int index = whichBucket(s);
+        int index = whichBucket(s);
 
-            if (buckets[index] != null && buckets[index].contains(s)) {
-                return true;
-            } else {
-                return false;
-            }
+        if (buckets[index].contains(s)) {
+            return true;
+        } else {
+            return false;
+        }
         //first figure out which index i bucket s would be in
         //then get the arraylist at the bucket, and see if the arraylist contains S
 //        return false; // FIXME

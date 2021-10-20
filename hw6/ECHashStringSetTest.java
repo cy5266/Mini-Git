@@ -19,9 +19,20 @@ public class ECHashStringSetTest  {
         String element = "hi";
         testSet.put(element);
         testSet.put("54");
+        testSet.put("1");
+        testSet.put("5");
+        testSet.put("blue");
+        testSet.put("like");
+        testSet.put("test1");
+        testSet.put("test again");
+        testSet.put("test3");
+        testSet.put("hiadflkas");
+        testSet.put("cindy yang");
         newSet.add(element);
 
         assertEquals(true, testSet.contains(element));
+        assertEquals(true, testSet.contains("54"));
+        assertEquals(true, testSet.contains("cindy yang"));
         assertEquals(false, testSet.contains("blah"));
 
 
