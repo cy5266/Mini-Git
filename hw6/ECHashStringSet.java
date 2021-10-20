@@ -15,7 +15,7 @@ class ECHashStringSet implements StringSet {
         numItems = 0;
         numBucketSize = 10;
         //(ArrayList<String>[])
-        buckets =  new ArrayList[numBucketSize];
+        buckets = (ArrayList<String>[]) new ArrayList[numBucketSize];
 
         for (int i = 0; i <buckets.length; i++) {
             buckets[i] = new ArrayList<String>();
