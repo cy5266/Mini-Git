@@ -16,17 +16,69 @@ public class BSTStringSet implements StringSet, Iterable<String> {
 
     @Override
     public void put(String s) {
+
+        Node insertLoc = locate(s);
+
+        if (insertLoc.s.compareTo(s) > 0) {
+            insertLoc.left = new Node(s);
+        }
+        else {
+            insertLoc.right = new Node(s);
+        }
         // FIXME: PART A
     }
 
     @Override
     public boolean contains(String s) {
-        return false; // FIXME: PART A
+        Node result = locate(s);
+
+        if (result == null) {
+            return false;
+        }
+        else if (result.s.equals(s)) {
+            return true;
+        }
+        return false;
+        // FIXME: PART A
+    }
+
+    public Node locate(String s) {
+        if (_root == null) {
+            return null;
+        }
+
+        Node temp = _root;
+
+        while (true) {
+            if (temp == null) {
+                return null;
+            }
+            else if (temp.s.compareTo(s) > 0) {
+                temp = _root.left;
+            }
+            else if (temp.s.compareTo(s) < 0) {
+                temp = _root.right;
+            }
+            else {
+                return temp;
+            }
+        }
+
     }
 
     @Override
     public List<String> asList() {
-        return null; // FIXME: PART A. MUST BE IN SORTED ORDER, ASCENDING
+
+        ArrayList<String> finalList = new ArrayList<>();
+
+        BSTIterator test = new BSTIterator(_root);
+        //what happens if there are no elements in the tree?
+
+        while (test.hasNext()) {
+            finalList.add(test.next());
+        }
+        return finalList;
+//        return null; // FIXME: PART A. MUST BE IN SORTED ORDER, ASCENDING
     }
 
 
