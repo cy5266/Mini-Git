@@ -73,13 +73,10 @@ public class BSTStringSet implements StringSet, Iterable<String> {
 
         BSTIterator test = new BSTIterator(_root);
         //what happens if there are no elements in the tree?
-        if (_root != null) {
-            while (test.hasNext()) {
-                finalList.add(test.next());
-            }
-            return finalList;
+        while (test.hasNext()) {
+            finalList.add(test.next());
         }
-        return null;
+        return finalList;
 //        return null; // FIXME: PART A. MUST BE IN SORTED ORDER, ASCENDING
     }
 
