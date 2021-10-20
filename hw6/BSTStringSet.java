@@ -22,9 +22,9 @@ public class BSTStringSet implements StringSet, Iterable<String> {
             _root = new Node(s);
         }
         else {
-            if (insertLoc.s.compareTo(s) > 0) {
+            if (insertLoc.s.compareTo(s) > 0 && contains(s) == false) {
                 insertLoc.left = new Node(s);
-            } else {
+            } else if (insertLoc.s.compareTo(s) < 0 && contains(s) == false){
                 insertLoc.right = new Node(s);
             }
         }
