@@ -79,6 +79,7 @@ public class BSTStringSet implements StringSet, Iterable<String> {
             }
             return finalList;
         }
+        return null;
 //        return null; // FIXME: PART A. MUST BE IN SORTED ORDER, ASCENDING
     }
 
