@@ -10,7 +10,7 @@ in its scaling behavior for random strings?
 
 
 
-2a. Results for InsertInOrderSpeedTest for N = 10000:
+2a. Results for InsertInOrderSpeedTest for N = 10000: 0.01
 
 
 2b. Results for InsertInOrderSpeedTest for N = 20000:

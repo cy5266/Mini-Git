@@ -111,14 +111,13 @@ class ECHashStringSet implements StringSet {
             return false;
         }
 
-        int index = whichBucket(s);
+            int index = whichBucket(s);
 
-        if (buckets[index].contains(s)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+            if (buckets[index] != null && buckets[index].contains(s)) {
+                return true;
+            } else {
+                return false;
+            }
         //first figure out which index i bucket s would be in
         //then get the arraylist at the bucket, and see if the arraylist contains S
 //        return false; // FIXME
