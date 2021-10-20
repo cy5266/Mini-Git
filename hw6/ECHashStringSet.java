@@ -9,7 +9,7 @@ import java.util.List;
 class ECHashStringSet implements StringSet {
 
     private ArrayList<String>[] buckets; //array of arraylists
-    private int numBucketSize = 2;
+    private int numBucketSize = 10;
     private int numItems = 0;
 
     public ECHashStringSet() {
@@ -35,10 +35,11 @@ class ECHashStringSet implements StringSet {
             }
 
             int index = whichBucket(s);
-            numItems += 1;
+
 //            buckets[index] = test;
             if (!buckets[index].contains(s)) {
                 buckets[index].add(s);
+                numItems += 1;
             }
 
 //            if (!buckets[index].contains(s)) {
@@ -96,6 +97,8 @@ class ECHashStringSet implements StringSet {
         ArrayList<String>[] forN = buckets;
         buckets = buckets2;
 
+        numBucketSize = numBucketSize * 2;
+
         for (int i = 0; i < forN.length; i ++) {
             for (String element: forN[i]) {
                 int bucketIndex = whichBucket(element);
@@ -103,8 +106,7 @@ class ECHashStringSet implements StringSet {
             }
         }
 
-        buckets = buckets2;
-        numBucketSize = numBucketSize * 2;
+
     }
 
     @Override
