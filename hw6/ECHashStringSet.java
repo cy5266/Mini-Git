@@ -36,6 +36,7 @@ class ECHashStringSet implements StringSet {
 
         int index = whichBucket(s);
         ArrayList<String> test = buckets[index];
+        test = new ArrayList<String>();
         test.add(s);
         numItems += 1;
         buckets[index] = test;
