@@ -18,12 +18,12 @@ public class BSTStringSet implements StringSet, Iterable<String> {
     public void put(String s) {
 
         Node insertLoc = locate(s);
-
-        if (insertLoc.s.compareTo(s) > 0) {
-            insertLoc.left = new Node(s);
-        }
-        else {
-            insertLoc.right = new Node(s);
+        if (insertLoc != null) {
+            if (insertLoc.s.compareTo(s) > 0) {
+                insertLoc.left = new Node(s);
+            } else {
+                insertLoc.right = new Node(s);
+            }
         }
         // FIXME: PART A
     }
@@ -73,11 +73,15 @@ public class BSTStringSet implements StringSet, Iterable<String> {
 
         BSTIterator test = new BSTIterator(_root);
         //what happens if there are no elements in the tree?
-
-        while (test.hasNext()) {
-            finalList.add(test.next());
+        if (_root != null) {
+            while (test.hasNext()) {
+                finalList.add(test.next());
+            }
+            return finalList;
         }
-        return finalList;
+        else {
+            return null;
+        }
 //        return null; // FIXME: PART A. MUST BE IN SORTED ORDER, ASCENDING
     }
 
