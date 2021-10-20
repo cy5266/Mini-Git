@@ -18,13 +18,13 @@ public class BSTStringSet implements StringSet, Iterable<String> {
     public void put(String s) {
 
         Node insertLoc = locate(s);
-        if (insertLoc != null) {
+//        if (insertLoc != null) {
             if (insertLoc.s.compareTo(s) > 0) {
                 insertLoc.left = new Node(s);
             } else {
                 insertLoc.right = new Node(s);
             }
-        }
+//        }
         // FIXME: PART A
     }
 
@@ -78,9 +78,6 @@ public class BSTStringSet implements StringSet, Iterable<String> {
                 finalList.add(test.next());
             }
             return finalList;
-        }
-        else {
-            return null;
         }
 //        return null; // FIXME: PART A. MUST BE IN SORTED ORDER, ASCENDING
     }
