@@ -18,7 +18,7 @@ public class BSTStringSet implements StringSet, Iterable<String> {
     public void put(String s) {
 
         Node insertLoc = locate(s);
-        if (!insertLoc.equals(null)) {
+        if (insertLoc != null) {
             if (insertLoc.s.compareTo(s) > 0) {
                 insertLoc.left = new Node(s);
             } else {
@@ -32,7 +32,7 @@ public class BSTStringSet implements StringSet, Iterable<String> {
     public boolean contains(String s) {
         Node result = locate(s);
 
-        if (result.equals(null)) {
+        if (result == null) {
             return false;
         }
         else if (result.s.equals(s)) {
@@ -43,14 +43,14 @@ public class BSTStringSet implements StringSet, Iterable<String> {
     }
 
     public Node locate(String s) {
-        if (_root.equals(null)) {
+        if (_root == null) {
             return null;
         }
 
         Node temp = _root;
 
         while (true) {
-            if (temp.equals( null)) {
+            if (temp == null) {
                 return null;
             }
             else if (temp.s.compareTo(s) > 0) {
