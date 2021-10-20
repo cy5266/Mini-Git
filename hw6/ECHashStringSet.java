@@ -1,3 +1,5 @@
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,27 +28,69 @@ class ECHashStringSet implements StringSet {
     public void put(String s) {
         //if we have reached the load limit, we should resize
         // if (number of items / number of buckets) > 5
-
-        if (numItems / numBucketSize > 5) {
-            resize();
-        }
-
-        //figure out which index i bucket to go to
-        //whichBucket
-
-        int index = whichBucket(s);
-        ArrayList<String> test = buckets[index];
-        test = new ArrayList<String>();
-        test.add(s);
         numItems += 1;
-        buckets[index] = test;
+        if (s != null) {
+            if (numItems / numBucketSize > 5) {
+                resize();
+            }
 
-        // get arraylist at bucket[i]
-        //add s to the linkedlist
-        // FIXME
+            //figure out which index i bucket to go to
+            //whichBucket
+
+            int index = whichBucket(s);
+//            ArrayList<String> test = buckets[index];
+////        test = new ArrayList<String>();
+//            test = test.add(s);
+
+//            buckets[index] = test;
+
+//            if (buckets[index].size() != 0 && !buckets[index].contains(s)) {
+//                buckets[index].add(s);
+//            }
+//            else if (buckets[index].size() == 0) {
+//                buckets[index].add(s);
+//            }
+
+            if (!buckets[index].contains(s)) {
+                buckets[index].add(s);
+            }
+
+            // get arraylist at bucket[i]
+            //add s to the linkedlist
+            // FIXME
+        }
     }
 
     private void resize() {
+//        int newNumBucketSize = numBucketSize*2;
+//        ECHashStringSet buckets2 =  new ECHashStringSet();
+//        buckets2.numBucketSize = newNumBucketSize;
+//
+//        for (int i = 0; i <buckets.length; i++) {
+//            for (String element: buckets[i]) {
+//                buckets2.put(element);
+//            }
+////            buckets[i] = new ArrayList<String>();
+//        }
+
+        // take all of the elements from the hashset we already have and figure out
+        // which bucket to put them in the new list
+//
+//        for (int i = 0; i < buckets.length; i ++) {
+//            for (String element: buckets[i]) {
+//                int bucketIndex = whichBucket(element);
+//                buckets2[bucketIndex].add(element);
+//            }
+//        }
+
+//        buckets = buckets2.buckets;
+//        numBucketSize = newNumBucketSize;
+        //make a new array to move everything to
+        // fill the array with arraylists
+        // take all of the elements from the hashset we already have and figure out
+        // which bucket to put them in the new list
+
+
         ArrayList<String>[] buckets2 =  new ArrayList[numBucketSize*2];
 
         for (int i = 0; i <buckets.length; i++) {
@@ -64,14 +108,15 @@ class ECHashStringSet implements StringSet {
         }
 
         buckets = buckets2;
-        //make a new array to move everything to
-        // fill the array with arraylists
-        // take all of the elements from the hashset we already have and figure out
-        // which bucket to put them in the new list
+        numBucketSize = numBucketSize * 2;
     }
 
     @Override
     public boolean contains(String s) {
+
+        if (s == null) {
+            return false;
+        }
 
         int index = whichBucket(s);
 
@@ -87,20 +132,32 @@ class ECHashStringSet implements StringSet {
     }
 
     private int whichBucket(String s) {
-        int hashCode = s.hashCode();
-        if (hashCode < 0) {
-            hashCode = (s.hashCode() & 0x7fffffff) % numBucketSize;
-        }
-        else {
-            hashCode = hashCode % numBucketSize;
-        }
-        return hashCode;
+//        int hashCode = s.hashCode();
+//        if (hashCode < 0) {
+//            hashCode = (s.hashCode() & 0x7fffffff) % numBucketSize;
+//        }
+//        else {
+//            hashCode = hashCode % numBucketSize;
+//        }
+//        s.hashCode() % numBucketSize;
+//
+        return (s.hashCode() & 0x7fffffff) % numBucketSize;
         //returns which bucket i the string should be in
         //call the default string hashcode, as in s.hashCode()
         //figure out a way to make that default hashcode wrap or fit within the range 0-numbuckets-1
     }
     @Override
     public List<String> asList() {
-        return null; // FIXME
+
+        ArrayList<String> asList = new ArrayList<String>();
+
+        for (int i = 0; i < buckets.length; i ++) {
+            if (buckets[i] != null) {
+                for (String element: buckets[i]) {
+                    asList.add(element);
+                }
+            }
+        }
+        return asList; // FIXME
     }
 }

@@ -22,6 +22,5 @@ public class BSTStringSetTest  {
         assertEquals(test.contains("1"), true);
         assertEquals(test.contains("5"), true);
         assertEquals(test.contains("7"), false);
-        System.out.println(test.asList());
     }
 }

@@ -1,7 +1,7 @@
-1a. Results for InsertRandomSpeedTest for N = 1000000:
+1a. Results for InsertRandomSpeedTest for N = 1000000: 0.40 sec
 
 
-1b. Results for InsertRandomSpeedTest for N = 2000000:
+1b. Results for InsertRandomSpeedTest for N = 2000000: 0.94 sec
 
 
 1c. Does your ECHashStringSet look roughly linear or roughly quadratic
