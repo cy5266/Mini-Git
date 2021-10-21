@@ -118,20 +118,20 @@ public class ArrayHeap<T> {
     /** Returns the index of the left child of the node at i. */
     private int getLeftOf(int i) {
         // TODO
-        return 0;
+        return 2*i;
     }
 
     /** Returns the index of the right child of the node at i. */
     private int getRightOf(int i) {
         // TODO
-        return 0;
+        return 2*i + 1;
     }
 
     /** Returns the index of the node that is the parent of the
      *  node at i. */
     private int getParentOf(int i) {
         // TODO
-        return 0;
+        return i/2;
     }
 
     /** Returns the index of the node with smaller priority. If one
@@ -139,7 +139,18 @@ public class ArrayHeap<T> {
      * Precondition: at least one of the nodes is not null. */
     private int min(int index1, int index2) {
         // TODO
-        return 0;
+        if (getNode(index1) == null) {
+            return index2;
+        }
+        else if (getNode(index2) == null) {
+            return index2;
+        }
+        if (getNode(index1)._priority < getNode(index2)._priority) {
+            return index1;
+        }
+        else {
+            return index2;
+        }
     }
 
     /** Returns the item with the smallest priority value, but does
@@ -147,26 +158,58 @@ public class ArrayHeap<T> {
      * priority value, returns any of them. Returns null if heap is
      * empty. */
     public T peek() {
-        // TODO
-        return null;
+        if (getNode(1) == null) {
+            return null;
+        }
+        return getNode(1)._item;
     }
 
     /** Bubbles up the node currently at the given index until no longer
      *  needed. */
     private void bubbleUp(int index) {
+
+        if (getParentOf(index) == 0) {
+            return;
+        }
+        if (getNode(index)._priority > getNode(getParentOf(index))._priority) {
+            return;
+        }
+        else {
+            swap(index, getParentOf(index));
+            bubbleUp(getParentOf(index));
+        }
         // TODO
     }
 
     /** Bubbles down the node currently at the given index until no longer
      *  needed. */
     private void bubbleDown(int index) {
+
+        int min  = min(getLeftOf(index), getRightOf(index));
+        if (getNode(min) == null) {
+            return;
+        }
+        else if (getNode(index)._priority <= getNode(getLeftOf(index))._priority) {
+            return;
+        }
+        else if (getNode(index)._priority > getNode(min)._priority) {
+            swap(index, min);
+            bubbleDown(min);
+        }
         // TODO
+    }
+
+    public ArrayHeap(ArrayList<Node> contents) {
+        this.contents = contents;
     }
 
     /** Inserts an item with the given priority value. Assume that item is
      * not already in the heap. Same as enqueue, or offer. */
     public void insert(T item, double priority) {
         // TODO
+        Node newNode = new Node(item, priority);
+        setNode(size() + 1, newNode);
+        bubbleUp(size());
     }
 
     /** Returns the element with the smallest priority value, and removes
@@ -175,7 +218,18 @@ public class ArrayHeap<T> {
      * dequeue, or poll. */
     public T removeMin() {
         // TODO
-        return null;
+
+        if (size() == 0) {
+            return null;
+        }
+
+        swap(1, size());
+
+        T lowestPriority = removeNode(size()).item();
+//
+//        removeNode(size()).item();
+        bubbleDown(1);
+        return lowestPriority;
     }
 
     /** Changes the node in this heap with the given item to have the given
@@ -183,6 +237,16 @@ public class ArrayHeap<T> {
      * same item. Does nothing if the item is not in the heap. Check for
      * item equality with .equals(), not == */
     public void changePriority(T item, double priority) {
+        for (int i = 1; i <= size(); i ++) {
+            Node item2 = getNode(i);
+            if (item2.item().equals(item)) {
+                item2.setPriority(priority);
+                bubbleUp(i);
+                bubbleDown(i);
+
+                break;
+            }
+        }
         // TODO
     }
 }
