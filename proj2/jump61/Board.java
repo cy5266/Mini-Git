@@ -6,6 +6,7 @@
 // solutions.
 package jump61;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ArrayDeque;
 import java.util.Formatter;
@@ -23,7 +24,7 @@ import static jump61.Square.square;
  *  A Board may be given a notifier---a Consumer<Board> whose
  *  .accept method is called whenever the Board's contents are changed.
  *
- *  @author
+ *  @author Cindy Yang
  */
 class Board {
 
@@ -35,6 +36,13 @@ class Board {
     /** An N x N board in initial configuration. */
     Board(int N) {
         this();
+        _myboard = new ArrayList<Square>(N*N);
+
+        for (int i = 0; i < N*N; i ++) {
+            _myboard.add(i, square(WHITE, 1));
+        }
+        boardHistory = new ArrayDeque<>();
+        _jumping = false;
         // FIXME
     }
 
@@ -43,6 +51,13 @@ class Board {
     Board(Board board0) {
         this(board0.size());
         // FIXME
+
+        for (int i = 0; i < board0.size(); i ++) {
+            _myboard.set(i, board0.get(i));
+        }
+        boardHistory.clear();
+//        _boardHistory.clear();
+        markUndo();
         _readonlyBoard = new ConstantBoard(this);
     }
 
@@ -55,24 +70,56 @@ class Board {
      *  the undo history and sets the number of moves to 0. */
     void clear(int N) {
         // FIXME
+
+        _myboard = new ArrayList<Square>(N*N);
+
+        for (int i = 0; i < _myboard.size() * _myboard.size(); i ++) {
+            _myboard.set(i, square(WHITE, 1));
+        }
+        boardHistory.clear();
+//        _boardHistory.clear();
+        markUndo();
         announce();
     }
 
     /** Copy the contents of BOARD into me. */
     void copy(Board board) {
-        // FIXME
+
+        _myboard = new ArrayList<Square>();
+
+        for (int i = 0; i < board.size() * board.size(); i ++) {
+            _myboard.add(board.get(i));
+        }
+//        Board newB = new Board(1);
+//        for (int i = 0; i < board.size() * board.size(); i ++) {
+//            Square sq = square(board.get(i).getSide(), board.get(i).getSpots());
+//            _myboard.set(i, sq);
+//            newB.set(row(i), col(i), board.get(i));
+
+
+        boardHistory.clear();
+
+        //clear undo history, clear arraylist, set to new
     }
 
     /** Copy the contents of BOARD into me, without modifying my undo
      *  history. Assumes BOARD and I have the same size. */
     private void internalCopy(Board board) {
         assert size() == board.size();
+
+
+        for (int i = 0; i < board.size() * board.size() ; i ++) {
+            Square sq = square(board.get(i).getSide(), board.get(i).getSpots());
+            _myboard.set(i, sq);
+//            _copyBoard.set(i, board.get(i));
+//            _myboard.add(sq);
+        }
         // FIXME
     }
 
     /** Return the number of rows and of columns of THIS. */
     int size() {
-        return 6; // FIXME
+        return (int) Math.sqrt(_myboard.size()); // FIXME
     }
 
     /** Returns the contents of the square at row R, column C
@@ -85,12 +132,17 @@ class Board {
      *  squares in row 1 number 0 - size()-1, in row 2 numbered
      *  size() - 2*size() - 1, etc. */
     Square get(int n) {
-        return null; // FIXME
+        return _myboard.get(n); // FIXME
     }
 
     /** Returns the total number of spots on the board. */
     int numPieces() {
-        return size() * size(); // FIXME
+        int spots = 0;
+
+        for (int i = 0; i < _myboard.size(); i ++) {
+            spots += _myboard.get(i).getSpots();
+        }
+        return spots; // FIXME
     }
 
     /** Returns the Side of the player who would be next to move.  If the
@@ -144,33 +196,75 @@ class Board {
     /** Returns true iff it would currently be legal for PLAYER to add a spot
      *  to square #N. */
     boolean isLegal(Side player, int n) {
-        return true; // FIXME
+        if (_myboard != null) {
+            return player.playableSquare(_myboard.get(n).getSide());
+        }
+         // FIXME
+        return false;
     }
 
     /** Returns true iff PLAYER is allowed to move at this point. */
     boolean isLegal(Side player) {
-        return true; // FIXME
+        if (whoseMove().equals(player) && getWinner() != null){
+            return true;
+        }
+        return false;
+
+//        return null; // FIXME
     }
 
     /** Returns the winner of the current position, if the game is over,
      *  and otherwise null. */
     final Side getWinner() {
-        return null;  // FIXME
+
+        int numRed = numOfSide(RED);
+        int numBlue = numOfSide(BLUE);
+        if (numRed != 0 && numRed == _myboard.size() * _myboard.size()) {
+            return RED;
+        }
+        else if (numBlue != 0 && numBlue == _myboard.size() * _myboard.size()) {
+            return BLUE;
+        }
+        else {
+            return null;
+        }
+        // FIXME
     }
 
     /** Return the number of squares of given SIDE. */
     int numOfSide(Side side) {
-        return 0; // FIXME
+        int numSquares = 0;
+        for (Square sideSquare: _myboard) {
+            if (sideSquare.getSide().equals(side)) {
+                numSquares += 1;
+            }
+        }
+        return numSquares; // FIXME
     }
 
     /** Add a spot from PLAYER at row R, column C.  Assumes
      *  isLegal(PLAYER, R, C). */
     void addSpot(Side player, int r, int c) {
+//        _myboard.get()
+        //sqaure num RC
+//        markUndo();
+        addSpot(player, sqNum(r, c));
+
+
         // FIXME
     }
 
     /** Add a spot from PLAYER at square #N.  Assumes isLegal(PLAYER, N). */
     void addSpot(Side player, int n) {
+        if (_jumping == false) {
+            markUndo();
+        }
+//        _boardHistory.add(this);
+        int newSquare = _myboard.get(n).getSpots() + 1;
+        int r = row(n);
+        int c = col(n);
+        set(r, c, newSquare, player);
+        jump(n);
         // FIXME
     }
 
@@ -191,6 +285,16 @@ class Board {
     /** Set the square #N to NUM spots (0 <= NUM), and give it color PLAYER
      *  if NUM > 0 (otherwise, white). Does not announce changes. */
     private void internalSet(int n, int num, Side player) {
+        if (num == 0) {
+            _myboard.set(n, square(WHITE, 0));
+        }
+        else {
+            _myboard.set(n, square(player, num));
+        }
+//        internalSet(row, col, num, player);
+//        if (num > 0) {
+//            set(row, col, num, player);
+//        }
         // FIXME
     }
 
@@ -213,12 +317,38 @@ class Board {
      *  can only undo back to the last point at which the undo history
      *  was cleared, or the construction of this Board. */
     void undo() {
+
+        this.internalCopy(boardHistory.pop());
+//        _myboard = convert(boardHistory.pop());
+//        internalCopy(_myboard);
+//        int historyLastIndex = _boardHistory.size() -1;
+//        _myboard = convert(_boardHistory.get(historyLastIndex));
+//        _boardHistory.remove(historyLastIndex);
+
         // FIXME
     }
 
+    private ArrayList<Square> convert(Board b) {
+        ArrayList <Square> lastHistory = new ArrayList<>();
+        for (int i = 0; i < b.size() * b.size(); i ++) {
+            Square sq = square(b.get(i).getSide(), b.get(i).getSpots());
+            lastHistory.add(sq);
+        }
+        return lastHistory;
+                // loop through board and add the squares
+    }
+
+//    private Board internalCopy2(ArrayList board) {
+//        Board
+//    }
     /** Record the beginning of a move in the undo history. */
     private void markUndo() {
         // FIXME
+//        Board copy = copy(_myboard);
+//        Board boardCopy = internalCopy2(_myboard);
+        Board b = new Board(1);
+        b.copy(this);
+        boardHistory.push(b);
     }
 
     /** Add DELTASPOTS spots of side PLAYER to row R, column C,
@@ -241,14 +371,47 @@ class Board {
      *  square that might be over-full. */
     private void jump(int S) {
         // FIXME
+
+        ArrayList<Integer> validSpots = neighborSpots(S);
+        if (neighbors(S) < _myboard.get(S).getSpots() && getWinner() == null) {
+            set(row(S), col(S), _myboard.get(S).getSpots() - neighbors(S), _myboard.get(S).getSide());
+            Side player = get(S).getSide();
+            for (int i : validSpots) {
+                _jumping = true;
+                addSpot(player, i);
+            }
+        }
+
+        _jumping = false;
+        //went through ortohogal neighbors and check if valid, and then add spot to add of them
+        // check if overfilled & winner is null
+        // if it is call helper function
+
+    }
+
+    private ArrayList<Integer> neighborSpots(int S) {
+        ArrayList <Integer> validIndex = new ArrayList<>();
+        if (exists(row(S) - 1, col(S))) {
+            validIndex.add(sqNum(row(S) - 1, col(S)));
+        }
+        if (exists(row(S) + 1, col(S))) {
+            validIndex.add(sqNum(row(S) + 1, col(S)));
+        }
+        if (exists(row(S), col(S) - 1)) {
+            validIndex.add(sqNum(row(S), col(S) - 1));
+        }
+        if (exists(row(S), col(S) + 1)) {
+            validIndex.add(sqNum(row(S), col(S) + 1));
+        }
+        return validIndex;
     }
 
     /** Returns my dumped representation. */
     @Override
     public String toString() {
         Formatter out = new Formatter();
+        return null;
         // FIXME
-        return out.toString();
     }
 
     /** Returns an external rendition of me, suitable for human-readable
@@ -313,6 +476,14 @@ class Board {
         announce();
     }
 
+    public Board getLastState() {
+        return boardHistory.pop();
+    }
+
+    public void setLastState(Board b) {
+        boardHistory.add(b);
+    }
+
     /** Take any action that has been set for a change in my state. */
     private void announce() {
         _notifier.accept(this);
@@ -327,6 +498,11 @@ class Board {
     /** Use _notifier.accept(B) to announce changes to this board. */
     private Consumer<Board> _notifier;
 
+    private ArrayList<Square> _myboard;
+
+    private ArrayDeque<Board> boardHistory;
+
+    private boolean _jumping;
     // FIXME: other instance variables here.
 
 }
