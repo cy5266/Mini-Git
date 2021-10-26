@@ -216,10 +216,11 @@ class Board {
 
         int numRed = numOfSide(RED);
         int numBlue = numOfSide(BLUE);
-        if (numRed != 0 && numRed == _myboard.size() * _myboard.size()) {
+
+        if (numRed != 0 && numRed == size()) {
             return RED;
         }
-        else if (numBlue != 0 && numBlue == _myboard.size() * _myboard.size()) {
+        else if (numBlue != 0 && numBlue == size()) {
             return BLUE;
         }
         else {
