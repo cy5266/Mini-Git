@@ -73,8 +73,8 @@ class Board {
 
         _myboard = new ArrayList<Square>(N*N);
 
-        for (int i = 0; i < _myboard.size() * _myboard.size(); i ++) {
-            _myboard.set(i, square(WHITE, 1));
+        for (int i = 0; i < N * N; i ++) {
+            _myboard.add(i, square(WHITE, 1));
         }
         boardHistory.clear();
 //        _boardHistory.clear();
@@ -196,11 +196,8 @@ class Board {
     /** Returns true iff it would currently be legal for PLAYER to add a spot
      *  to square #N. */
     boolean isLegal(Side player, int n) {
-        if (_myboard != null) {
             return player.playableSquare(_myboard.get(n).getSide());
-        }
          // FIXME
-        return false;
     }
 
     /** Returns true iff PLAYER is allowed to move at this point. */
@@ -248,23 +245,29 @@ class Board {
 //        _myboard.get()
         //sqaure num RC
 //        markUndo();
-        addSpot(player, sqNum(r, c));
-
+        if (getWinner() == null) {
+            addSpot(player, sqNum(r, c));
+        }
 
         // FIXME
     }
 
     /** Add a spot from PLAYER at square #N.  Assumes isLegal(PLAYER, N). */
     void addSpot(Side player, int n) {
-        if (_jumping == false) {
-            markUndo();
-        }
+        if (getWinner() == null) {
+            if (_jumping == false) {
+                markUndo();
+            }
 //        _boardHistory.add(this);
-        int newSquare = _myboard.get(n).getSpots() + 1;
-        int r = row(n);
-        int c = col(n);
-        set(r, c, newSquare, player);
-        jump(n);
+            int newSquare = _myboard.get(n).getSpots() + 1;
+            int r = row(n);
+            int c = col(n);
+            set(r, c, newSquare, player);
+            if (getWinner() == null) {
+                jump(n);
+            }
+
+        }
         // FIXME
     }
 
@@ -378,7 +381,9 @@ class Board {
             Side player = get(S).getSide();
             for (int i : validSpots) {
                 _jumping = true;
-                addSpot(player, i);
+                if (getWinner() == null) {
+                    addSpot(player, i);
+                }
             }
         }
 
@@ -409,8 +414,31 @@ class Board {
     /** Returns my dumped representation. */
     @Override
     public String toString() {
+
         Formatter out = new Formatter();
-        return null;
+
+        out.format("===%n");
+        for (int i = 1; i < size() + 1; i ++) {
+            out.format("    ");
+            for (int j = 1; j < size() + 1; j ++) {
+                String player = "";
+
+                if (get(i, j).getSide() == RED) {
+                    player = "r";
+                }
+                else if (get(i, j).getSide() == BLUE) {
+                    player = "b";
+                }
+                else if (get(i, j).getSide() == WHITE) {
+                    player = "-";
+                }
+
+                out.format("%d%s ", get(i, j).getSpots(), player);
+            }
+            out.format("%n");
+        }
+        out.format("===%n");
+        return out.toString();
         // FIXME
     }
 
