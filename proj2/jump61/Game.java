@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import static jump61.Side.*;
@@ -11,7 +5,7 @@ import static jump61.GameException.error;
 import static jump61.Utils.*;
 
 /** Main logic for playing (a) game(s) of Jump61.
- *  @author
+ *  @author Cindy Yang
  */
 class Game {
 

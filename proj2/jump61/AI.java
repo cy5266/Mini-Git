@@ -1,16 +1,5 @@
-// This file contains definitions for an OPTIONAL part of your project.  If you
-// choose not to do the optional point, you can delete this file from your
-// project.
-
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import static jump61.Side.*;
@@ -46,7 +35,7 @@ class AI extends Player {
         assert getSide() == work.whoseMove();
         _foundMove = -1;
 
-        for (int i = 0; i < work.size() * work.size() ; i ++) {
+        for (int i = 0; i < work.size() * work.size(); i++) {
             if (work.isLegal(getSide(), i)) {
                 Board newBoard = new Board(work);
                 newBoard.addSpot(getSide(), newBoard.row(i), newBoard.col(i));
@@ -60,43 +49,12 @@ class AI extends Player {
 
         if (getSide() == RED) {
             minMax(work, 4, true, 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
-        } else {  //is BLUE
+        } else {
             minMax(work, 4, true, -1, Integer.MIN_VALUE, Integer.MAX_VALUE);
         }
 
-
-//
-//        for (int i = 0; i < work.size() * work.size(); i ++) {
-//            if (work.isLegal(getSide(), i)) {
-//                _foundMove = i;
-//            }
-//        }
         return _foundMove;
     }
-
-//
-//    private ArrayList<Integer> validMoves(Side s, Board b) {
-//        ArrayList <Integer> validSpots = new ArrayList<>();
-//        for (int i = 0; i < b.size() * b.size(); i ++) {
-//                if (b.get(i).getSide().equals(s) || b.get(i).getSide() == (WHITE)) {
-//                    if (b.isLegal(s, i)) {
-//                    validSpots.add(i);
-//                }
-//            }
-//        }
-//        return validSpots;
-//    }
-
-//    private ArrayList<Integer> validMovesBlue(Board b) {
-//        Board work = new Board(getBoard());
-//        ArrayList <Integer> validSpots = new ArrayList<>();
-//        for (int i = 0; i < work.size() * work.size(); i ++) {
-//            if (work.get(i).getSide().equals(BLUE) || work.get(i).getSide() == (WHITE)) {
-//                validSpots.add(i);
-//            }
-//        }
-//        return validSpots;
-//    }
 
     /** Find a move from position BOARD and return its value, recording
      *  the move found in _foundMove iff SAVEMOVE. The move
@@ -108,48 +66,51 @@ class AI extends Player {
     private int minMax(Board board, int depth, boolean saveMove,
                        int sense, int alpha, int beta) {
 
-        if (sense == 1) { //maximizing player turn - RED's turn
+        if (sense == 1) {
             return maxPlayerValue(board, depth, saveMove, alpha, beta);
         }
 
-        if (sense == -1) { //minimizing
+        if (sense == -1) {
             return minPlayerValue(board, depth, saveMove, alpha, beta);
-
         }
 
         return 0;
-        //RED is the maximizer
-        //BLUE is the minimizer
     }
 
-    private int maxPlayerValue(Board board,  int depth, boolean saveMove, int alpha, int beta)
-    {
+    /**Using game state trees to maximize the player values - RED.
+     * @param alpha the alpha value
+     * @param beta the beta value
+     * @param saveMove whether or not it's the turn to update element
+     * @param board the board
+     * @param depth the depth that we search
+     * @return the index
+     * **/
+    private int maxPlayerValue(Board board,  int depth,
+                               boolean saveMove, int alpha, int beta) {
         if (board.getWinner() != null || depth == 0) {
             return staticEval(board, Integer.MAX_VALUE);
         }
         int bestSoFar = Integer.MIN_VALUE;
         int bestElement = -1;
-        for (int element = 0; element < board.size() * board.size(); element++) { //recurse through children of the position
+        for (int element = 0; element < board.size() * board.size();
+             element++) {
             if (board.isLegal(RED, element)) {
                 Board newBoard = new Board(board);
-                newBoard.addSpot(RED, newBoard.row(element), newBoard.col(element));
-                int response = minPlayerValue(newBoard, depth - 1, false, alpha, beta);
+                newBoard.addSpot(RED, newBoard.row(element),
+                        newBoard.col(element));
+                int response = minPlayerValue(newBoard, depth - 1,
+                        false, alpha, beta);
                 if (response >= bestSoFar) {
                     bestSoFar = response;
                     bestElement = element;
                     alpha = Math.max(bestSoFar, alpha);
                     if (alpha >= beta) {
-                        if (saveMove == true) {
+                        if (saveMove) {
                             _foundMove = element;
                         }
                         return bestSoFar;
                     }
-
                 }
-//                if (beta <= alpha || alpha == Integer.MAX_VALUE) {
-//                    break;
-//                }
-
             }
         }
         if (saveMove) {
@@ -158,7 +119,15 @@ class AI extends Player {
         return bestSoFar;
     }
 
-    private int minPlayerValue(Board board, int depth, boolean saveMove, int alpha, int beta) {
+    /**Using game state trees to minimize the player values - BLUE.
+     @param alpha the alpha value
+     @param beta the beta value
+     @param saveMove whether or not it's the turn to update element
+     @param board the board
+     @param depth the depth that we search
+     @return the index**/
+    private int minPlayerValue(Board board, int depth,
+                               boolean saveMove, int alpha, int beta) {
         if (board.getWinner() != null || depth == 0) {
             return staticEval(board, Integer.MAX_VALUE);
         }
@@ -166,13 +135,16 @@ class AI extends Player {
         int bestSoFar = Integer.MAX_VALUE;
         int bestElement = -1;
 
-        for (int element = 0; element < board.size() * board.size(); element ++) {
+        for (int element = 0; element
+                < board.size() * board.size(); element++) {
 
             if (board.isLegal(BLUE, element)) {
                 Board newBoard = new Board(board);
-                newBoard.addSpot(BLUE, newBoard.row(element), newBoard.col(element));
+                newBoard.addSpot(BLUE, newBoard.row(element),
+                        newBoard.col(element));
 
-                int response = maxPlayerValue(newBoard, depth - 1, false, alpha, beta);
+                int response = maxPlayerValue(newBoard,
+                        depth - 1, false, alpha, beta);
 
                 if (response <= bestSoFar) {
                     bestSoFar = response;
@@ -186,9 +158,6 @@ class AI extends Player {
                     }
 
                 }
-//                if (beta <= alpha || alpha == Integer.MIN_VALUE) {
-//                    break;
-//                }
 
             }
         }
@@ -209,7 +178,7 @@ class AI extends Player {
         if (b.getWinner() == BLUE) {
             return -winningValue;
         }
-        return test; // FIXME
+        return test;
     }
 
     /** A random-number generator used for move selection. */
@@ -218,6 +187,3 @@ class AI extends Player {
     /** Used to convey moves discovered by minMax. */
     private int _foundMove;
 }
-
-//first step, let the AI make random VALID moves
-// figure out some easy version of board goodness
