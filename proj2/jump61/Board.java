@@ -52,7 +52,7 @@ class Board {
         this(board0.size());
         // FIXME
 
-        for (int i = 0; i < board0.size(); i ++) {
+        for (int i = 0; i < board0.size() * board0.size(); i++) {
             _myboard.set(i, board0.get(i));
         }
         boardHistory.clear();
@@ -90,13 +90,6 @@ class Board {
         for (int i = 0; i < board.size() * board.size(); i ++) {
             _myboard.add(board.get(i));
         }
-//        Board newB = new Board(1);
-//        for (int i = 0; i < board.size() * board.size(); i ++) {
-//            Square sq = square(board.get(i).getSide(), board.get(i).getSpots());
-//            _myboard.set(i, sq);
-//            newB.set(row(i), col(i), board.get(i));
-
-
         boardHistory.clear();
 
         //clear undo history, clear arraylist, set to new
