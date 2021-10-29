@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import java.util.regex.Pattern;
@@ -12,7 +6,7 @@ import java.util.regex.Matcher;
 import static jump61.Utils.*;
 
 /** A Player that gets its moves from manual input.
- *  @author
+ *  @author Cindy Yang
  */
 class HumanPlayer extends Player {
 

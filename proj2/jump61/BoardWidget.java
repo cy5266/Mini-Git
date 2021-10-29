@@ -1,29 +1,18 @@
-// This file contains definitions for an OPTIONAL part of your project.  If you
-// choose not to do the optional point, you can delete this file from your
-// project.
-
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import ucb.gui2.Pad;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Dimension;
+import java.awt.BasicStroke;
+
 
 import java.util.concurrent.ArrayBlockingQueue;
-
-import static jump61.Side.*;
-
 /** A GUI component that displays a Jump61 board, and converts mouse clicks
  *  on that board to commands that are sent to the current Game.
- *  @author
+ *  @author Cindy Yang
  */
 class BoardWidget extends Pad {
 
@@ -70,6 +59,7 @@ class BoardWidget extends Pad {
             invalidate();
         }
         _board = new Board(board);
+        _length = _board.size();
         _side = _board.size() * SQUARE_SEP + SEPARATOR_SIZE;
     }
 
@@ -93,13 +83,33 @@ class BoardWidget extends Pad {
         if (_board == null) {
             return;
         }
-        // FIXME
+
+        int numRows = _length;
+        int numCols = _length;
+
+        int rowHt = _side / numRows;
+
+        g.setStroke(new BasicStroke(3));
+        for (int i = 0; i < numRows; i++) {
+            g.drawLine(1, i * rowHt, _side, i * rowHt);
+        }
+
+        int rowWid = _side / (numCols);
+        for (int i = 0; i < numCols; i++) {
+            g.drawLine(i * rowWid, 1, i * rowWid, _side);
+        }
+
+        g.setColor(SPOT_COLOR);
+        displaySpots(g, _side / _length - (_side / _length) / 2,
+                _side / _length - (_side / _length) / 2);
     }
 
     /** Color and display the spots on the square at row R and column C
      *  on G.  (Used by paintComponent). */
     private void displaySpots(Graphics2D g, int r, int c) {
-        // FIXME
+        for (int i = 0; i < _length; i += (_side / _length) / 2) {
+            spot(g, r + i, c + i);
+        }
     }
 
     /** Draw one spot centered at position (X, Y) on G. */
@@ -110,14 +120,8 @@ class BoardWidget extends Pad {
 
     /** Respond to the mouse click depicted by EVENT. */
     public void doClick(String dummy, MouseEvent event) {
-        // x and y coordinates relative to the upper-left corner of the
-        // upper-left square (increasing y is down).
         int x = event.getX() - SEPARATOR_SIZE,
             y = event.getY() - SEPARATOR_SIZE;
-        // FIXME:
-        // REPLACE THE FOLLOWING WITH COMPUTATION OF r AND c FROM x and y,
-        // AND SEND THE APPROPRIATE COMMAND TO OUR GAME, IF THE EVENT
-        // OCCURS AT A VALID POSITION.  OTHERWISE, DOES NOTHING.
         int r = 1;
         int c = 1;
         _commandQueue.offer(String.format("%d %d", r, c));
@@ -129,4 +133,7 @@ class BoardWidget extends Pad {
     private int _side;
     /** Destination for commands derived from mouse clicks. */
     private ArrayBlockingQueue<String> _commandQueue;
+
+    /** variable for the size of the board. */
+    private int _length;
 }

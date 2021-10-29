@@ -67,7 +67,7 @@ public class Main {
                 }
             }
             game = new Game(new TextSource(inReaders),
-                            (b) -> { }, new TextReporter(), log);
+                (b) -> { }, new TextReporter(), log);
             System.exit(game.play());
         }
     }
