@@ -1,6 +1,7 @@
 package capers;
 
-import java.io.File;
+import java.io.*;
+import java.util.Scanner;
 
 /** Canine Capers: A Gitlet Prelude.
  * @author Sean Dooher
@@ -10,7 +11,9 @@ public class Main {
     static final File CWD = new File(".");
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = null; // FIXME
+    static final File CAPERS_FOLDER = Utils.join(CWD, "capers"); // FIXME
+
+    static File story = Utils.join(CWD, "story.txt");
 
     /**
      * Runs one of three commands:
@@ -49,6 +52,12 @@ public class Main {
         case "story":
             writeStory(args);
             break;
+        case "dog":
+            makeDog(args);
+            break;
+        case "birthday":
+            celebrateBirthday(args);
+            break;
         // FIXME
         default:
             exitWithError(String.format("Unknown command: %s", args[0]));
@@ -67,6 +76,16 @@ public class Main {
      *
      */
     public static void setupPersistence() {
+        if (!CAPERS_FOLDER.exists()) {
+            CAPERS_FOLDER.mkdir();
+        }
+        if (!Dog.DOG_FOLDER.exists()) {
+            Dog.DOG_FOLDER.mkdir();
+        }
+
+
+
+
         // FIXME
     }
 
@@ -77,7 +96,26 @@ public class Main {
      */
     public static void writeStory(String[] args) {
         validateNumArgs("story", args, 2);
-        // FIXME
+        String temp;
+        if (!story.exists() || Utils.readContentsAsString(story).equals("")) {
+            temp = args[1];
+            Utils.writeContents(story, args[1]);
+        }
+        else {
+            temp = Utils.readContentsAsString(story) + "\n" + args[1];
+            Utils.writeContents(story, temp);
+        }
+
+        System.out.println(temp);
+
+//        if (!story.exists()) {
+
+//        }
+//        else {
+//            Utils.writeObject()
+//        }
+
+//        // FIXME
     }
 
     /**
