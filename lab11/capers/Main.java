@@ -1,5 +1,6 @@
 package capers;
 
+import javax.crypto.spec.PSource;
 import java.io.*;
 import java.util.Scanner;
 
@@ -107,15 +108,6 @@ public class Main {
         }
 
         System.out.println(temp);
-
-//        if (!story.exists()) {
-
-//        }
-//        else {
-//            Utils.writeObject()
-//        }
-
-//        // FIXME
     }
 
     /**
@@ -126,6 +118,14 @@ public class Main {
      */
     public static void makeDog(String[] args) {
         validateNumArgs("dog", args, 4);
+
+        String dogName = args[1];
+        String dogBreed = args[2];
+        String dogAge = args[3];
+
+        Dog newDog = new Dog(dogName, dogBreed, Integer.parseInt(dogAge));
+        newDog.saveDog();
+        System.out.println(newDog);
         // FIXME
     }
 
@@ -137,7 +137,11 @@ public class Main {
      */
     public static void celebrateBirthday(String[] args) {
         validateNumArgs("birthday", args, 2);
-        // FIXME
+
+        String dogName = args[1];
+        Dog newDog = Dog.fromFile(dogName);
+        newDog.haveBirthday();
+        newDog.saveDog();
     }
 
     /**

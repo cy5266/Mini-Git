@@ -6,10 +6,10 @@ import java.io.Serializable;
 /** Represents a dog that can be serialized.
  * @author Sean Dooher
 */
-public class Dog implements Serializable{ // FIXME
+public class Dog implements Serializable { // FIXME
 
     /** Folder that dogs live in. */
-    static final File DOG_FOLDER = new File("dogs"); // FIXME
+    static final File DOG_FOLDER = new File(".capers/dogs"); // FIXME
 
     /**
      * Creates a dog object with the specified parameters.
@@ -31,8 +31,13 @@ public class Dog implements Serializable{ // FIXME
      * @return Dog read from file
      */
     public static Dog fromFile(String name) {
+        File newDog = Utils.join(DOG_FOLDER, name);
+        if (!newDog.exists()) {
+            throw new IllegalArgumentException("file does not exist");
+        }
+            
         // FIXME
-        return null;
+        return Utils.readObject(newDog, Dog.class);
     }
 
     /**
@@ -50,7 +55,8 @@ public class Dog implements Serializable{ // FIXME
     public void saveDog() {
         //make file
         //put in folder
-        File newDog = new File(_name);
+        File newDog = Utils.join(DOG_FOLDER, _name);
+        Utils.writeObject(newDog, this);
 
         // FIXME
     }
