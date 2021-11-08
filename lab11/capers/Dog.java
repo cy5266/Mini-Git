@@ -1,5 +1,7 @@
 package capers;
 
+import org.antlr.v4.runtime.misc.Utils;
+
 import java.io.File;
 import java.io.Serializable;
 
@@ -9,7 +11,7 @@ import java.io.Serializable;
 public class Dog implements Serializable { // FIXME
 
     /** Folder that dogs live in. */
-    static final File DOG_FOLDER = new File(".capers/dogs"); // FIXME
+    static final File DOG_FOLDER = new File(".dogs"); // FIXME
 
     /**
      * Creates a dog object with the specified parameters.
