@@ -14,7 +14,22 @@ public class Intervals {
      *  total length covered by the union of the intervals. */
     public static int coveredLength(List<int[]> intervals) {
         // REPLACE WITH APPROPRIATE STATEMENTS.
+
+
+        // split it into two lists
+        // and then sort the two lists
+        // check the start and end points to check if we're in an interval or not
+
+        //
+
+
         return 0;
+    }
+
+    public static class Comparators {
+
+
+
     }
 
     /** Test intervals. */
