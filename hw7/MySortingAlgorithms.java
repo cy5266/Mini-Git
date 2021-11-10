@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Note that every sorting algorithm takes in an argument k. The sorting 
@@ -224,7 +225,52 @@ public class MySortingAlgorithms {
     public static class LSDSort implements SortingAlgorithm {
         @Override
         public void sort(int[] a, int k) {
-            // FIXME
+
+            int maxLength = 1;
+
+            for (int i = 0; i < k; i++) {
+                int currLen = Integer.toString(a[i]).length();
+                if (currLen > maxLength) {
+                    maxLength = currLen;
+                }
+            }
+
+            int increment = 1;
+
+            while (maxLength > 0) {
+                sortDigits(a, increment, k);
+                maxLength = maxLength - 1;
+                increment = increment * 10;
+            }
+        }
+
+        public void sortDigits(int[] a, int increment, int k) {
+
+            int[] count = new int[10];
+
+            for (int i = 0; i < k; i ++) {
+                int lastDigit = a[i]/increment % 10;
+                count[lastDigit] = count[lastDigit] + 1;
+            }
+
+            for (int i = 1; i < 10; i++) {
+                count[i] += count[i - 1];
+            }
+
+            int[] temp = new int[k];
+
+            int lastele = k - 1;
+            int i = 0;
+
+            while (i < k) {
+                int digit = (a[lastele] / increment) % 10;
+                temp[count[digit] - 1] = a[lastele];
+                count[digit] = count[digit] - 1;
+                lastele =  lastele - 1;
+                i += 1;
+            }
+
+            System.arraycopy(temp, 0, a, 0, k);
         }
 
         @Override

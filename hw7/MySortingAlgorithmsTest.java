@@ -13,13 +13,13 @@ public class MySortingAlgorithmsTest {
      */
 
     private SortingAlgorithm[] algorithms = {
-//        new MySortingAlgorithms.InsertionSort()};
-//        new MySortingAlgorithms.SelectionSort()};
-        new MySortingAlgorithms.MergeSort()};
+        new MySortingAlgorithms.InsertionSort(),
+        new MySortingAlgorithms.SelectionSort(),
+        new MySortingAlgorithms.MergeSort(),
         // new MySortingAlgorithms.CountingSort(),
         // new MySortingAlgorithms.HeapSort(),
         //new MySortingAlgorithms.QuickSort(),
-//        new MySortingAlgorithms.LSDSort()};
+        new MySortingAlgorithms.LSDSort()};
         //new MySortingAlgorithms.MSDSort()};
 
     private SortingAlgorithm javaSort = new MySortingAlgorithms.JavaSort();
