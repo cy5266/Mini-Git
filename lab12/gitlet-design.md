@@ -41,18 +41,23 @@ Testing: Includes jUnit tests that will allow us to test each functionality alon
 
 Blobs:
 Void writemethod - will use writeContents from Utils to add text into the file
-
-
+Seralizes all of the files so that they can be represented in bytes
 
 Trees:
+changeWorkingDirectory -- changes current working directory to different branch
+
+
 
 Commits: this class handles creating a commit block and having pointers towards the parents
 getParent: returns the sha1 and name and commit-date of the parent commit
 changeHead: changes head to whatever commit we want in the linked list
 If no matching commit exists, we throw exception
 (basically moving the current pointer down the linked list until we get to the version that we want)
-
-
+Checkout: 3 cases:
+-- [file name] : takes current head of file and moves it into the working directory, will overwrite if file already exists
+[commit id] -- [file name] : put file from commit given into working directory
+[branch name] : takes ALL files in branch and puts in working directory
+Serialize: serializes all commits/their current commits
 
 Main:
 CheckParam: checks to see if the user has entered an existing parameter, whether
@@ -61,10 +66,14 @@ https://inst.eecs.berkeley.edu/~cs61b/fa21/materials/proj/proj3/index.html#the-c
 
 Repo: this class runs the results of the parameters that the user calls e.g. (“init, add, rm, merge”).
 
-Edge cases: whether the commands are correct, the files exist
+Edge cases: whether the commands are correct, the files exist, whether they are in the correct directory or subdirectory
 
 When merging, we first check that the SHA between files are not the same, then whether we need to merge, where to merge
 
 
 ## Persistence
 
+We can serialize the blobs (hashmaps) and commits to byte and then store them on a specially named file on our device
+We can also use the ‘write object’ function on utils to write them onto our devices
+
+By having the files saved somewhere, we will have set files (such as commit -so423oh2ob4) which we can later access by name. We can use readObject from Utils to deserialize the blobs and commits. 
