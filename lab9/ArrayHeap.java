@@ -223,11 +223,11 @@ public class ArrayHeap<T> {
             return null;
         }
 
-        swap(1, size());
+        T lowestPriority = getNode(1)._item;
 
-        T lowestPriority = removeNode(size()).item();
+        swap(1, size());
 //
-//        removeNode(size()).item();
+        removeNode(size());
         bubbleDown(1);
         return lowestPriority;
     }

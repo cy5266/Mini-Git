@@ -1,13 +1,11 @@
 package capers;
 
-import org.antlr.v4.runtime.misc.Utils;
-
 import java.io.File;
 import java.io.Serializable;
 
 /** Represents a dog that can be serialized.
  * @author Sean Dooher
-*/
+ */
 public class Dog implements Serializable { // FIXME
 
     /** Folder that dogs live in. */
@@ -37,7 +35,7 @@ public class Dog implements Serializable { // FIXME
         if (!newDog.exists()) {
             throw new IllegalArgumentException("file does not exist");
         }
-            
+
         // FIXME
         return Utils.readObject(newDog, Dog.class);
     }
@@ -66,8 +64,8 @@ public class Dog implements Serializable { // FIXME
     @Override
     public String toString() {
         return String.format(
-            "Woof! My name is %s and I am a %s! I am %d years old! Woof!",
-            _name, _breed, _age);
+                "Woof! My name is %s and I am a %s! I am %d years old! Woof!",
+                _name, _breed, _age);
     }
 
     /** Age of dog. */
