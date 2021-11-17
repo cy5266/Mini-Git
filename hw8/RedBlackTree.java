@@ -48,18 +48,14 @@ public class RedBlackTree<T extends Comparable<T>> {
         if (node == null) {
             return null;
         }
-        else if (node.left == null) {
-            return node;
-        }
-        else if (node.left == null && node.right == null) {
-            return node;
-        }
+
+        RBTreeNode<T> temp = node.left.right;
 
         RBTreeNode<T> root = node.left;
         root.right = node;
 
-        if (node.left.right != null) {
-            node.left = node.left.right;
+        if (temp!= null) {
+            node.left = temp;
         }
         // take the node's left child, make this node the right child of it,
         // if the node's left child previous had a right node, it becomes the left child of the parameter node
@@ -85,18 +81,14 @@ public class RedBlackTree<T extends Comparable<T>> {
         if (node == null) {
             return null;
         }
-        else if (node.left == null) {
-            return node;
-        }
-        else if (node.left == null && node.right == null) {
-            return node;
-        }
+
+        RBTreeNode<T> temp = node.right.left;
 
         RBTreeNode<T> root = node.right;
         root.left = node;
 
-        if (node.right.left != null) {
-            node.right = node.right.left;
+        if (temp != null) {
+            node.right = temp;
         }
         return root;
     }
