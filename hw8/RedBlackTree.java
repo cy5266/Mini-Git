@@ -45,7 +45,9 @@ public class RedBlackTree<T extends Comparable<T>> {
      * @return new root of the (sub)tree.
      */
     RBTreeNode<T> rotateRight(RBTreeNode<T> node) {
-
+        if (node == null) {
+            return null;
+        }
 
         RBTreeNode<T> root = node.left;
         root.right = node;
@@ -74,6 +76,10 @@ public class RedBlackTree<T extends Comparable<T>> {
         // take the right child of NODE, and make NODE the left child of it
         // if the right child of NODE has a left child, then make it the right child of NODE
         // YOUR CODE HERE
+        if (node == null) {
+            return null;
+        }
+
         RBTreeNode<T> root = node.right;
         root.left = node;
 
