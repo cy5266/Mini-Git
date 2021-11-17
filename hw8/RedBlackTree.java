@@ -56,8 +56,8 @@ public class RedBlackTree<T extends Comparable<T>> {
 //            node.left = node.left.right;
 //        }
 
-        RBTreeNode<T> temp = new RBTreeNode<T>(node.isBlack, node.item, node.left.right, node.right);
-        RBTreeNode<T> root = new RBTreeNode<T>(node.left.isBlack, node.left.item, node.left.left, temp);
+        RBTreeNode<T> temp = new RBTreeNode<T>(node.left.isBlack, node.item, node.left.right, node.right);
+        RBTreeNode<T> root = new RBTreeNode<T>(node.isBlack, node.left.item, node.left.left, temp);
         // take the node's left child, make this node the right child of it,
         // if the node's left child previous had a right node, it becomes the left child of the parameter node
         // swap colors with NODE and its left child color
@@ -83,8 +83,8 @@ public class RedBlackTree<T extends Comparable<T>> {
             return null;
         }
 
-        RBTreeNode<T> temp = new RBTreeNode<T>(node.isBlack, node.item, node.left, node.right.left);
-        RBTreeNode<T> root = new RBTreeNode<T>(node.right.isBlack, node.right.item, temp, node.right.right);
+        RBTreeNode<T> temp = new RBTreeNode<T>(node.right.isBlack, node.item, node.left, node.right.left);
+        RBTreeNode<T> root = new RBTreeNode<T>(node.isBlack, node.right.item, temp, node.right.right);
 //        RBTreeNode<T> root = node.right;
 //        root.left = node;
 //
@@ -161,7 +161,7 @@ public class RedBlackTree<T extends Comparable<T>> {
         // handle case C and "Right-leaning" situation.
         if (isRed(node.right) && !isRed(node.left)) {
             // YOUR CODE HERE
-            node = rotateLeft(node);
+            node = rotateLeft(node.left);
         }
 
         // handle case B
