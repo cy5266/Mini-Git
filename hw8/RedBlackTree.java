@@ -49,14 +49,15 @@ public class RedBlackTree<T extends Comparable<T>> {
             return null;
         }
 
-        RBTreeNode<T> temp = node.left.right;
+//        RBTreeNode<T> root = node.left;
+//        root.right = node;
+//
+//        if (node.left.right != null) {
+//            node.left = node.left.right;
+//        }
 
-        RBTreeNode<T> root = node.left;
-        root.right = node;
-
-        if (temp!= null) {
-            node.left = temp;
-        }
+        RBTreeNode<T> temp = new RBTreeNode<T>(node.isBlack, node.item, node.left.right, node.right);
+        RBTreeNode<T> root = new RBTreeNode<T>(node.left.isBlack, node.left.item, node.left.left, temp);
         // take the node's left child, make this node the right child of it,
         // if the node's left child previous had a right node, it becomes the left child of the parameter node
         // swap colors with NODE and its left child color
@@ -82,14 +83,14 @@ public class RedBlackTree<T extends Comparable<T>> {
             return null;
         }
 
-        RBTreeNode<T> temp = node.right.left;
-
-        RBTreeNode<T> root = node.right;
-        root.left = node;
-
-        if (temp != null) {
-            node.right = temp;
-        }
+        RBTreeNode<T> temp = new RBTreeNode<T>(node.isBlack, node.item, node.left, node.right.left);
+        RBTreeNode<T> root = new RBTreeNode<T>(node.right.isBlack, node.right.item, temp, node.right.right);
+//        RBTreeNode<T> root = node.right;
+//        root.left = node;
+//
+//        if (node.right.left != null) {
+//            node.right = node.right.left;
+//        }
         return root;
     }
 
