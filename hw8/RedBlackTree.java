@@ -49,6 +49,10 @@ public class RedBlackTree<T extends Comparable<T>> {
             return null;
         }
 
+        if (node.left == null) {
+            return node;
+        }
+
         RBTreeNode<T> root = node.left;
         root.right = node;
 
@@ -80,6 +84,10 @@ public class RedBlackTree<T extends Comparable<T>> {
             return null;
         }
 
+        if (node.left == null) {
+            return node;
+        }
+        
         RBTreeNode<T> root = node.right;
         root.left = node;
 
