@@ -87,7 +87,7 @@ public class RedBlackTree<T extends Comparable<T>> {
         if (node.left == null) {
             return node;
         }
-        
+
         RBTreeNode<T> root = node.right;
         root.left = node;
 
@@ -164,7 +164,7 @@ public class RedBlackTree<T extends Comparable<T>> {
         // handle case C and "Right-leaning" situation.
         if (isRed(node.right) && !isRed(node.left)) {
             // YOUR CODE HERE
-            node = rotateLeft(node);
+            node = rotateLeft(node.left);
         }
 
         // handle case B
