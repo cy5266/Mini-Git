@@ -54,7 +54,7 @@ public class Repo implements Serializable {
 
         stage = new StagingArea();
 
-        Utils.writeObject(STAGE_FILE, stage); //USE STAGE? OR NEW STAGING AREA
+        Utils.writeObject(STAGE_FILE, new StagingArea()); //USE STAGE? OR NEW STAGING AREA
 
 
     }
@@ -91,7 +91,7 @@ public class Repo implements Serializable {
     public StagingArea getStage() {
         return Utils.readObject(STAGE_FILE, StagingArea.class);
     }
-  
+
     public static Commit getHeadCommit() {
         return Utils.readObject(HEAD_FILE, Commit.class);
     }
