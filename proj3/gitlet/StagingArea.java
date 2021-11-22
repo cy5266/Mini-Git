@@ -1,7 +1,6 @@
 package gitlet;
 
 import java.io.Serializable;
-import java.sql.SQLOutput;
 import java.util.HashMap;
 
 public class StagingArea implements Serializable {
@@ -28,9 +27,6 @@ public class StagingArea implements Serializable {
 
     public HashMap<String, String> get_stageAddition() {
         return _stageAddition;
-    }
-    public void temp() {
-        System.out.println("hello");
     }
 
     public HashMap<String, String> get_stageRemoval() {
