@@ -16,15 +16,12 @@ public class Commit implements Serializable {
     private String _message;
     private String _time;
 
-    /**we shouldn't actually use an instance variable for the sha value*/
-    private String _SHA1;
-
     private String HEAD;
 
     private String parent; //filename where we can find the commit object
 
     private int _commitIndex = 0;
-    private LinkedHashMap<String, Commit> _commitHistory;
+//    private LinkedHashMap<String, String> _commitHistory;
 
     private HashMap<String, String> blobs;
 
@@ -42,19 +39,18 @@ public class Commit implements Serializable {
     public Commit () {
         _time = "Thu Jan 1 00:00:00 1970 -0800";
         _message = "initial commit";
-        _SHA1 = SHA1();
         blobs = new HashMap<>();
+        //parent = null;
     }
 
-    public Commit(String message, HashMap<String, String> blobs) {
+    public Commit(String message, HashMap<String, String> blobs, String parent) {
         _message = message;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
         LocalDateTime currentTime = LocalDateTime.now();
         _time = currentTime.format(formatter);
-        _SHA1 = SHA1();
 
         this.blobs = blobs;
-        HEAD = _SHA1;
+        this.parent = parent;
     }
 
 //    public void Commit(String commitMessage, String parent) {
@@ -87,11 +83,7 @@ public class Commit implements Serializable {
         return Utils.sha1(commitObj);
     }
 
-    public String get_SHA1() {
-        return _SHA1;
-    }
-
-    public HashMap get_Blobs() {
+    public HashMap<String, String > get_Blobs() {
         return blobs;
     }
 
@@ -99,12 +91,21 @@ public class Commit implements Serializable {
         return _message;
     }
 
+    public void setMessage(String message) {
+         _message = message;
+    }
+
     public String get_time() {
         return _time;
     }
 
-    public LinkedHashMap get_CommitHistory() {
-        return _commitHistory;
+    public void setBlobs(String fileName, String SHA, String toAdd) {
+        if (toAdd.equals("add")) {
+            blobs.put(fileName, SHA);
+        }
+        else if (toAdd.equals("rm")) {
+            blobs.remove(fileName);
+        }
     }
 
     public String getHEAD() {
