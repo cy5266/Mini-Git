@@ -39,30 +39,48 @@ public class Commit implements Serializable {
 //        _commitHistory.put(_SHA1, null);
 //    }
 
-    public void Commit(String commitMessage, String parent) {
-
-        if (parent == null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z");
-            _time = formatter.format(new Date(0));
-            _SHA1 = SHA1();
-            HEAD = _SHA1;
-            _message = commitMessage;
-            _commitHistory.put(_SHA1, null);
-        }
-        else {
-            LocalDateTime current = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
-            _time = current.format(formatter);
-            _message = commitMessage;
-            _SHA1 = SHA1();
-            HEAD = _SHA1;
-            this.parent = parent;
-        }
-
-
-
-//        _commitHistory.put(_SHA1, this);
+    public Commit () {
+        _time = "Thu Jan 1 00:00:00 1970 -0800";
+        _message = "initial commit";
+        _SHA1 = SHA1();
+        blobs = new HashMap<>();
     }
+
+    public Commit(String message, HashMap<String, String> blobs) {
+        _message = message;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
+        LocalDateTime currentTime = LocalDateTime.now();
+        _time = currentTime.format(formatter);
+        _SHA1 = SHA1();
+
+        this.blobs = blobs;
+        HEAD = _SHA1;
+    }
+
+//    public void Commit(String commitMessage, String parent) {
+//
+//        if (parent == null) {
+//            SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z");
+//            _time = formatter.format(new Date(0));
+//            _SHA1 = SHA1();
+//            HEAD = _SHA1;
+//            _message = commitMessage;
+//            _commitHistory.put(_SHA1, null);
+//        }
+//        else {
+//            LocalDateTime current = LocalDateTime.now();
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
+//            _time = current.format(formatter);
+//            _message = commitMessage;
+//            _SHA1 = SHA1();
+//            HEAD = _SHA1;
+//            this.parent = parent;
+//        }
+//
+//
+//
+////        _commitHistory.put(_SHA1, this);
+//    }
 
     public String SHA1() {
         byte[] commitObj = Utils.serialize(this);

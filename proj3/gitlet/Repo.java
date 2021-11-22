@@ -13,7 +13,7 @@ public class Repo implements Serializable {
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File GITLET_FOLDER = Utils.join(CWD, "/.gitlet");
+    static final File GITLET_FOLDER = Utils.join(CWD, ".gitlet");
 
     static final File STAGING_FOLDER = Utils.join(GITLET_FOLDER, "/staging");
 
@@ -106,9 +106,6 @@ public class Repo implements Serializable {
             STAGING_FOLDER.mkdir();
             COMMIT_FOLDER.mkdir();
             BRANCHES_FOLDER.mkdir();
-        }
-        if (!Commit.COMMIT_FOLDER.exists()) {
-            Commit.COMMIT_FOLDER.mkdir();
         }
     }
 
