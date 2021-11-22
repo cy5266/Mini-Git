@@ -13,7 +13,7 @@ public class Repo implements Serializable {
     static final File CWD = new File(System.getProperty("user.dir"));
 
     /** Main metadata folder. */
-    static final File GITLET_FOLDER = Utils.join(CWD, "gitlet");
+    static final File GITLET_FOLDER = Utils.join(CWD, "/.gitlet");
 
     static final File STAGING_FOLDER = Utils.join(GITLET_FOLDER, "/staging");
 
@@ -54,6 +54,9 @@ public class Repo implements Serializable {
             stage = new StagingArea();
 
             Utils.writeObject(STAGE_FILE, new StagingArea()); //USE STAGE? OR NEW STAGING AREA
+        }
+        else {
+            System.out.println("Gitlet already exists");
         }
 
 
