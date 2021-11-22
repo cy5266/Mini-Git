@@ -16,13 +16,15 @@ public class Commit implements Serializable {
     private String _message;
     private String _time;
 
-    private String HEAD;
+    /**we shouldn't actually use an instance variable for the sha value*/
     private String _SHA1;
+
+    private String HEAD;
 
     private String parent; //filename where we can find the commit object
 
     private int _commitIndex = 0;
-//    private LinkedHashMap<String, String> _commitHistory;
+    private LinkedHashMap<String, Commit> _commitHistory;
 
     private HashMap<String, String> blobs;
 
@@ -52,7 +54,7 @@ public class Commit implements Serializable {
         _SHA1 = SHA1();
 
         this.blobs = blobs;
-//        HEAD = _SHA1;
+        HEAD = _SHA1;
     }
 
 //    public void Commit(String commitMessage, String parent) {
@@ -85,7 +87,11 @@ public class Commit implements Serializable {
         return Utils.sha1(commitObj);
     }
 
-    public HashMap<String, String > get_Blobs() {
+    public String get_SHA1() {
+        return _SHA1;
+    }
+
+    public HashMap get_Blobs() {
         return blobs;
     }
 
@@ -93,21 +99,12 @@ public class Commit implements Serializable {
         return _message;
     }
 
-    public void setMessage(String message) {
-         _message = message;
-    }
-
     public String get_time() {
         return _time;
     }
 
-    public void setBlobs(String fileName, String SHA, String toAdd) {
-        if (toAdd.equals("add")) {
-            blobs.put(fileName, SHA);
-        }
-        else if (toAdd.equals("rm")) {
-            blobs.remove(fileName);
-        }
+    public LinkedHashMap get_CommitHistory() {
+        return _commitHistory;
     }
 
     public String getHEAD() {
