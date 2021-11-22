@@ -42,19 +42,20 @@ public class Repo implements Serializable {
             catch (IOException err) {
                 return;
             }
+
+            Commit initialCommit = new Commit();
+            MASTER = initialCommit.getHEAD();
+
+            File _initialCommitFile = Utils.join(COMMIT_FOLDER, initialCommit.get_SHA1());
+            Utils.writeObject(_initialCommitFile, Utils.serialize(initialCommit));
+
+            Utils.writeObject(HEAD_FILE, Utils.serialize(initialCommit));
+
+            stage = new StagingArea();
+
+            Utils.writeObject(STAGE_FILE, new StagingArea()); //USE STAGE? OR NEW STAGING AREA
         }
 
-        Commit initialCommit = new Commit();
-        MASTER = initialCommit.getHEAD();
-
-        File _initialCommitFile = Utils.join(COMMIT_FOLDER, initialCommit.get_SHA1());
-        Utils.writeObject(_initialCommitFile, Utils.serialize(initialCommit));
-
-        Utils.writeObject(HEAD_FILE, Utils.serialize(initialCommit));
-
-        stage = new StagingArea();
-
-        Utils.writeObject(STAGE_FILE, new StagingArea()); //USE STAGE? OR NEW STAGING AREA
 
 
     }
@@ -101,6 +102,7 @@ public class Repo implements Serializable {
             GITLET_FOLDER.mkdir();
             STAGING_FOLDER.mkdir();
             COMMIT_FOLDER.mkdir();
+            BRANCHES_FOLDER.mkdir();
         }
         if (!Commit.COMMIT_FOLDER.exists()) {
             Commit.COMMIT_FOLDER.mkdir();
