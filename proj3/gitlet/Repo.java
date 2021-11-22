@@ -139,51 +139,51 @@ public class Repo implements Serializable {
             BLOB_FOLDER.mkdir();
         }
     }
-
-    public static void commit(String message) {
-
-        if (message == "") {
-            System.out.println("please enter commit message");
-        }
-        if (stage.get_stageAddition().isEmpty() && stage.get_stageRemoval().isEmpty()) {
-            System.out.print("no changes to the commit");
-            return;
-        }
-
-        Commit curHEAD = getHeadCommit();
-        StagingArea curstage = getStage();
-
-        ArrayList<String> filesToAdd = new ArrayList<>(curstage.get_stageAddition().keySet());
-        ArrayList<String> filesToRemove = new ArrayList<>(curstage.get_stageRemoval().keySet());
-
-        Commit commitClone = new Commit(message, (HashMap<String, String>) curHEAD.get_Blobs().clone(), HEAD.SHA1());
-
-        for (String s: filesToAdd) {
-            commitClone.setBlobs(s, stage.get_stageAddition().get(s), "add");
-        }
-
-        for (String s: filesToRemove) {
-            commitClone.setBlobs(s, stage.get_stageRemoval().get(s), "rm");
-        }
-
-        File newFile = Utils.join(COMMIT_FOLDER, Utils.sha1(commitClone));
-        try {
-            newFile.createNewFile();
-        } catch (IOException excp) {
-            return;
-        }
-        Utils.writeObject(newFile, commitClone);
-        setStage(stage);
-
-        // read from my computer the HEAD commit and staging area
-
-        // clone the HEAD commit
-        // modify its message and timestamp according to user input
-        // use staging area in order to modify the files tracked by the new commit
-
-        // ask the computer: did we make any new objects that need to be saved onto the computer? or do we need to modify them?
-        // write back any new objects made or modified
-    }
+//
+//    public static void commit(String message) {
+//
+//        if (message == "") {
+//            System.out.println("please enter commit message");
+//        }
+//        if (stage.get_stageAddition().isEmpty() && stage.get_stageRemoval().isEmpty()) {
+//            System.out.print("no changes to the commit");
+//            return;
+//        }
+//
+//        Commit curHEAD = getHeadCommit();
+//        StagingArea curstage = getStage();
+//
+//        ArrayList<String> filesToAdd = new ArrayList<>(curstage.get_stageAddition().keySet());
+//        ArrayList<String> filesToRemove = new ArrayList<>(curstage.get_stageRemoval().keySet());
+//
+//        Commit commitClone = new Commit(message, (HashMap<String, String>) curHEAD.get_Blobs().clone(), HEAD.SHA1());
+//
+//        for (String s: filesToAdd) {
+//            commitClone.setBlobs(s, stage.get_stageAddition().get(s), "add");
+//        }
+//
+//        for (String s: filesToRemove) {
+//            commitClone.setBlobs(s, stage.get_stageRemoval().get(s), "rm");
+//        }
+//
+//        File newFile = Utils.join(COMMIT_FOLDER, Utils.sha1(commitClone));
+//        try {
+//            newFile.createNewFile();
+//        } catch (IOException excp) {
+//            return;
+//        }
+//        Utils.writeObject(newFile, commitClone);
+//        setStage(stage);
+//
+//        // read from my computer the HEAD commit and staging area
+//
+//        // clone the HEAD commit
+//        // modify its message and timestamp according to user input
+//        // use staging area in order to modify the files tracked by the new commit
+//
+//        // ask the computer: did we make any new objects that need to be saved onto the computer? or do we need to modify them?
+//        // write back any new objects made or modified
+//    }
 
     static void log() {
         HEAD = getHeadCommit();

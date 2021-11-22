@@ -17,6 +17,7 @@ public class Commit implements Serializable {
     private String _time;
 
     private String HEAD;
+    private String _SHA1;
 
     private String parent; //filename where we can find the commit object
 
@@ -39,18 +40,19 @@ public class Commit implements Serializable {
     public Commit () {
         _time = "Thu Jan 1 00:00:00 1970 -0800";
         _message = "initial commit";
+        _SHA1 = SHA1();
         blobs = new HashMap<>();
-        //parent = null;
     }
 
-    public Commit(String message, HashMap<String, String> blobs, String parent) {
+    public Commit(String message, HashMap<String, String> blobs) {
         _message = message;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
         LocalDateTime currentTime = LocalDateTime.now();
         _time = currentTime.format(formatter);
+        _SHA1 = SHA1();
 
         this.blobs = blobs;
-        this.parent = parent;
+//        HEAD = _SHA1;
     }
 
 //    public void Commit(String commitMessage, String parent) {
