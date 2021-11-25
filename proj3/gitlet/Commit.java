@@ -3,26 +3,16 @@ package gitlet;
 import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class Commit implements Serializable {
-    static final File COMMIT_FOLDER = new File(".commit_tree"); // FIXME
 
     private String _message;
     private String _time;
 
-    private String HEAD;
-
     private String parent; //filename where we can find the commit object
-    private String _SHA1;
-
-    private int _commitIndex = 0;
-    private LinkedHashMap<String, Commit> _commitHistory;
 
     private HashMap<String, byte[]> blobs = new HashMap<String, byte[]>();
 
@@ -43,14 +33,6 @@ public class Commit implements Serializable {
         this.parent = parentSHA;
     }
 
-    public String SHA1() {
-        byte[] commitObj = Utils.serialize(this);
-        return Utils.sha1(commitObj);
-    }
-
-    public String get_SHA1() {
-        return _SHA1;
-    }
 
     public HashMap<String, byte[] > get_Blobs() {
         return blobs;
@@ -79,9 +61,6 @@ public class Commit implements Serializable {
 
     public String getParentSHA() {
         return parent;
-    }
-    public String getHEAD() {
-        return HEAD;
     }
 
 

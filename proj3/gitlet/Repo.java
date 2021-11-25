@@ -2,6 +2,7 @@ package gitlet;
 
 //
 
+import javax.crypto.spec.PSource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,10 +23,6 @@ public class Repo implements Serializable {
 
     static final File COMMIT_FOLDER = Utils.join(GITLET_FOLDER, "/commits");
 
-    static final File BLOB_FOLDER = Utils.join(GITLET_FOLDER, "/blobs");
-
-//    static final File BRANCHES_FOLDER = Utils.join(GITLET_FOLDER, "/branches");
-
     /**files for serialization*/
     static final File HEAD_FILE = Utils.join(GITLET_FOLDER, "/head");
     static final File STAGE_FILE = Utils.join(GITLET_FOLDER, "/stage_add");
@@ -35,12 +32,11 @@ public class Repo implements Serializable {
     static final File COMMIT_HISTORY_FILE = Utils.join(GITLET_FOLDER, "/commitHistory");
 
     public static Commit HEAD;
-
-    private static String MASTER =  "master";
+   // private static String MASTER =  "master";
 
     private static StagingArea stage;
 
-    private static String currentBranch = "";
+   // private static String currentBranch = "";
 
     private static HashMap <String, String> branchesHash = new HashMap<>();
 
@@ -49,16 +45,6 @@ public class Repo implements Serializable {
     public static void init() {
         if (!GITLET_FOLDER.exists()) {
             setupPersistence();
-            try {
-                HEAD_FILE.createNewFile();
-                CURRENT_BRANCH_FILE.createNewFile();
-                BRANCH_FILE.createNewFile();
-                STAGE_FILE.createNewFile();
-                COMMIT_HISTORY_FILE.createNewFile();
-            }
-            catch (IOException err) {
-                return;
-            }
 
             Commit initialCommit = new Commit();
             String initCommitSHA1 = Utils.sha1(Utils.serialize(initialCommit));
@@ -71,16 +57,21 @@ public class Repo implements Serializable {
                     return;
                 }
             }
+
             Utils.writeObject(_initialCommitFile, initialCommit);
 
             branchesHash.put("master", initCommitSHA1);
 
-            Utils.writeObject(BRANCH_FILE, branchesHash);
-            Utils.writeObject(HEAD_FILE, initialCommit);
+            setBranches(branchesHash);
+//            Utils.writeObject(BRANCH_FILE, branchesHash);
+            setHeadCommit(initialCommit);
+//            Utils.writeObject(HEAD_FILE, initialCommit);
+
             Utils.writeObject(CURRENT_BRANCH_FILE, "master");
 
             commitHistory.put(initCommitSHA1, initialCommit);
-            Utils.writeObject(COMMIT_HISTORY_FILE, commitHistory);
+            setCommitHistory(commitHistory);
+//            Utils.writeObject(COMMIT_HISTORY_FILE, commitHistory);
 
             stage = new StagingArea();
             Utils.writeObject(STAGE_FILE, new StagingArea());
@@ -96,11 +87,6 @@ public class Repo implements Serializable {
 
         HEAD = getHeadCommit();
         stage = getStage();
-
-//        if (!toAdd.exists()) {
-//            System.out.println("file doesn't exist");
-//            return;
-//        }
 
         if (toAdd.exists()) {
             byte[] currentFile = HEAD.get_Blobs().get(fileName);
@@ -128,7 +114,9 @@ public class Repo implements Serializable {
                     return;
                 }
 
-                Utils.writeContents(toAdd, stage.get_stageRemoval().get(fileName));
+                byte[] toRemove = stage.get_stageRemoval().get(fileName);
+                Utils.writeContents(toAdd, toRemove);
+
                 stage.get_stageRemoval().remove(fileName);
                 setStage(stage);
             }
@@ -143,12 +131,6 @@ public class Repo implements Serializable {
             System.out.println("file does not exist");
             return;
         }
-
-
-
-        /**Case 1: If the current working version of the file is identical to the version in the current commit,
-         * do not stage it to be added, and remove it from the staging area if it is already there*/
-
 
     }
 
@@ -167,11 +149,11 @@ public class Repo implements Serializable {
     public static void setHeadCommit(Commit c) {
         Utils.writeObject(HEAD_FILE, c);
     }
-
-    public static HashMap<String, String> getBranches()
-    {
-        return Utils.readObject(BRANCH_FILE, HashMap.class);
-    }
+//
+//    public static HashMap<String, String> getBranches()
+//    {
+//        return Utils.readObject(BRANCH_FILE, HashMap.class);
+//    }
 
 
     public static LinkedHashMap<String, Commit> getCommitHistory(){
@@ -186,10 +168,10 @@ public class Repo implements Serializable {
     {
         Utils.writeObject(BRANCH_FILE, h);
     }
-
-    public static String getBranchName() {
-        return Utils.readObject(CURRENT_BRANCH_FILE, String.class);
-    }
+//
+//    public static String getBranchName() {
+//        return Utils.readObject(CURRENT_BRANCH_FILE, String.class);
+//    }
 
     public static void setupPersistence() {
         if (!GITLET_FOLDER.exists()) {
@@ -197,6 +179,17 @@ public class Repo implements Serializable {
             STAGING_FOLDER.mkdir();
             COMMIT_FOLDER.mkdir();
         }
+        try {
+            HEAD_FILE.createNewFile();
+            CURRENT_BRANCH_FILE.createNewFile();
+            BRANCH_FILE.createNewFile();
+            STAGE_FILE.createNewFile();
+            COMMIT_HISTORY_FILE.createNewFile();
+        }
+        catch (IOException err) {
+            return;
+        }
+
     }
 
     public static void commit(String message) {
@@ -240,13 +233,14 @@ public class Repo implements Serializable {
         setStage(stage);
         setHeadCommit(commitClone);
 
-        File newFile = Utils.join(COMMIT_FOLDER, Utils.sha1(Utils.serialize(commitClone)));
+        String newCommitSHA1 = Utils.sha1(Utils.serialize(commitClone));
+
+        File newFile = Utils.join(COMMIT_FOLDER, newCommitSHA1);
         try {
             newFile.createNewFile();
         } catch (IOException excp) {
             return;
         }
-        String newCommitSHA1 = Utils.sha1(Utils.serialize(commitClone));
 
         /**
         String currentBranch = Utils.readObject(CURRENT_BRANCH_FILE, String.class);
@@ -258,22 +252,8 @@ public class Repo implements Serializable {
         setBranches(branchesHash);
 */
         Utils.writeObject(newFile, commitClone);
-
-
-//        Utils.writeObject(newFile, Utils.serialize(commitClone));
-
         commitHistory.put(newCommitSHA1, commitClone);
-//        Utils.writeObject(COMMIT_HISTORY_FILE, commitHistory);
         setCommitHistory(commitHistory);
-
-        // read from my computer the HEAD commit and staging area
-
-        // clone the HEAD commit
-        // modify its message and timestamp according to user input
-        // use staging area in order to modify the files tracked by the new commit
-
-        // ask the computer: did we make any new objects that need to be saved onto the computer? or do we need to modify them?
-        // write back any new objects made or modified
     }
 
     public static void checkout (String fileName) {
@@ -322,8 +302,7 @@ public class Repo implements Serializable {
 
     static void log() {
         Commit tempHead = getHeadCommit();
-        LinkedHashMap<String, Commit> tempCommitHist = getCommitHistory();
-//        System.out.println("commit history:" + tempCommitHist);
+        LinkedHashMap<String, Commit> tempCommitHist = (LinkedHashMap<String, Commit>) getCommitHistory().clone();
 
         if (tempHead == null) {
             return;
@@ -334,8 +313,7 @@ public class Repo implements Serializable {
             System.out.println("Date: " + tempHead.get_time());
             System.out.println(tempHead.get_message() + "\n");
 
-//            tempHead = tempCommitHist.get(tempHead.getParentSHA());
-            tempHead = Utils.readObject(Utils.join(COMMIT_FOLDER, tempHead.getParentSHA()), Commit.class);
+            tempHead = tempCommitHist.get(tempHead.getParentSHA());
         }
 
         System.out.println("===");
