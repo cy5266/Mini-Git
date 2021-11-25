@@ -182,8 +182,6 @@ public class Repo implements Serializable {
         Utils.writeObject(COMMIT_HISTORY_FILE, l);
     }
 
-
-
     public static void setBranches(HashMap h)
     {
         Utils.writeObject(BRANCH_FILE, h);
@@ -227,16 +225,14 @@ public class Repo implements Serializable {
         ArrayList<String> filesToAdd = new ArrayList<>(stage.get_stageAddition().keySet());
         ArrayList<String> filesToRemove = new ArrayList<>(stage.get_stageRemoval().keySet());
 
+        /**the new commit*/
         Commit commitClone = new Commit(message, tempClone, Utils.sha1(Utils.serialize(HEAD)));
 
         for (String s: filesToAdd) {
             commitClone.setBlobs(s, stage.get_stageAddition().get(s), "add");
-//            commitClone.get_Blobs().put(s, stage.get_stageAddition().get(s));
-//            commitClone.put(s, stage.get_stageAddition().get(s), "add");
         }
 
         for (String s: filesToRemove) {
-//            commitClone.get_Blobs().remove(s);
             commitClone.setBlobs(s, stage.get_stageRemoval().get(s), "rm");
         }
 
@@ -250,19 +246,24 @@ public class Repo implements Serializable {
         } catch (IOException excp) {
             return;
         }
+        String newCommitSHA1 = Utils.sha1(Utils.serialize(commitClone));
 
+        /**
         String currentBranch = Utils.readObject(CURRENT_BRANCH_FILE, String.class);
 
-        String newCommitSHA1 = Utils.sha1(Utils.serialize(commitClone));
 
         branchesHash = getBranches();
         branchesHash.put(currentBranch, newCommitSHA1);
 
         setBranches(branchesHash);
-
+*/
         Utils.writeObject(newFile, commitClone);
 
+
+//        Utils.writeObject(newFile, Utils.serialize(commitClone));
+
         commitHistory.put(newCommitSHA1, commitClone);
+//        Utils.writeObject(COMMIT_HISTORY_FILE, commitHistory);
         setCommitHistory(commitHistory);
 
         // read from my computer the HEAD commit and staging area
@@ -293,20 +294,26 @@ public class Repo implements Serializable {
     }
 
     public static void checkout2 (String commitID, String fileName) {
+
+        LinkedHashMap<String, Commit> tempHistory =  new LinkedHashMap<>();
+        tempHistory.putAll(getCommitHistory());
+//
+//        System.out.println(Utils.readObject(COMMIT_HISTORY_FILE, LinkedHashMap.class));
+
         File newFile = Utils.join(COMMIT_FOLDER, commitID);
-        if (!newFile.exists()) {
-            System.out.println("File doesn't exist");
+        if (!tempHistory.containsKey(commitID)) {
+            System.out.println("No commit with that id exists.");
             return;
         }
-        else {
+         {
             try {
-                Commit tempCommit = Utils.readObject(newFile, Commit.class);
-                if (!tempCommit.get_Blobs().containsKey(fileName)) {
-                    System.out.println("File doesn't exist");
+                Commit newCommit = Utils.readObject(newFile, Commit.class);
+                if (!newCommit.get_Blobs().containsKey(fileName)) {
+                    System.out.println("File does not exist in that commit.");
                     return;
                 }
-//                String blobSHA = tempCommit.get_Blobs().get(fileName);
-//                Utils.writeContents(Utils.join(CWD, fileName), blobSHA);
+//                String blobSHA = Utils.sha1(Utils.serialize(newCommit.get_Blobs().get(fileName)));
+                Utils.writeContents(Utils.join(CWD, fileName), newCommit.get_Blobs().get(fileName));
             } catch (IllegalArgumentException excp) {
                 return;
             }
@@ -327,7 +334,8 @@ public class Repo implements Serializable {
             System.out.println("Date: " + tempHead.get_time());
             System.out.println(tempHead.get_message() + "\n");
 
-            tempHead = tempCommitHist.get(tempHead.getParentSHA());
+//            tempHead = tempCommitHist.get(tempHead.getParentSHA());
+            tempHead = Utils.readObject(Utils.join(COMMIT_FOLDER, tempHead.getParentSHA()), Commit.class);
         }
 
         System.out.println("===");

@@ -29,18 +29,13 @@ public class Commit implements Serializable {
     public Commit() {
         SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z");
         _time = formatter.format(new Date(0));
-//        _time = "00:00:00 UTC, Thursday, 1 January 1970";
         _message = "initial commit";
-        _commitHistory = new LinkedHashMap<String, Commit>();
-        _commitHistory.put(_SHA1, null);
         parent = null;
 
     }
 
     public Commit(String message, HashMap<String, byte[]> blobs, String parentSHA) {
         _message = message;
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
-//        LocalDateTime currentTime = LocalDateTime.now();
         SimpleDateFormat currentTime = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z");
         _time = currentTime.format(new Date());
 

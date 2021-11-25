@@ -25,8 +25,9 @@ public class Main {
             case "checkout":
                 if (args.length == 3) {
                     Repo.checkout(args[2]);
-
                     break;
+                } else if (args.length == 4) {
+                    Repo.checkout2(args[1], args[3]);
                 }
         }
         //error for bad command
