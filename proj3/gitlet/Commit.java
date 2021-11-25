@@ -16,71 +16,37 @@ public class Commit implements Serializable {
     private String _message;
     private String _time;
 
-    /**we shouldn't actually use an instance variable for the sha value*/
-    private String _SHA1;
-
     private String HEAD;
 
     private String parent; //filename where we can find the commit object
+    private String _SHA1;
 
     private int _commitIndex = 0;
     private LinkedHashMap<String, Commit> _commitHistory;
 
-    private HashMap<String, String> blobs;
+    private HashMap<String, byte[]> blobs = new HashMap<String, byte[]>();
 
-//    public void Commit() {
-//        SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z");
-//        _time = formatter.format(new Date(0));
-//
-//        _message = "initial commit";
-//        this.parent = null;
-//        _SHA1 = SHA1();
-//        HEAD = _SHA1;
-//        _commitHistory.put(_SHA1, null);
-//    }
-
-    public Commit () {
-        _time = "Thu Jan 1 00:00:00 1970 -0800";
+    public Commit() {
+        SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z");
+        _time = formatter.format(new Date(0));
+//        _time = "00:00:00 UTC, Thursday, 1 January 1970";
         _message = "initial commit";
-        _SHA1 = SHA1();
-        blobs = new HashMap<>();
+        _commitHistory = new LinkedHashMap<String, Commit>();
+        _commitHistory.put(_SHA1, null);
+        parent = null;
+
     }
 
-    public Commit(String message, HashMap<String, String> blobs) {
+    public Commit(String message, HashMap<String, byte[]> blobs, String parentSHA) {
         _message = message;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
-        LocalDateTime currentTime = LocalDateTime.now();
-        _time = currentTime.format(formatter);
-        _SHA1 = SHA1();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
+//        LocalDateTime currentTime = LocalDateTime.now();
+        SimpleDateFormat currentTime = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z");
+        _time = currentTime.format(new Date());
 
         this.blobs = blobs;
-        HEAD = _SHA1;
+        this.parent = parentSHA;
     }
-
-//    public void Commit(String commitMessage, String parent) {
-//
-//        if (parent == null) {
-//            SimpleDateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss yyyy Z");
-//            _time = formatter.format(new Date(0));
-//            _SHA1 = SHA1();
-//            HEAD = _SHA1;
-//            _message = commitMessage;
-//            _commitHistory.put(_SHA1, null);
-//        }
-//        else {
-//            LocalDateTime current = LocalDateTime.now();
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss yyyy Z");
-//            _time = current.format(formatter);
-//            _message = commitMessage;
-//            _SHA1 = SHA1();
-//            HEAD = _SHA1;
-//            this.parent = parent;
-//        }
-//
-//
-//
-////        _commitHistory.put(_SHA1, this);
-//    }
 
     public String SHA1() {
         byte[] commitObj = Utils.serialize(this);
@@ -91,7 +57,7 @@ public class Commit implements Serializable {
         return _SHA1;
     }
 
-    public HashMap get_Blobs() {
+    public HashMap<String, byte[] > get_Blobs() {
         return blobs;
     }
 
@@ -99,12 +65,21 @@ public class Commit implements Serializable {
         return _message;
     }
 
+    public void setMessage(String message) {
+        _message = message;
+    }
+
     public String get_time() {
         return _time;
     }
 
-    public LinkedHashMap get_CommitHistory() {
-        return _commitHistory;
+    public void setBlobs(String fileName, byte[] contents, String toAdd) {
+        if (toAdd.equals("add")) {
+            blobs.put(fileName, contents);
+        }
+        else if (toAdd.equals("rm")) {
+            blobs.remove(fileName);
+        }
     }
 
     public String getHEAD() {

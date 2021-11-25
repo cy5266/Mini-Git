@@ -8,15 +8,15 @@ public class StagingArea implements Serializable {
     /** instance variables */
 
     /** takes in String for Filename and String for SHA1 */
-    private HashMap<String, String> _stageAddition = new HashMap<>();
-    private HashMap<String, String> _stageRemoval = new HashMap<>();
+    private HashMap<String, byte[]> _stageAddition = new HashMap<>();
+    private HashMap<String, byte[]> _stageRemoval = new HashMap<>();
 
-    public void addStage(String fileName, String sha1) {
-        _stageAddition.put(fileName, sha1);
+    public void addStage(String fileName, byte[] contents) {
+        _stageAddition.put(fileName, contents);
     }
 
-    public void addRemove(String fileName, String sha1) {
-        _stageRemoval.put(fileName, sha1);
+    public void addRemove(String fileName,  byte[] contents ) {
+        _stageRemoval.put(fileName, contents);
     }
 
     public void clear() {
@@ -25,11 +25,11 @@ public class StagingArea implements Serializable {
     }
 
 
-    public HashMap<String, String> get_stageAddition() {
+    public HashMap<String, byte[]> get_stageAddition() {
         return _stageAddition;
     }
 
-    public HashMap<String, String> get_stageRemoval() {
+    public HashMap<String, byte[]> get_stageRemoval() {
         return _stageRemoval;
     }
 }
