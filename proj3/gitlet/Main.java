@@ -17,16 +17,17 @@ public class Main {
                 Repo.add(args[1]);
                 break;
             case "commit":
-                if (args[1] != null) {
-                    Repo.commit(args[1]);
-                }
+                Repo.commit(args[1]);
                 break;
             case "log":
                 Repo.log();
                 break;
             case "checkout":
-                Repo.checkout(args[1]);
-                break;
+                if (args.length == 3) {
+                    Repo.checkout(args[2]);
+
+                    break;
+                }
         }
         //error for bad command
         return;

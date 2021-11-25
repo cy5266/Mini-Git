@@ -82,6 +82,9 @@ public class Commit implements Serializable {
         }
     }
 
+    public String getParentSHA() {
+        return parent;
+    }
     public String getHEAD() {
         return HEAD;
     }

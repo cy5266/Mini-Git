@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class Repo implements Serializable {
 
@@ -31,6 +32,8 @@ public class Repo implements Serializable {
     static final File BRANCH_FILE = Utils.join(GITLET_FOLDER, "/branches");
     static final File CURRENT_BRANCH_FILE = Utils.join(GITLET_FOLDER, "/currentBranch");
 
+    static final File COMMIT_HISTORY_FILE = Utils.join(GITLET_FOLDER, "/commitHistory");
+
     public static Commit HEAD;
 
     private static String MASTER =  "master";
@@ -41,6 +44,8 @@ public class Repo implements Serializable {
 
     private static HashMap <String, String> branchesHash = new HashMap<>();
 
+    private static LinkedHashMap<String, Commit> commitHistory = new LinkedHashMap<>();
+
     public static void init() {
         if (!GITLET_FOLDER.exists()) {
             setupPersistence();
@@ -49,6 +54,7 @@ public class Repo implements Serializable {
                 CURRENT_BRANCH_FILE.createNewFile();
                 BRANCH_FILE.createNewFile();
                 STAGE_FILE.createNewFile();
+                COMMIT_HISTORY_FILE.createNewFile();
             }
             catch (IOException err) {
                 return;
@@ -67,18 +73,14 @@ public class Repo implements Serializable {
             }
             Utils.writeObject(_initialCommitFile, initialCommit);
 
-
-
-//            setStage(stage);
-//            stage = getStage();
-//            Utils.writeObject(STAGE_FILE, new StagingArea());
-
-
             branchesHash.put("master", initCommitSHA1);
 
             Utils.writeObject(BRANCH_FILE, branchesHash);
             Utils.writeObject(HEAD_FILE, initialCommit);
             Utils.writeObject(CURRENT_BRANCH_FILE, "master");
+
+            commitHistory.put(initCommitSHA1, initialCommit);
+            Utils.writeObject(COMMIT_HISTORY_FILE, commitHistory);
 
             stage = new StagingArea();
             Utils.writeObject(STAGE_FILE, new StagingArea());
@@ -171,6 +173,17 @@ public class Repo implements Serializable {
         return Utils.readObject(BRANCH_FILE, HashMap.class);
     }
 
+
+    public static LinkedHashMap<String, Commit> getCommitHistory(){
+        return Utils.readObject(COMMIT_HISTORY_FILE, LinkedHashMap.class);
+    }
+
+    public static void setCommitHistory(LinkedHashMap l){
+        Utils.writeObject(COMMIT_HISTORY_FILE, l);
+    }
+
+
+
     public static void setBranches(HashMap h)
     {
         Utils.writeObject(BRANCH_FILE, h);
@@ -198,6 +211,7 @@ public class Repo implements Serializable {
 
         HEAD = getHeadCommit();
         stage = getStage();
+        commitHistory = getCommitHistory();
 
         if (stage.get_stageAddition().isEmpty() && stage.get_stageRemoval().isEmpty()) {
             System.out.print("no changes to the commit");
@@ -239,13 +253,17 @@ public class Repo implements Serializable {
 
         String currentBranch = Utils.readObject(CURRENT_BRANCH_FILE, String.class);
 
-        branchesHash = getBranches();
+        String newCommitSHA1 = Utils.sha1(Utils.serialize(commitClone));
 
-        branchesHash.put(currentBranch, Utils.sha1(Utils.serialize(commitClone)));
+        branchesHash = getBranches();
+        branchesHash.put(currentBranch, newCommitSHA1);
 
         setBranches(branchesHash);
 
         Utils.writeObject(newFile, commitClone);
+
+        commitHistory.put(newCommitSHA1, commitClone);
+        setCommitHistory(commitHistory);
 
         // read from my computer the HEAD commit and staging area
 
@@ -267,7 +285,10 @@ public class Repo implements Serializable {
         }
         //get the byte array that the sha returns
         // maintain sha1 id to byte array
-        Utils.writeObject(Utils.join(CWD, fileName), currentBlobContents);
+
+        /**Make sure that you are using Utils.writeContents() instead of Utils.writeObject()
+         * when you are writing a string into a file!*/
+        Utils.writeContents(Utils.join(CWD, fileName), currentBlobContents);
 
     }
 
@@ -293,11 +314,27 @@ public class Repo implements Serializable {
     }
 
     static void log() {
-        HEAD = getHeadCommit();
+        Commit tempHead = getHeadCommit();
+        LinkedHashMap<String, Commit> tempCommitHist = getCommitHistory();
+//        System.out.println("commit history:" + tempCommitHist);
+
+        if (tempHead == null) {
+            return;
+        }
+        while (tempHead.getParentSHA() != null) {
+            System.out.println("===");
+            System.out.println("commit " + Utils.sha1(Utils.serialize(tempHead)));
+            System.out.println("Date: " + tempHead.get_time());
+            System.out.println(tempHead.get_message() + "\n");
+
+            tempHead = tempCommitHist.get(tempHead.getParentSHA());
+        }
+
         System.out.println("===");
-        System.out.println("commit " + Utils.sha1(Utils.serialize(HEAD)));
-        System.out.println("Date: " + HEAD.get_time());
-        System.out.println(HEAD.get_message() + "\n");
+        System.out.println("commit " + Utils.sha1(Utils.serialize(tempHead)));
+        System.out.println("Date: " + tempHead.get_time());
+        System.out.println(tempHead.get_message() + "\n");
+
     }
 
 }
