@@ -2,15 +2,14 @@ package gitlet;
 
 //
 
+import org.antlr.v4.runtime.tree.Tree;
+
 import javax.crypto.spec.PSource;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class Repo implements Serializable {
 
@@ -26,6 +25,8 @@ public class Repo implements Serializable {
     /**files for serialization*/
     static final File HEAD_FILE = Utils.join(GITLET_FOLDER, "/head");
     static final File STAGE_FILE = Utils.join(GITLET_FOLDER, "/stage_add");
+    static final File STAGE_RM_FILE = Utils.join(GITLET_FOLDER, "/stage_rm");
+
     static final File BRANCH_FILE = Utils.join(GITLET_FOLDER, "/branches");
     static final File CURRENT_BRANCH_FILE = Utils.join(GITLET_FOLDER, "/currentBranch");
 
@@ -38,9 +39,9 @@ public class Repo implements Serializable {
 
    // private static String currentBranch = "";
 
-    private static HashMap <String, String> branchesHash = new HashMap<>();
+    private static TreeMap<String, String> branchesHash = new TreeMap<>();
 
-    private static LinkedHashMap<String, Commit> commitHistory = new LinkedHashMap<>();
+    private static TreeMap<String, Commit> commitHistory = new TreeMap<>();
 
     public static void init() {
         if (!GITLET_FOLDER.exists()) {
@@ -63,18 +64,17 @@ public class Repo implements Serializable {
             branchesHash.put("master", initCommitSHA1);
 
             setBranches(branchesHash);
-//            Utils.writeObject(BRANCH_FILE, branchesHash);
             setHeadCommit(initialCommit);
-//            Utils.writeObject(HEAD_FILE, initialCommit);
 
             Utils.writeObject(CURRENT_BRANCH_FILE, "master");
 
             commitHistory.put(initCommitSHA1, initialCommit);
             setCommitHistory(commitHistory);
-//            Utils.writeObject(COMMIT_HISTORY_FILE, commitHistory);
 
             stage = new StagingArea();
             Utils.writeObject(STAGE_FILE, new StagingArea());
+//            Utils.writeObject(STAGE_RM_FILE, new StagingArea());
+
         }
         else {
             System.out.println("Gitlet already exists");
@@ -131,7 +131,28 @@ public class Repo implements Serializable {
             System.out.println("file does not exist");
             return;
         }
+    }
 
+    public static void rm(String fileName) {
+        HEAD = getHeadCommit();
+        stage = getStage();
+        File toRemove = Utils.join(CWD, fileName);
+
+        if (stage.get_stageAddition().containsKey(fileName)) {
+            stage.get_stageAddition().remove(fileName);
+            setStage(stage);
+            return;
+        }
+        if (!HEAD.get_Blobs().containsKey(fileName)) {
+            System.out.println("no file to remove");
+            return;
+        }
+
+        byte[] blobsToDelete = HEAD.get_Blobs().get(fileName);
+        stage.get_stageRemoval().put(fileName, blobsToDelete);
+        Utils.restrictedDelete(toRemove);
+        setStage(stage);
+        Utils.writeObject(HEAD_FILE, HEAD);
     }
 
     public static void setStage(StagingArea a) {
@@ -156,15 +177,15 @@ public class Repo implements Serializable {
 //    }
 
 
-    public static LinkedHashMap<String, Commit> getCommitHistory(){
-        return Utils.readObject(COMMIT_HISTORY_FILE, LinkedHashMap.class);
+    public static TreeMap<String, Commit> getCommitHistory(){
+        return Utils.readObject(COMMIT_HISTORY_FILE, TreeMap.class);
     }
 
-    public static void setCommitHistory(LinkedHashMap l){
+    public static void setCommitHistory(TreeMap l){
         Utils.writeObject(COMMIT_HISTORY_FILE, l);
     }
 
-    public static void setBranches(HashMap h)
+    public static void setBranches(TreeMap h)
     {
         Utils.writeObject(BRANCH_FILE, h);
     }
@@ -185,6 +206,7 @@ public class Repo implements Serializable {
             BRANCH_FILE.createNewFile();
             STAGE_FILE.createNewFile();
             COMMIT_HISTORY_FILE.createNewFile();
+            STAGE_RM_FILE.createNewFile();
         }
         catch (IOException err) {
             return;
@@ -209,7 +231,7 @@ public class Repo implements Serializable {
             return;
         }
 
-        HashMap<String, byte[]> tempClone = new HashMap<>();
+        TreeMap<String, byte[]> tempClone = new TreeMap<>();
 
         if (HEAD.get_Blobs() != null) {
             tempClone.putAll(HEAD.get_Blobs());
@@ -302,7 +324,7 @@ public class Repo implements Serializable {
 
     static void log() {
         Commit tempHead = getHeadCommit();
-        LinkedHashMap<String, Commit> tempCommitHist = (LinkedHashMap<String, Commit>) getCommitHistory().clone();
+        TreeMap<String, Commit> tempCommitHist = (TreeMap<String, Commit>) getCommitHistory().clone();
 
         if (tempHead == null) {
             return;
@@ -321,6 +343,16 @@ public class Repo implements Serializable {
         System.out.println("Date: " + tempHead.get_time());
         System.out.println(tempHead.get_message() + "\n");
 
+    }
+
+    static void globalLog() {
+        for (String commitSHA: Utils.plainFilenamesIn(COMMIT_FOLDER)) {
+            Commit commit = Utils.readObject(Utils.join(COMMIT_FOLDER, commitSHA), Commit.class);
+            System.out.println("===");
+            System.out.println("commit " + commitSHA);
+            System.out.println("Date:" + commit.get_time());
+            System.out.println(commit.get_message() + "\n");
+        }
     }
 
 }

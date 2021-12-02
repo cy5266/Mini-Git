@@ -29,6 +29,13 @@ public class Main {
                 } else if (args.length == 4) {
                     Repo.checkout2(args[1], args[3]);
                 }
+                break;
+            case "rm":
+                Repo.rm(args[2]);
+                break;
+            case "global-log":
+                Repo.globalLog();
+                break;
         }
         //error for bad command
         return;

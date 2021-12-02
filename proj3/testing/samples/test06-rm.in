@@ -1,0 +1,4 @@
+# Remove a tracked file and check status.
+> rm f.txt
+<<<
+* f.txt
