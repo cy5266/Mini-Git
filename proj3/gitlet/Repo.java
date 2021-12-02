@@ -66,7 +66,7 @@ public class Repo implements Serializable {
             setBranches(branchesHash);
             setHeadCommit(initialCommit);
 
-            Utils.writeObject(CURRENT_BRANCH_FILE, "master");
+            Utils.writeContents(CURRENT_BRANCH_FILE, "master");
 
             commitHistory.put(initCommitSHA1, initialCommit);
             setCommitHistory(commitHistory);
@@ -144,7 +144,7 @@ public class Repo implements Serializable {
             return;
         }
         if (!HEAD.get_Blobs().containsKey(fileName)) {
-            System.out.println("no file to remove");
+            System.out.println("No reason to remove the file.");
             return;
         }
 
@@ -170,11 +170,24 @@ public class Repo implements Serializable {
     public static void setHeadCommit(Commit c) {
         Utils.writeObject(HEAD_FILE, c);
     }
-//
-//    public static HashMap<String, String> getBranches()
-//    {
-//        return Utils.readObject(BRANCH_FILE, HashMap.class);
-//    }
+
+    public static TreeMap<String, String> getBranches()
+    {
+        return Utils.readObject(BRANCH_FILE, TreeMap.class);
+    }
+
+    public static void setBranches(TreeMap h)
+    {
+        Utils.writeObject(BRANCH_FILE, h);
+    }
+
+    public static String getCurrentBranchName() {
+        return Utils.readContentsAsString(CURRENT_BRANCH_FILE);
+    }
+
+    public static void setCurrentBranchName(String name) {
+        Utils.writeContents(CURRENT_BRANCH_FILE, name);
+    }
 
 
     public static TreeMap<String, Commit> getCommitHistory(){
@@ -185,13 +198,11 @@ public class Repo implements Serializable {
         Utils.writeObject(COMMIT_HISTORY_FILE, l);
     }
 
-    public static void setBranches(TreeMap h)
-    {
-        Utils.writeObject(BRANCH_FILE, h);
-    }
-//
-//    public static String getBranchName() {
-//        return Utils.readObject(CURRENT_BRANCH_FILE, String.class);
+
+
+
+//    public static String getBranches() {
+//        return Utils.readObject(BRANCH_FILE, String.class);
 //    }
 
     public static void setupPersistence() {
@@ -215,10 +226,8 @@ public class Repo implements Serializable {
     }
 
     public static void commit(String message) {
-
-
-        if (message == "") {
-            System.out.println("please enter commit message");
+        if (message.equals("")) {
+            System.out.println("Please enter a commit message.");
             return;
         }
 
@@ -227,7 +236,7 @@ public class Repo implements Serializable {
         commitHistory = getCommitHistory();
 
         if (stage.get_stageAddition().isEmpty() && stage.get_stageRemoval().isEmpty()) {
-            System.out.print("no changes to the commit");
+            System.out.print("No changes added to the commit.");
             return;
         }
 
@@ -264,15 +273,17 @@ public class Repo implements Serializable {
             return;
         }
 
-        /**
-        String currentBranch = Utils.readObject(CURRENT_BRANCH_FILE, String.class);
 
+        String currentBranch = getCurrentBranchName();
 
         branchesHash = getBranches();
         branchesHash.put(currentBranch, newCommitSHA1);
 
         setBranches(branchesHash);
-*/
+
+//        Utils.writeObject(CURRENT_BRANCH_FILE, currentBranch);
+
+
         Utils.writeObject(newFile, commitClone);
         commitHistory.put(newCommitSHA1, commitClone);
         setCommitHistory(commitHistory);
@@ -296,6 +307,7 @@ public class Repo implements Serializable {
     }
 
     public static void checkout2 (String commitID, String fileName) {
+
 
         LinkedHashMap<String, Commit> tempHistory =  new LinkedHashMap<>();
         tempHistory.putAll(getCommitHistory());
@@ -322,6 +334,53 @@ public class Repo implements Serializable {
         }
     }
 
+    public static void checkout3(String branchName) {
+//        TreeMap<String, String> currentBranch = getBranches().get(branchName);
+        branchesHash = getBranches();
+        String currentBranch = getCurrentBranchName();
+        HEAD = getHeadCommit();
+        stage = getStage();
+
+        if (!branchesHash.containsKey(branchName)) {
+            System.out.println(" No such branch exists.");
+            return;
+        }
+        if (currentBranch.equals(branchName)) {
+            System.out.println("No need to checkout the current branch.");
+            return;
+        }
+        for (String fileName: Utils.plainFilenamesIn(CWD)) {
+            if (!HEAD.get_Blobs().containsKey(fileName)) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                return;
+            }
+        }
+
+        String requestedCommitSHA = branchesHash.get(branchName);
+        Commit requestCommit = Utils.readObject(Utils.join(COMMIT_FOLDER, requestedCommitSHA), Commit.class);
+        HEAD = requestCommit;
+        setHeadCommit(HEAD);
+
+        stage.clear();
+        setStage(stage);
+
+        for (String fileName: Utils.plainFilenamesIn(CWD)) {
+            Utils.restrictedDelete(Utils.join(CWD, fileName));
+        }
+
+        for (String fileName: requestCommit.get_Blobs().keySet()) {
+            try {
+                Utils.join(CWD, fileName).createNewFile();
+            } catch (IOException exc) {
+                return;
+            }
+            Utils.writeContents(Utils.join(CWD, fileName), requestCommit.get_Blobs().get(fileName));
+        }
+
+        setCurrentBranchName(branchName);
+
+    }
+
     static void log() {
         Commit tempHead = getHeadCommit();
         TreeMap<String, Commit> tempCommitHist = (TreeMap<String, Commit>) getCommitHistory().clone();
@@ -346,13 +405,168 @@ public class Repo implements Serializable {
     }
 
     static void globalLog() {
+
+//        System.out.println("commit-folder" + Utils.plainFilenamesIn(COMMIT_FOLDER));
         for (String commitSHA: Utils.plainFilenamesIn(COMMIT_FOLDER)) {
             Commit commit = Utils.readObject(Utils.join(COMMIT_FOLDER, commitSHA), Commit.class);
             System.out.println("===");
             System.out.println("commit " + commitSHA);
-            System.out.println("Date:" + commit.get_time());
+            System.out.println("Date: " + commit.get_time());
             System.out.println(commit.get_message() + "\n");
         }
+    }
+
+    static void find(String message) {
+
+//        System.out.println("commit-folder" + Utils.plainFilenamesIn(COMMIT_FOLDER));
+        boolean hasMessage = false;
+        for (String commitSHA: Utils.plainFilenamesIn(COMMIT_FOLDER)) {
+            Commit commit = Utils.readObject(Utils.join(COMMIT_FOLDER, commitSHA), Commit.class);
+            if (commit.get_message().equals(message)) {
+                System.out.println(commitSHA);
+                hasMessage = true;
+            }
+        }
+        if (hasMessage == false) {
+            System.out.println("Found no commit with that message.");
+        }
+    }
+
+    static void branch(String branchName) {
+        HEAD = getHeadCommit();
+        branchesHash = getBranches();
+        if (branchesHash.containsKey(branchName)) {
+            System.out.println("A branch with that name already exists.");
+            return;
+        }
+        branchesHash.put(branchName, Utils.sha1(Utils.serialize(HEAD)));
+        setBranches(branchesHash);
+    }
+
+    static void rmBranch(String branchName) {
+        branchesHash = getBranches();
+        String currentBranch = getCurrentBranchName();
+
+        if (!branchesHash.containsKey(branchName)) {
+            System.out.println("A branch with that name does not exist.");
+            return;
+        }
+        if (currentBranch.equals(branchName)) {
+            System.out.println("Cannot remove the current branch.");
+            return;
+        }
+        branchesHash.remove(branchName);
+        setBranches(branchesHash);
+
+    }
+
+    static void reset(String commitID) {
+        HEAD = getHeadCommit();
+        stage = getStage();
+
+        if (!Utils.plainFilenamesIn(COMMIT_FOLDER).contains(commitID)) {
+            System.out.println("No commit with that id exists.");
+            return;
+        }
+
+        Commit commit = Utils.readObject(Utils.join(COMMIT_FOLDER, commitID), Commit.class);
+        for (String file: Utils.plainFilenamesIn(CWD)) {
+            if (commit.get_Blobs().containsKey(file) && !HEAD.get_Blobs().containsKey(file)) {
+                System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
+                return;
+            }
+        }
+
+
+
+        for (String file: Utils.plainFilenamesIn(CWD)) {
+            Utils.restrictedDelete(Utils.join(CWD, file));
+        }
+
+        for (String file: commit.get_Blobs().keySet()) {
+            try {
+                Utils.join(CWD, file).createNewFile();
+            } catch (IOException excp) {
+                return;
+            }
+
+            Utils.writeContents(Utils.join(CWD, file), commit.get_Blobs().get(file));
+        }
+
+        stage.clear();
+        setStage(stage);
+
+        HEAD = commit;
+        setHeadCommit(HEAD);
+
+        branchesHash = getBranches();
+        String currentBranch = getCurrentBranchName();
+        branchesHash.put(currentBranch, commitID);
+        setBranches(branchesHash);
+    }
+
+    public static void status() {
+        HEAD = getHeadCommit();
+        branchesHash = getBranches();
+        String currentBranch = getCurrentBranchName();
+        stage = getStage();
+
+        System.out.println("=== Branches ===");
+        for (String branchName: branchesHash.keySet()) {
+            if (branchName.equals(currentBranch)) {
+                System.out.println("*" + currentBranch) ;
+            }
+            else {
+                System.out.println(branchName);
+            }
+        }
+        System.out.println();
+
+        System.out.println("=== Staged Files ===");
+        for (String addFiles: stage.get_stageAddition().keySet()) {
+            System.out.println(addFiles);
+        }
+        System.out.println();
+        System.out.println("=== Removed Files ===");
+        for (String removeFiles: stage.get_stageRemoval().keySet()) {
+            System.out.println(removeFiles);
+        }
+        System.out.println();
+
+        System.out.println("=== Modifications Not Staged For Commit ===");
+        /**
+        for (String fileName: HEAD.get_Blobs().keySet()) {
+            //tracked in current commit, changed in working directory
+            File blobFile = Utils.join(CWD, fileName);
+
+            String commitSHA1 = Utils.sha1(HEAD.get_Blobs().get(blobFile));
+            String blobSHA1 = Utils.sha1(blobFile);
+
+            if ((!commitSHA1.equals(blobSHA1) &&
+                    !stage.get_stageRemoval().containsKey(fileName) &&
+                    !stage.get_stageAddition().containsKey(fileName)) ||(
+                    stage.get_stageAddition().containsKey(fileName) && !commitSHA1.equals(blobSHA1))
+            ) {
+                System.out.println(fileName + " (modified)");
+            }
+
+            if ((!blobFile.exists() && stage.get_stageAddition().containsKey(fileName) ) ||
+                    (!blobFile.exists() && stage.get_stageRemoval().containsKey(fileName))) {
+                System.out.println(fileName + " (deleted)");
+            }
+
+        }
+         */
+
+
+        System.out.println();
+        System.out.println("=== Untracked Files ===");
+        // staged for addition, but with different contents
+
+//        for (String fileName: HEAD.get_Blobs().keySet()) {
+//
+//        }
+
     }
 
 }

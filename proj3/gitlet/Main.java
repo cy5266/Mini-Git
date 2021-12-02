@@ -28,13 +28,31 @@ public class Main {
                     break;
                 } else if (args.length == 4) {
                     Repo.checkout2(args[1], args[3]);
+                    break;
+                } else if (args.length == 2) {
+                    Repo.checkout3(args[1]);
+                    break;
                 }
-                break;
             case "rm":
-                Repo.rm(args[2]);
+                Repo.rm(args[1]);
                 break;
             case "global-log":
                 Repo.globalLog();
+                break;
+            case "find":
+                Repo.find(args[1]);
+                break;
+            case "branch":
+                Repo.branch(args[1]);
+                break;
+            case "rm-branch":
+                Repo.rmBranch(args[1]);
+                break;
+            case "reset":
+                Repo.reset(args[1]);
+                break;
+            case "status":
+                Repo.status();
                 break;
         }
         //error for bad command

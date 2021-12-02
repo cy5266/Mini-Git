@@ -2,14 +2,15 @@ package gitlet;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class StagingArea implements Serializable {
 
     /** instance variables */
 
     /** takes in String for Filename and String for SHA1 */
-    private HashMap<String, byte[]> _stageAddition = new HashMap<>();
-    private HashMap<String, byte[]> _stageRemoval = new HashMap<>();
+    private TreeMap<String, byte[]> _stageAddition = new TreeMap<>();
+    private TreeMap<String, byte[]> _stageRemoval = new TreeMap<>();
 
     public void addStage(String fileName, byte[] contents) {
         _stageAddition.put(fileName, contents);
@@ -25,11 +26,11 @@ public class StagingArea implements Serializable {
     }
 
 
-    public HashMap<String, byte[]> get_stageAddition() {
+    public TreeMap<String, byte[]> get_stageAddition() {
         return _stageAddition;
     }
 
-    public HashMap<String, byte[]> get_stageRemoval() {
+    public TreeMap<String, byte[]> get_stageRemoval() {
         return _stageRemoval;
     }
 }
