@@ -77,7 +77,7 @@ public class Repo implements Serializable {
 
         }
         else {
-            System.out.println("Gitlet already exists");
+            System.out.println("A Gitlet version-control system already exists in the current directory.");
         }
     }
 
@@ -289,7 +289,11 @@ public class Repo implements Serializable {
         setCommitHistory(commitHistory);
     }
 
+
     public static void checkout (String fileName) {
+
+
+
         HEAD = getHeadCommit(); //current branch
         byte[] currentBlobContents = HEAD.get_Blobs().get(fileName);
 
@@ -308,6 +312,13 @@ public class Repo implements Serializable {
 
     public static void checkout2 (String commitID, String fileName) {
 
+        if (commitID.length() < 40) {
+            for (String fullCommitID: Utils.plainFilenamesIn(COMMIT_FOLDER)) {
+                if (fullCommitID.contains(commitID)) {
+                    commitID = fullCommitID;
+                }
+            }
+        }
 
         LinkedHashMap<String, Commit> tempHistory =  new LinkedHashMap<>();
         tempHistory.putAll(getCommitHistory());
@@ -533,34 +544,42 @@ public class Repo implements Serializable {
         }
         System.out.println();
 
+       TreeMap<String, byte[]> headBlobs = HEAD.get_Blobs();
+
+
         System.out.println("=== Modifications Not Staged For Commit ===");
-        /**
-        for (String fileName: HEAD.get_Blobs().keySet()) {
-            //tracked in current commit, changed in working directory
+        for (String fileName: headBlobs.keySet()) {
+
             File blobFile = Utils.join(CWD, fileName);
-
-            String commitSHA1 = Utils.sha1(HEAD.get_Blobs().get(blobFile));
-            String blobSHA1 = Utils.sha1(blobFile);
-
-            if ((!commitSHA1.equals(blobSHA1) &&
-                    !stage.get_stageRemoval().containsKey(fileName) &&
-                    !stage.get_stageAddition().containsKey(fileName)) ||(
-                    stage.get_stageAddition().containsKey(fileName) && !commitSHA1.equals(blobSHA1))
-            ) {
-                System.out.println(fileName + " (modified)");
-            }
-
-            if ((!blobFile.exists() && stage.get_stageAddition().containsKey(fileName) ) ||
-                    (!blobFile.exists() && stage.get_stageRemoval().containsKey(fileName))) {
+            if ((!blobFile.exists() && !stage.get_stageRemoval().containsKey(fileName)) ||
+                    !blobFile.exists() && stage.get_stageAddition().containsKey(fileName)) {
                 System.out.println(fileName + " (deleted)");
             }
 
-        }
-         */
+            String headBlob = Utils.sha1(HEAD.get_Blobs().get(fileName));
 
+            if ((!stage.get_stageRemoval().containsKey(fileName)
+                    && !Utils.sha1(Utils.readContents(blobFile)).equals(headBlob)
+                    && !stage.get_stageAddition().containsKey(fileName)) ||
+                    (stage.get_stageAddition().containsKey(fileName) &&
+                            !headBlob.equals(Utils.sha1(Utils.readContents(blobFile))))) {
+                System.out.println(fileName + " (modified)");
+            }
+        }
 
         System.out.println();
         System.out.println("=== Untracked Files ===");
+        for (String fileName : Utils.plainFilenamesIn(CWD)) {
+            if (!headBlobs.containsKey(fileName)
+                    && !stage.get_stageAddition().containsKey(fileName)) {
+                System.out.println(fileName);
+            }
+        }
+
+
+
+//        System.out.println();
+//        System.out.println("=== Untracked Files ===");
         // staged for addition, but with different contents
 
 //        for (String fileName: HEAD.get_Blobs().keySet()) {
