@@ -32,6 +32,8 @@ public class Repo implements Serializable {
 
     static final File COMMIT_HISTORY_FILE = Utils.join(GITLET_FOLDER, "/commitHistory");
 
+    static final File REMOTE_FILE = Utils.join(GITLET_FOLDER, "/remote");
+
     public static Commit HEAD;
    // private static String MASTER =  "master";
 
@@ -42,6 +44,10 @@ public class Repo implements Serializable {
     private static TreeMap<String, String> branchesHash = new TreeMap<>();
 
     private static TreeMap<String, Commit> commitHistory = new TreeMap<>();
+
+    public static TreeMap<String, File> remotes = new TreeMap<>();
+
+    public static TreeMap<String, String> remoteBranches = new TreeMap();
 
     public static void init() {
         if (!GITLET_FOLDER.exists()) {
@@ -74,6 +80,8 @@ public class Repo implements Serializable {
             stage = new StagingArea();
             Utils.writeObject(STAGE_FILE, new StagingArea());
 //            Utils.writeObject(STAGE_RM_FILE, new StagingArea());
+
+            Utils.writeObject(REMOTE_FILE, new TreeMap<String, File>());
 
         }
         else {
@@ -200,6 +208,9 @@ public class Repo implements Serializable {
 
 
 
+//    public static void setRemoteBranches (TreeMap<String, String>  remote)  {
+//        Utils.writeObject(remoteBranches, remote);
+//    }
 
 //    public static String getBranches() {
 //        return Utils.readObject(BRANCH_FILE, String.class);
@@ -218,6 +229,7 @@ public class Repo implements Serializable {
             STAGE_FILE.createNewFile();
             COMMIT_HISTORY_FILE.createNewFile();
             STAGE_RM_FILE.createNewFile();
+            REMOTE_FILE.createNewFile();
         }
         catch (IOException err) {
             return;
@@ -554,13 +566,20 @@ public class Repo implements Serializable {
             if ((!blobFile.exists() && !stage.get_stageRemoval().containsKey(fileName)) ||
                     !blobFile.exists() && stage.get_stageAddition().containsKey(fileName)) {
                 System.out.println(fileName + " (deleted)");
+                break;
             }
 
             String headBlob = Utils.sha1(HEAD.get_Blobs().get(fileName));
+            String string = "";
+
+            if (blobFile.isFile()) {
+                string = Utils.sha1(Utils.readContents(blobFile));
+            }
 
             if ((!stage.get_stageRemoval().containsKey(fileName)
-                    && !Utils.sha1(Utils.readContents(blobFile)).equals(headBlob)
-                    && !stage.get_stageAddition().containsKey(fileName)) ||
+                    && !string.equals(headBlob)
+                    && !stage.get_stageAddition().containsKey(fileName))
+                    ||
                     (stage.get_stageAddition().containsKey(fileName) &&
                             !headBlob.equals(Utils.sha1(Utils.readContents(blobFile))))) {
                 System.out.println(fileName + " (modified)");
@@ -576,16 +595,97 @@ public class Repo implements Serializable {
             }
         }
 
-
-
-//        System.out.println();
-//        System.out.println("=== Untracked Files ===");
-        // staged for addition, but with different contents
-
-//        for (String fileName: HEAD.get_Blobs().keySet()) {
-//
-//        }
-
     }
+
+
+
+    public static TreeMap<String, File> getRemote() {
+        return Utils.readObject(REMOTE_FILE, TreeMap.class);
+    }
+
+    public static void setRemote(TreeMap<String, File>  remote) {
+        Utils.writeObject(REMOTE_FILE, remote);
+    }
+
+
+    public static void addRemote (String remoteName, String remoteDir) {
+        remotes = getRemote();
+
+        if (remotes.containsKey(remoteName)) {
+            System.out.println("A remote with that name already exists.");
+            return;
+        }
+
+        File remoteFile = new File(remoteDir.replace("/", java.io.File.separator));
+        remotes.put(remoteName, remoteFile);
+        setRemote(remotes);
+    }
+
+//
+//    public static void setRemoteBranches(File remote, TreeMap<String, String> temp) {
+//        Utils.writeObject(Utils.join(remote, "/branches"), temp);
+//    }
+
+    public static TreeMap<String, String> getRemoteBranches(File remoteName) {
+        return Utils.readObject(Utils.join(remoteName, "/branches"), TreeMap.class);
+    }
+
+    public static void rmRemote (String remoteName) {
+        remotes = getRemote();
+
+        if (!remotes.containsKey(remoteName)) {
+            System.out.println("A remote with that name does not exist.");
+            return;
+        }
+
+        remotes.remove(remoteName);
+        setRemote(remotes);
+    }
+
+    public static void push (String remoteName, String remoteBranchName) {
+        HEAD=getHeadCommit();
+        remotes=getRemote();
+
+        if (!remotes.containsKey(remoteName) || !remotes.get(remoteName).exists()) {
+            System.out.println("Remote directory not found.");
+            return;
+        }
+
+        File dir = remotes.get(remoteName);
+        remoteBranches = getRemoteBranches(dir);
+        String remoteBranch = remoteBranches.get(remoteBranchName);
+
+        TreeMap<String, Commit> tempCommitHist = (TreeMap<String, Commit>) getCommitHistory().clone();
+        if (!tempCommitHist.containsKey(remoteBranch)) {
+            System.out.println("Please pull down remote changes before pushing.");
+            return;
+        }
+    }
+
+
+
+
+    public static void fetch (String remoteName, String branchName) {
+        HEAD=getHeadCommit();
+        remotes=getRemote();
+
+        if (!remotes.containsKey(remoteName) || !remotes.get(remoteName).exists()) {
+            System.out.println("Remote directory not found.");
+            return;
+        }
+
+        File dir = remotes.get(remoteName);
+        remoteBranches = getRemoteBranches(dir);
+        if (!remoteBranches.containsKey(branchName)) {
+            System.out.println("That remote does not have that branch.");
+            return;
+        }
+    }
+
+    public static void pull(String remoteName, String remoteBranchName) {
+        fetch(remoteName, remoteBranchName);
+//        merge(remoteName + "/" + remoteBranchName);
+    }
+
 
 }

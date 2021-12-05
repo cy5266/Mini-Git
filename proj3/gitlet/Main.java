@@ -107,6 +107,18 @@ public class Main {
                 }
                 Repo.status();
                 break;
+            case "push":
+                Repo.push(args[1], args[2]);
+                break;
+            case "add-remote":
+                Repo.addRemote(args[1], args[2]);
+                break;
+            case "rm-remote":
+                Repo.rmRemote(args[1]);
+                break;
+            case "fetch":
+                Repo.fetch(args[1], args[2]);
+                break;
             default:
                 System.out.println("No command with that name exists.");
                 break;
@@ -114,5 +126,7 @@ public class Main {
         //error for bad command
         return;
     }
+
+
 
 }
