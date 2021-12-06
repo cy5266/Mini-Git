@@ -1,7 +1,6 @@
 package gitlet;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.TreeMap;
 
 public class StagingArea implements Serializable {
@@ -12,19 +11,10 @@ public class StagingArea implements Serializable {
     private TreeMap<String, byte[]> _stageAddition = new TreeMap<>();
     private TreeMap<String, byte[]> _stageRemoval = new TreeMap<>();
 
-    public void addStage(String fileName, byte[] contents) {
-        _stageAddition.put(fileName, contents);
-    }
-
-    public void addRemove(String fileName,  byte[] contents ) {
-        _stageRemoval.put(fileName, contents);
-    }
-
     public void clear() {
         _stageRemoval.clear();
         _stageAddition.clear();
     }
-
 
     public TreeMap<String, byte[]> get_stageAddition() {
         return _stageAddition;

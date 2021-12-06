@@ -97,7 +97,7 @@ public class Repo implements Serializable {
         stage = getStage();
 
         if (toAdd.exists()) {
-            byte[] currentFile = HEAD.get_Blobs().get(fileName);
+            byte[] currentFile = HEAD.getBlobs().get(fileName);
             byte[] newFile = Utils.readContents(toAdd);
 //            String fileSHA = Utils.sha1(newFile);
 
@@ -151,12 +151,12 @@ public class Repo implements Serializable {
             setStage(stage);
             return;
         }
-        if (!HEAD.get_Blobs().containsKey(fileName)) {
+        if (!HEAD.getBlobs().containsKey(fileName)) {
             System.out.println("No reason to remove the file.");
             return;
         }
 
-        byte[] blobsToDelete = HEAD.get_Blobs().get(fileName);
+        byte[] blobsToDelete = HEAD.getBlobs().get(fileName);
         stage.get_stageRemoval().put(fileName, blobsToDelete);
         Utils.restrictedDelete(toRemove);
         setStage(stage);
@@ -254,8 +254,8 @@ public class Repo implements Serializable {
 
         TreeMap<String, byte[]> tempClone = new TreeMap<>();
 
-        if (HEAD.get_Blobs() != null) {
-            tempClone.putAll(HEAD.get_Blobs());
+        if (HEAD.getBlobs() != null) {
+            tempClone.putAll(HEAD.getBlobs());
         }
 
         ArrayList<String> filesToAdd = new ArrayList<>(stage.get_stageAddition().keySet());
@@ -307,9 +307,9 @@ public class Repo implements Serializable {
 
 
         HEAD = getHeadCommit(); //current branch
-        byte[] currentBlobContents = HEAD.get_Blobs().get(fileName);
+        byte[] currentBlobContents = HEAD.getBlobs().get(fileName);
 
-        if (!HEAD.get_Blobs().containsKey(fileName)) {
+        if (!HEAD.getBlobs().containsKey(fileName)) {
             System.out.println("file doesn't exist in the commit");
             return;
         }
@@ -345,12 +345,12 @@ public class Repo implements Serializable {
          {
             try {
                 Commit newCommit = Utils.readObject(newFile, Commit.class);
-                if (!newCommit.get_Blobs().containsKey(fileName)) {
+                if (!newCommit.getBlobs().containsKey(fileName)) {
                     System.out.println("File does not exist in that commit.");
                     return;
                 }
 //                String blobSHA = Utils.sha1(Utils.serialize(newCommit.get_Blobs().get(fileName)));
-                Utils.writeContents(Utils.join(CWD, fileName), newCommit.get_Blobs().get(fileName));
+                Utils.writeContents(Utils.join(CWD, fileName), newCommit.getBlobs().get(fileName));
             } catch (IllegalArgumentException excp) {
                 return;
             }
@@ -373,7 +373,7 @@ public class Repo implements Serializable {
             return;
         }
         for (String fileName: Utils.plainFilenamesIn(CWD)) {
-            if (!HEAD.get_Blobs().containsKey(fileName)) {
+            if (!HEAD.getBlobs().containsKey(fileName)) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 return;
             }
@@ -391,13 +391,13 @@ public class Repo implements Serializable {
             Utils.restrictedDelete(Utils.join(CWD, fileName));
         }
 
-        for (String fileName: requestCommit.get_Blobs().keySet()) {
+        for (String fileName: requestCommit.getBlobs().keySet()) {
             try {
                 Utils.join(CWD, fileName).createNewFile();
             } catch (IOException exc) {
                 return;
             }
-            Utils.writeContents(Utils.join(CWD, fileName), requestCommit.get_Blobs().get(fileName));
+            Utils.writeContents(Utils.join(CWD, fileName), requestCommit.getBlobs().get(fileName));
         }
 
         setCurrentBranchName(branchName);
@@ -414,16 +414,16 @@ public class Repo implements Serializable {
         while (tempHead.getParentSHA() != null) {
             System.out.println("===");
             System.out.println("commit " + Utils.sha1(Utils.serialize(tempHead)));
-            System.out.println("Date: " + tempHead.get_time());
-            System.out.println(tempHead.get_message() + "\n");
+            System.out.println("Date: " + tempHead.getTime());
+            System.out.println(tempHead.getMessage() + "\n");
 
             tempHead = tempCommitHist.get(tempHead.getParentSHA());
         }
 
         System.out.println("===");
         System.out.println("commit " + Utils.sha1(Utils.serialize(tempHead)));
-        System.out.println("Date: " + tempHead.get_time());
-        System.out.println(tempHead.get_message() + "\n");
+        System.out.println("Date: " + tempHead.getTime());
+        System.out.println(tempHead.getMessage() + "\n");
 
     }
 
@@ -434,8 +434,8 @@ public class Repo implements Serializable {
             Commit commit = Utils.readObject(Utils.join(COMMIT_FOLDER, commitSHA), Commit.class);
             System.out.println("===");
             System.out.println("commit " + commitSHA);
-            System.out.println("Date: " + commit.get_time());
-            System.out.println(commit.get_message() + "\n");
+            System.out.println("Date: " + commit.getTime());
+            System.out.println(commit.getMessage() + "\n");
         }
     }
 
@@ -445,7 +445,7 @@ public class Repo implements Serializable {
         boolean hasMessage = false;
         for (String commitSHA: Utils.plainFilenamesIn(COMMIT_FOLDER)) {
             Commit commit = Utils.readObject(Utils.join(COMMIT_FOLDER, commitSHA), Commit.class);
-            if (commit.get_message().equals(message)) {
+            if (commit.getMessage().equals(message)) {
                 System.out.println(commitSHA);
                 hasMessage = true;
             }
@@ -494,7 +494,7 @@ public class Repo implements Serializable {
 
         Commit commit = Utils.readObject(Utils.join(COMMIT_FOLDER, commitID), Commit.class);
         for (String file: Utils.plainFilenamesIn(CWD)) {
-            if (commit.get_Blobs().containsKey(file) && !HEAD.get_Blobs().containsKey(file)) {
+            if (commit.getBlobs().containsKey(file) && !HEAD.getBlobs().containsKey(file)) {
                 System.out.println("There is an untracked file in the way; delete it, or add and commit it first.");
                 return;
             }
@@ -506,14 +506,14 @@ public class Repo implements Serializable {
             Utils.restrictedDelete(Utils.join(CWD, file));
         }
 
-        for (String file: commit.get_Blobs().keySet()) {
+        for (String file: commit.getBlobs().keySet()) {
             try {
                 Utils.join(CWD, file).createNewFile();
             } catch (IOException excp) {
                 return;
             }
 
-            Utils.writeContents(Utils.join(CWD, file), commit.get_Blobs().get(file));
+            Utils.writeContents(Utils.join(CWD, file), commit.getBlobs().get(file));
         }
 
         stage.clear();
@@ -556,7 +556,7 @@ public class Repo implements Serializable {
         }
         System.out.println();
 
-       TreeMap<String, byte[]> headBlobs = HEAD.get_Blobs();
+       TreeMap<String, byte[]> headBlobs = HEAD.getBlobs();
 
 
         System.out.println("=== Modifications Not Staged For Commit ===");
@@ -569,7 +569,7 @@ public class Repo implements Serializable {
                 break;
             }
 
-            String headBlob = Utils.sha1(HEAD.get_Blobs().get(fileName));
+            String headBlob = Utils.sha1(HEAD.getBlobs().get(fileName));
             String string = "";
 
             if (blobFile.isFile()) {
@@ -597,6 +597,116 @@ public class Repo implements Serializable {
 
     }
 
+    public static void merge(String mergeBranch) {
+        HEAD = getHeadCommit();
+        branchesHash = getBranches();
+        String currentBranchName = getCurrentBranchName();
+        stage = getStage();
+
+        if (!stage.get_stageRemoval().isEmpty() || !stage.get_stageAddition().isEmpty()) {
+            System.out.println("You have uncommitted changes.");
+            return;
+        }
+        if (branchesHash.get(currentBranchName).equals(branchesHash.get(mergeBranch))) {
+            System.out.println("Cannot merge a branch with itself.");
+            return;
+        }
+        if (!branchesHash.containsKey(mergeBranch)) {
+            System.out.println("A branch with that name does not exist.");
+            return;
+        }
+
+        Commit mergeBranchCommit = Utils.readObject(Utils.join(COMMIT_FOLDER, branchesHash.get(mergeBranch)), Commit.class);
+
+        for (String filename : Utils.plainFilenamesIn(CWD)) {
+            if (!HEAD.getBlobs().containsKey(filename) &&
+                    mergeBranchCommit.getBlobs().containsKey(filename)) {
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first.");
+                return;
+            }
+        }
+
+
+        Commit splitCommit = split(mergeBranch);
+        ArrayList<String> fileNames = new ArrayList<>();
+        fileNames = getAllFileNames(splitCommit, HEAD, mergeBranchCommit);
+
+        int action = -1;
+
+        for (String file: fileNames) {
+            byte[] headFile = HEAD.getBlobs().get(file);
+            byte[] splitFile = splitCommit.getBlobs().get(file);
+            byte[] mergeFile = splitCommit.getBlobs().get(file);
+            action = mergeCases(headFile, splitFile, mergeFile);
+
+            if (action == 1) {
+                stage.get_stageAddition().put(file, mergeFile);
+            } else if (action == 2) {
+                stage.get_stageRemoval().put(file, headFile);
+            }
+        }
+
+
+
+        setStage(stage);
+
+        //get split point
+        //get all the files
+        //go through the different cases
+    }
+
+    public static int mergeCases(byte[] headFile, byte[] splitFile, byte[] mergeFile) {
+
+        return 0;
+    }
+
+    public static ArrayList getAllFileNames(Commit splitHeadPointer, Commit HeadPointer, Commit MergePointer) {
+        ArrayList<String> fileNames = new ArrayList<>(splitHeadPointer.getBlobs().keySet());
+
+        for (String key: HeadPointer.getBlobs().keySet()) {
+            if (!fileNames.contains(key)) {
+                fileNames.add(key);
+            }
+        }
+
+        for (String key: MergePointer.getBlobs().keySet()) {
+            if (!fileNames.contains(key)) {
+                fileNames.add(key);
+            }
+        }
+
+        return fileNames;
+    }
+
+    public static Commit split(String branch) {
+        branchesHash = getBranches();
+        ArrayList<String> headHistory = new ArrayList<>();
+
+        Commit tempHead = getHeadCommit();
+        TreeMap<String, Commit> tempCommitHist = (TreeMap<String, Commit>) getCommitHistory().clone();
+
+        while (tempHead.getParentSHA() != null) {
+            headHistory.add(Utils.sha1(Utils.serialize(tempHead)));
+            tempHead = tempCommitHist.get(tempHead.getParentSHA());
+        }
+
+        String branchSHA1 = branchesHash.get(branch);
+
+        Commit branchCommit = Utils.readObject(Utils.join(COMMIT_FOLDER, branchSHA1), Commit.class);
+        TreeMap<String, Commit> branchCommitClone = (TreeMap<String, Commit>) getBranches().clone();
+
+        String splitSHA = null;
+
+        while (branchCommit.getParentSHA() != null) {
+            if (headHistory.contains(Utils.sha1(Utils.serialize(branchCommit)))) {
+                splitSHA = Utils.sha1(Utils.serialize(branchCommit));
+            }
+            branchCommit = branchCommitClone.get(branchCommit.getParentSHA());
+        }
+
+        return Utils.readObject(Utils.join(COMMIT_FOLDER, splitSHA), Commit.class);
+    }
 
 
     public static TreeMap<String, File> getRemote() {
