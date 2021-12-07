@@ -628,6 +628,17 @@ public class Repo implements Serializable {
 
         Commit splitCommit = split(mergeBranch);
 
+        if (Utils.sha1(Utils.serialize(splitCommit)).equals(branchesHash.get(currentBranchName))) {
+            checkout3(mergeBranch);
+            System.out.println("Current branch fast-forwarded.");
+            return;
+        }
+        if (Utils.sha1(Utils.serialize(splitCommit)).equals(branchesHash.get(mergeBranch))) {
+            System.out.println("Given branch is an ancestor of the current branch.");
+            return;
+        }
+
+
         ArrayList<String> fileNames = new ArrayList<>();
         fileNames = getAllFileNames(splitCommit, HEAD, mergeBranchCommit);
 
