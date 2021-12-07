@@ -558,40 +558,40 @@ public class Repo implements Serializable {
 
 
         System.out.println("=== Modifications Not Staged For Commit ===");
-//        for (String fileName: headBlobs.keySet()) {
-//
-//            File blobFile = Utils.join(CWD, fileName);
-//            if ((!blobFile.exists() && !stage.get_stageRemoval().containsKey(fileName)) ||
-//                    !blobFile.exists() && stage.get_stageAddition().containsKey(fileName)) {
-//                System.out.println(fileName + " (deleted)");
-//                break;
-//            }
-//
-//            String headBlob = Utils.sha1(HEAD.getBlobs().get(fileName));
-//            String string = "";
-//
-//            if (blobFile.isFile()) {
-//                string = Utils.sha1(Utils.readContents(blobFile));
-//            }
-//
-//            if ((!stage.get_stageRemoval().containsKey(fileName)
-//                    && !string.equals(headBlob)
-//                    && !stage.get_stageAddition().containsKey(fileName))
-//                    ||
-//                    (stage.get_stageAddition().containsKey(fileName) &&
-//                            !headBlob.equals(Utils.sha1(Utils.readContents(blobFile))))) {
-//                System.out.println(fileName + " (modified)");
-//            }
-//        }
+            for (String fileName : headBlobs.keySet()) {
+
+                File blobFile = Utils.join(CWD, fileName);
+                if ((!blobFile.exists() && !stage.get_stageRemoval().containsKey(fileName)) ||
+                        !blobFile.exists() && stage.get_stageAddition().containsKey(fileName)) {
+                    System.out.println(fileName + " (deleted)");
+                    break;
+                }
+
+                String headBlob = Utils.sha1(HEAD.getBlobs().get(fileName));
+                String string = "";
+
+                if (blobFile.isFile()) {
+                    string = Utils.sha1(Utils.readContents(blobFile));
+                }
+
+                if ((!stage.get_stageRemoval().containsKey(fileName)
+                        && !string.equals(headBlob)
+                        && !stage.get_stageAddition().containsKey(fileName))
+                        ||
+                        (stage.get_stageAddition().containsKey(fileName) &&
+                                !headBlob.equals(Utils.sha1(Utils.readContents(blobFile))))) {
+                    System.out.println(fileName + " (modified)");
+                }
+            }
 
         System.out.println();
         System.out.println("=== Untracked Files ===");
-//        for (String fileName : Utils.plainFilenamesIn(CWD)) {
-//            if (!headBlobs.containsKey(fileName)
-//                    && !stage.get_stageAddition().containsKey(fileName)) {
-//                System.out.println(fileName);
-//            }
-//        }
+            for (String fileName : Utils.plainFilenamesIn(CWD)) {
+                if (!headBlobs.containsKey(fileName)
+                        && !stage.get_stageAddition().containsKey(fileName)) {
+                    System.out.println(fileName);
+                }
+            }
 
     }
 
@@ -667,6 +667,8 @@ public class Repo implements Serializable {
 
                 File stagingFile = Utils.join(CWD, file);
                 Utils.writeContents(stagingFile, combinedContents);
+                stage.get_stageAddition().put(file, Utils.readContents(stagingFile));
+
 //                stage.get_stageAddition().put(file, newBlob.getID());
 //
 //                File workingFile = Utils.join(CWD, combinedContents);
