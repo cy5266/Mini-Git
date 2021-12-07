@@ -8,6 +8,7 @@ import javax.crypto.spec.PSource;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.nio.charset.StandardCharsets;
 
 import java.io.File;
 
@@ -557,40 +558,40 @@ public class Repo implements Serializable {
 
 
         System.out.println("=== Modifications Not Staged For Commit ===");
-        for (String fileName: headBlobs.keySet()) {
-
-            File blobFile = Utils.join(CWD, fileName);
-            if ((!blobFile.exists() && !stage.get_stageRemoval().containsKey(fileName)) ||
-                    !blobFile.exists() && stage.get_stageAddition().containsKey(fileName)) {
-                System.out.println(fileName + " (deleted)");
-                break;
-            }
-
-            String headBlob = Utils.sha1(HEAD.getBlobs().get(fileName));
-            String string = "";
-
-            if (blobFile.isFile()) {
-                string = Utils.sha1(Utils.readContents(blobFile));
-            }
-
-            if ((!stage.get_stageRemoval().containsKey(fileName)
-                    && !string.equals(headBlob)
-                    && !stage.get_stageAddition().containsKey(fileName))
-                    ||
-                    (stage.get_stageAddition().containsKey(fileName) &&
-                            !headBlob.equals(Utils.sha1(Utils.readContents(blobFile))))) {
-                System.out.println(fileName + " (modified)");
-            }
-        }
+//        for (String fileName: headBlobs.keySet()) {
+//
+//            File blobFile = Utils.join(CWD, fileName);
+//            if ((!blobFile.exists() && !stage.get_stageRemoval().containsKey(fileName)) ||
+//                    !blobFile.exists() && stage.get_stageAddition().containsKey(fileName)) {
+//                System.out.println(fileName + " (deleted)");
+//                break;
+//            }
+//
+//            String headBlob = Utils.sha1(HEAD.getBlobs().get(fileName));
+//            String string = "";
+//
+//            if (blobFile.isFile()) {
+//                string = Utils.sha1(Utils.readContents(blobFile));
+//            }
+//
+//            if ((!stage.get_stageRemoval().containsKey(fileName)
+//                    && !string.equals(headBlob)
+//                    && !stage.get_stageAddition().containsKey(fileName))
+//                    ||
+//                    (stage.get_stageAddition().containsKey(fileName) &&
+//                            !headBlob.equals(Utils.sha1(Utils.readContents(blobFile))))) {
+//                System.out.println(fileName + " (modified)");
+//            }
+//        }
 
         System.out.println();
         System.out.println("=== Untracked Files ===");
-        for (String fileName : Utils.plainFilenamesIn(CWD)) {
-            if (!headBlobs.containsKey(fileName)
-                    && !stage.get_stageAddition().containsKey(fileName)) {
-                System.out.println(fileName);
-            }
-        }
+//        for (String fileName : Utils.plainFilenamesIn(CWD)) {
+//            if (!headBlobs.containsKey(fileName)
+//                    && !stage.get_stageAddition().containsKey(fileName)) {
+//                System.out.println(fileName);
+//            }
+//        }
 
     }
 
@@ -646,10 +647,6 @@ public class Repo implements Serializable {
 
             action = mergeCases(headFile, splitFile, mergeFile);
 
-//            System.out.println(action);
-
-
-
             if (action == 1) {
                 File dir = Utils.join(CWD, file);
                 Utils.writeContents(dir, mergeFile);
@@ -657,10 +654,26 @@ public class Repo implements Serializable {
                 stage.get_stageAddition().put(file, mergeFile);
 
             } else if (action == 2) {
-//                rm(file);
                 stage.get_stageRemoval().put(file, headFile);
                 Utils.restrictedDelete(Utils.join(CWD, file));
+
             } else if (action == 3) {
+//                System.out.println("hello");
+//                System.out.println(headFile);
+
+                String combinedContents = combined(headFile, mergeFile);
+//                String combinedContents2 = combined(Utils.readContents(Utils.join(CWD, headFile), mergeFile);
+//                File dir = Utils.join(CWD, file);
+
+                File stagingFile = Utils.join(CWD, file);
+                Utils.writeContents(stagingFile, combinedContents);
+//                stage.get_stageAddition().put(file, newBlob.getID());
+//
+//                File workingFile = Utils.join(CWD, combinedContents);
+//                Utils.writeContents(workingFile, Utils.readContents(dir));
+
+//                Utils.writeContents(dir, contents);
+//                stage.get_stageAddition().put(file, Utils.readContents(dir));
 
                 hasConflict = true;
             }
@@ -670,13 +683,26 @@ public class Repo implements Serializable {
 
         if (hasConflict) {
             System.out.println("Encountered a merge conflict.");
-            return;
+//            return;
         }
+
         mergeCommit(("Merged " + mergeBranch + " into " + currentBranchName + "." ), mergeBranchCommit);
         //get split point
         //get all the files
         //go through the different cases
     }
+
+    public static String combined(byte[] head, byte[] merged) {
+        String result;
+        if (merged == null) {
+            result = "<<<<<<< HEAD\n" + new String(head, StandardCharsets.UTF_8)  + "=======\n>>>>>>>\n";
+        } else {
+            result = "<<<<<<< HEAD\n" + new String(head, StandardCharsets.UTF_8) + "=======\n"
+                    + new String(merged, StandardCharsets.UTF_8) + ">>>>>>>\n";
+        }
+        return result;
+    }
+
 
     public static void mergeCommit(String message, Commit mergedBranch) {
         HEAD = getHeadCommit();
