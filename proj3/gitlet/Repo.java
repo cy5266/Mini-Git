@@ -645,7 +645,8 @@ public class Repo implements Serializable {
         stage = getStage(); errors(mergeBranch);
 
         Commit mergeBranchCommit = Utils.readObject(Utils.join(
-                        COMMIT_FOLDER, branchesHash.get(mergeBranch)), Commit.class);
+                        COMMIT_FOLDER, branchesHash.get(mergeBranch)),
+                Commit.class);
 
         Commit splitCommit = split(mergeBranch);
 
@@ -654,20 +655,27 @@ public class Repo implements Serializable {
             checkout3(mergeBranch);
             System.out.println("Current branch fast-forwarded."); return;
         }
-        if (Utils.sha1(Utils.serialize(splitCommit)).equals(
+        if (Utils.sha1(
+                Utils.serialize(splitCommit)).equals(
                         branchesHash.get(mergeBranch))) {
-            System.out.println(
-                    "Given branch is an ancestor of the current branch."); return;
+            System.out.println("Given branch is an ancestor "
+                    +
+                    "of the current branch.");
+            return;
         }
 
+        mergep2(mergeBranchCommit, splitCommit, head, mergeBranch);
+    }
 
-        ArrayList<String> fileNames = new ArrayList<>();
-        fileNames = getAllFileNames(splitCommit, head, mergeBranchCommit);
-        int action;
-        boolean hasConflict = false;
-
+    public static void mergep2(
+            Commit mergeBranchCommit, Commit splitCommit,
+            Commit head2, String mergeBranch) {
+        ArrayList<String> fileNames =
+                getAllFileNames(splitCommit, head2, mergeBranchCommit);
+        int action; boolean hasConflict = false;
+        String currentBranchName = getCurrentBranchName();
         for (String file: fileNames) {
-            byte[] headFile = head.getBlobs().get(file);
+            byte[] headFile = head2.getBlobs().get(file);
             byte[] splitFile = splitCommit.getBlobs().get(file);
             byte[] mergeFile = mergeBranchCommit.getBlobs().get(file);
 
@@ -700,15 +708,17 @@ public class Repo implements Serializable {
 
         if (hasConflict) {
             System.out.println("Encountered a merge conflict.");
-
         }
 
-        mergeCommit(("Merged " + mergeBranch + " into " + currentBranchName + "."),
+        mergeCommit(("Merged "
+                        + mergeBranch
+                        + " into " + currentBranchName + "."),
                 mergeBranchCommit);
         setStage(stage);
 
     }
 
+    
     public static void errors(String mergeBranch) {
         head = getHeadCommit();
         branchesHash = getBranches();
