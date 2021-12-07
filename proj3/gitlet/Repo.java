@@ -500,6 +500,8 @@ public class Repo implements Serializable {
         }
     }
 
+    /** commit method.
+     * @param branchName commit message */
     static void branch(String branchName) {
         head = getHeadCommit();
         branchesHash = getBranches();
@@ -511,6 +513,8 @@ public class Repo implements Serializable {
         setBranches(branchesHash);
     }
 
+    /** commit method.
+     * @param branchName commit message */
     static void rmBranch(String branchName) {
         branchesHash = getBranches();
         String currentBranch = getCurrentBranchName();
@@ -528,6 +532,8 @@ public class Repo implements Serializable {
 
     }
 
+    /** commit method.
+     * @param commitID commit message */
     static void reset(String commitID) {
         head = getHeadCommit();
         stage = getStage();
@@ -578,6 +584,7 @@ public class Repo implements Serializable {
         setBranches(branchesHash);
     }
 
+    /** commit method.*/
     public static void status() {
         head = getHeadCommit(); branchesHash = getBranches();
         String currentBranch = getCurrentBranchName(); stage = getStage();
@@ -639,6 +646,8 @@ public class Repo implements Serializable {
 
     }
 
+    /** commit method.
+     * @param mergeBranch djfkd */
     public static void merge(String mergeBranch) {
         head = getHeadCommit(); branchesHash = getBranches();
         String currentBranchName = getCurrentBranchName();
@@ -667,6 +676,11 @@ public class Repo implements Serializable {
         mergep2(mergeBranchCommit, splitCommit, head, mergeBranch);
     }
 
+    /** commit method.
+     * @param head2  dfd
+     * @param mergeBranch dfdf
+     * @param mergeBranchCommit dkjfdk
+     * @param splitCommit kdjfkd*/
     public static void mergep2(
             Commit mergeBranchCommit, Commit splitCommit,
             Commit head2, String mergeBranch) {
@@ -718,7 +732,8 @@ public class Repo implements Serializable {
 
     }
 
-    
+    /** commit method.
+     * @param mergeBranch commit message */
     public static void errors(String mergeBranch) {
         head = getHeadCommit();
         branchesHash = getBranches();
@@ -756,6 +771,10 @@ public class Repo implements Serializable {
         }
     }
 
+    /** commit method.
+     * @param headbyte commit message
+     * @param merged djfkd
+     * @return dfjdk*/
     public static String combined(byte[] headbyte, byte[] merged) {
         String result;
         if (merged == null) {
@@ -771,7 +790,9 @@ public class Repo implements Serializable {
         return result;
     }
 
-
+    /** commit method.
+     * @param message commit message
+     * @param mergedBranch lkdjfkd*/
     public static void mergeCommit(String message, Commit mergedBranch) {
         head = getHeadCommit();
         branchesHash = getBranches();
@@ -831,7 +852,11 @@ public class Repo implements Serializable {
 
     }
 
-
+    /** commit method.
+     * @param headFile dfdf
+     * @param mergeFile dfdf
+     * @param splitFile commit message
+     * @return alkdjflka*/
     public static int mergeCases(
             byte[] headFile, byte[] splitFile, byte[] mergeFile) {
 
@@ -869,6 +894,11 @@ public class Repo implements Serializable {
         return 0;
     }
 
+    /** commit method.
+     * @return  commit message
+     * @param headPointer  dfdf
+     * @param mergePointer  kadjfka
+     * @param splitHeadPointer  dfdf*/
     public static ArrayList getAllFileNames(
             Commit splitHeadPointer, Commit headPointer, Commit mergePointer) {
         ArrayList<String> fileNames =
@@ -889,6 +919,9 @@ public class Repo implements Serializable {
         return fileNames;
     }
 
+    /** commit method.
+     * @param branch commit message
+     * @return dfdk*/
     public static Commit split(String branch) {
         branchesHash = getBranches();
         ArrayList<String> headHistory = new ArrayList<>();
