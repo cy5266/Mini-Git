@@ -651,11 +651,37 @@ public class Repo implements Serializable {
     public static void merge(String mergeBranch) {
         head = getHeadCommit(); branchesHash = getBranches();
         String currentBranchName = getCurrentBranchName();
-        stage = getStage(); errors(mergeBranch);
+        stage = getStage();
 
-        Commit mergeBranchCommit = Utils.readObject(Utils.join(
-                        COMMIT_FOLDER, branchesHash.get(mergeBranch)),
-                Commit.class);
+        if (!stage.getStageRemoval().isEmpty()
+                || !stage.getStageAddition().isEmpty()) {
+            System.out.println("You have uncommitted changes.");
+            return;
+        }
+        if (branchesHash.get(currentBranchName).equals(
+                branchesHash.get(mergeBranch))) {
+            System.out.println("Cannot merge a branch with itself.");
+            return;
+        }
+        if (!branchesHash.containsKey(mergeBranch)) {
+            System.out.println("A branch with that name does not exist.");
+            return;
+        }
+
+        Commit mergeBranchCommit = Utils.readObject
+                (Utils.join(
+                        COMMIT_FOLDER,
+                        branchesHash.get(mergeBranch)), Commit.class);
+
+        for (String filename : Utils.plainFilenamesIn(CWD)) {
+            if (!head.getBlobs().containsKey(filename)
+                    &&
+                    mergeBranchCommit.getBlobs().containsKey(filename)) {
+                System.out.println("There is an untracked file in the way; "
+                        + "delete it, or add and commit it first.");
+                return;
+            }
+        }
 
         Commit splitCommit = split(mergeBranch);
 
@@ -730,45 +756,6 @@ public class Repo implements Serializable {
                 mergeBranchCommit);
         setStage(stage);
 
-    }
-
-    /** commit method.
-     * @param mergeBranch commit message */
-    public static void errors(String mergeBranch) {
-        head = getHeadCommit();
-        branchesHash = getBranches();
-        String currentBranchName = getCurrentBranchName();
-        stage = getStage();
-
-        if (!stage.getStageRemoval().isEmpty()
-                || !stage.getStageAddition().isEmpty()) {
-            System.out.println("You have uncommitted changes.");
-            return;
-        }
-        if (branchesHash.get(currentBranchName).equals(
-                branchesHash.get(mergeBranch))) {
-            System.out.println("Cannot merge a branch with itself.");
-            return;
-        }
-        if (!branchesHash.containsKey(mergeBranch)) {
-            System.out.println("A branch with that name does not exist.");
-            return;
-        }
-
-        Commit mergeBranchCommit = Utils.readObject
-                (Utils.join(
-                        COMMIT_FOLDER,
-                        branchesHash.get(mergeBranch)), Commit.class);
-
-        for (String filename : Utils.plainFilenamesIn(CWD)) {
-            if (!head.getBlobs().containsKey(filename)
-                    &&
-                    mergeBranchCommit.getBlobs().containsKey(filename)) {
-                System.out.println("There is an untracked file in the way; "
-                        + "delete it, or add and commit it first.");
-                return;
-            }
-        }
     }
 
     /** commit method.
