@@ -44,11 +44,7 @@ public class Main {
         case "rm-branch":
             checkGitRepo(); Repo.rmBranch(args[1]); break;
         case "reset":
-            if (!Repo.GITLET_FOLDER.exists()) {
-                System.out.println("Not in an initialized Gitlet directory.");
-                return;
-            }
-            Repo.reset(args[1]); break;
+            checkGitRepo(); Repo.reset(args[1]); break;
         case "status":
             if (!Repo.GITLET_FOLDER.exists()) {
                 System.out.println("Not in an initialized Gitlet directory.");
@@ -56,11 +52,7 @@ public class Main {
             }
             Repo.status(); break;
         case "merge":
-            if (!Repo.GITLET_FOLDER.exists()) {
-                System.out.println("Not in an initialized Gitlet directory.");
-                return;
-            }
-            Repo.merge(args[1]); break;
+            checkGitRepo(); Repo.merge(args[1]); break;
         case "push":
             Repo.push(args[1], args[2]); break;
         case "add-remote":
@@ -68,8 +60,7 @@ public class Main {
         case "rm-remote":
             Repo.rmRemote(args[1]); break;
         case "fetch":
-            Repo.fetch(args[1], args[2]);
-            break;
+            Repo.fetch(args[1], args[2]); break;
         default:
             System.out.println("No command with that name exists.");
             break;
