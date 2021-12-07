@@ -661,10 +661,9 @@ public class Repo implements Serializable {
                 stage.get_stageRemoval().put(file, headFile);
                 Utils.restrictedDelete(Utils.join(CWD, file));
             } else if (action == 3) {
+
                 hasConflict = true;
             }
-
-
             setStage(stage);
 
         }

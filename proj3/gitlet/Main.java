@@ -44,10 +44,22 @@ public class Main {
         case "rm-branch":
             checkGitRepo(); Repo.rmBranch(args[1]); break;
         case "reset":
-            checkGitRepo(); Repo.reset(args[1]); break;
+            if (!Repo.GITLET_FOLDER.exists()) {
+                System.out.println("Not in an initialized Gitlet directory.");
+                return;
+            }
+            Repo.reset(args[1]); break;
         case "status":
-            checkGitRepo(); Repo.status(); break;
+            if (!Repo.GITLET_FOLDER.exists()) {
+                System.out.println("Not in an initialized Gitlet directory.");
+                return;
+            }
+            Repo.status(); break;
         case "merge":
+            if (!Repo.GITLET_FOLDER.exists()) {
+                System.out.println("Not in an initialized Gitlet directory.");
+                return;
+            }
             Repo.merge(args[1]); break;
         case "push":
             Repo.push(args[1], args[2]); break;
