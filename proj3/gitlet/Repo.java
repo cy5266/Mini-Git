@@ -647,6 +647,8 @@ public class Repo implements Serializable {
 
             action = mergeCases(headFile, splitFile, mergeFile);
 
+//            System.out.println(action);
+
             if (action == 1) {
                 File dir = Utils.join(CWD, file);
                 Utils.writeContents(dir, mergeFile);
@@ -689,6 +691,7 @@ public class Repo implements Serializable {
         }
 
         mergeCommit(("Merged " + mergeBranch + " into " + currentBranchName + "." ), mergeBranchCommit);
+        setStage(stage);
         //get split point
         //get all the files
         //go through the different cases
@@ -768,19 +771,22 @@ public class Repo implements Serializable {
 
 
     public static int mergeCases(byte[] headFile, byte[] splitFile, byte[] mergeFile) {
-//
-//        System.out.println("headfile" + headFile);
-//        System.out.println("splitFile" + headFile);
-//        System.out.println("mergeFile" + headFile);
-////        System.out.println(splitFile);
 
+        String splitSHA = Utils.sha1(Utils.serialize(splitFile));
+        String headSHA = Utils.sha1(Utils.serialize(headFile));
+        String mergeSHA = Utils.sha1(Utils.serialize(mergeFile));
 
-        if (splitFile != null && headFile != null && splitFile.equals(headFile) && mergeFile != null
-        && !headFile.equals(mergeFile)) {
+        if (splitFile != null && headFile != null && splitSHA.equals(headSHA) && mergeFile != null
+        && !headSHA.equals(mergeSHA)) {
             return 1;
         }
 
-        if (splitFile != null && headFile != null && !splitFile.equals(headFile) && mergeFile == null) {
+        if (splitFile != null && headFile != null && !splitSHA.equals(headSHA) && mergeFile != null
+                && !headSHA.equals(mergeSHA) && !mergeSHA.equals(splitSHA)) {
+            return 3;
+        }
+
+        if (splitFile != null && headFile != null && splitSHA.equals(headSHA) && mergeFile == null) {
             return 2;
         }
 
@@ -788,17 +794,11 @@ public class Repo implements Serializable {
             return 1;
         }
 
-        if (splitFile == null && headFile == null && mergeFile != null) {
-            return 1;
-        }
-        if (splitFile != null && headFile != null && !splitFile.equals(headFile) && mergeFile != null
-                && !headFile.equals(mergeFile) && !mergeFile.equals(splitFile)) {
-            return 3;
-        }
+
 
         // Case 9: if all three files r different and merged is missing
         // result is combine head and merge and action is conflict
-        if (splitFile != null && headFile != null && splitFile.equals(headFile) && mergeFile == null) {
+        if (splitFile != null && headFile != null && !splitSHA.equals(headSHA) && mergeFile == null) {
             return 3;
         }
 
