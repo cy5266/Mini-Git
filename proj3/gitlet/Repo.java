@@ -303,9 +303,6 @@ public class Repo implements Serializable {
 
 
     public static void checkout (String fileName) {
-
-
-
         HEAD = getHeadCommit(); //current branch
         byte[] currentBlobContents = HEAD.getBlobs().get(fileName);
 
@@ -616,7 +613,8 @@ public class Repo implements Serializable {
             return;
         }
 
-        Commit mergeBranchCommit = Utils.readObject(Utils.join(COMMIT_FOLDER, branchesHash.get(mergeBranch)), Commit.class);
+        Commit mergeBranchCommit = Utils.readObject
+                (Utils.join(COMMIT_FOLDER, branchesHash.get(mergeBranch)), Commit.class);
 
         for (String filename : Utils.plainFilenamesIn(CWD)) {
             if (!HEAD.getBlobs().containsKey(filename) &&
@@ -627,42 +625,163 @@ public class Repo implements Serializable {
             }
         }
 
-
         Commit splitCommit = split(mergeBranch);
+
         ArrayList<String> fileNames = new ArrayList<>();
         fileNames = getAllFileNames(splitCommit, HEAD, mergeBranchCommit);
 
-        int action = -1;
+//        System.out.println(fileNames);
+
+        int action;
+        boolean hasConflict = false;
 
         for (String file: fileNames) {
             byte[] headFile = HEAD.getBlobs().get(file);
             byte[] splitFile = splitCommit.getBlobs().get(file);
-            byte[] mergeFile = splitCommit.getBlobs().get(file);
+            byte[] mergeFile = mergeBranchCommit.getBlobs().get(file);
+
+//            System.out.println(headFile);
+//            System.out.println(splitFile);
+//            System.out.println(mergeFile);
+
             action = mergeCases(headFile, splitFile, mergeFile);
 
+//            System.out.println(action);
+
+
+
             if (action == 1) {
+                File dir = Utils.join(CWD, file);
+                Utils.writeContents(dir, mergeFile);
+
                 stage.get_stageAddition().put(file, mergeFile);
+
             } else if (action == 2) {
+//                rm(file);
                 stage.get_stageRemoval().put(file, headFile);
+                Utils.restrictedDelete(Utils.join(CWD, file));
+            } else if (action == 3) {
+                hasConflict = true;
             }
+
+
+            setStage(stage);
+
         }
 
-
-
-        setStage(stage);
-
+        if (hasConflict) {
+            System.out.println("Encountered a merge conflict.");
+            return;
+        }
+        mergeCommit(("Merged " + mergeBranch + " into " + currentBranchName + "." ), mergeBranchCommit);
         //get split point
         //get all the files
         //go through the different cases
     }
 
+    public static void mergeCommit(String message, Commit mergedBranch) {
+        HEAD = getHeadCommit();
+        branchesHash = getBranches();
+        String currentBranch = getCurrentBranchName();
+        stage = getStage();
+        commitHistory = getCommitHistory();
+
+        TreeMap<String, byte[]> tempClone = new TreeMap<>();
+
+        if (HEAD.getBlobs() != null) {
+            tempClone.putAll(HEAD.getBlobs());
+        }
+
+        ArrayList<String> filesToAdd = new ArrayList<>(stage.get_stageAddition().keySet());
+        ArrayList<String> filesToRemove = new ArrayList<>(stage.get_stageRemoval().keySet());
+
+        /**the new commit*/
+        Commit commitClone = new Commit(message, tempClone, Utils.sha1(Utils.serialize(HEAD)));
+
+        for (String s: filesToAdd) {
+            commitClone.setBlobs(s, stage.get_stageAddition().get(s), "add");
+        }
+
+        for (String s: filesToRemove) {
+            commitClone.setBlobs(s, stage.get_stageRemoval().get(s), "rm");
+        }
+
+        stage.clear();
+        setStage(stage);
+        setHeadCommit(commitClone);
+
+        String newCommitSHA1 = Utils.sha1(Utils.serialize(commitClone));
+
+        File newFile = Utils.join(COMMIT_FOLDER, newCommitSHA1);
+        try {
+            newFile.createNewFile();
+        } catch (IOException excp) {
+            return;
+        }
+
+
+//        String currentBranch = getCurrentBranchName();
+
+        branchesHash = getBranches();
+        branchesHash.put(currentBranch, newCommitSHA1);
+
+        setBranches(branchesHash);
+
+//        Utils.writeObject(CURRENT_BRANCH_FILE, currentBranch);
+
+
+        Utils.writeObject(newFile, commitClone);
+        commitHistory.put(newCommitSHA1, commitClone);
+        setCommitHistory(commitHistory);
+
+//        Commit requestedCommit = new Commit(message, tempClone, Utils.sha1(Utils.serialize(HEAD)));
+
+
+    }
+
+
     public static int mergeCases(byte[] headFile, byte[] splitFile, byte[] mergeFile) {
+//
+//        System.out.println("headfile" + headFile);
+//        System.out.println("splitFile" + headFile);
+//        System.out.println("mergeFile" + headFile);
+////        System.out.println(splitFile);
+
+
+        if (splitFile != null && headFile != null && splitFile.equals(headFile) && mergeFile != null
+        && !headFile.equals(mergeFile)) {
+            return 1;
+        }
+
+        if (splitFile != null && headFile != null && !splitFile.equals(headFile) && mergeFile == null) {
+            return 2;
+        }
+
+        if (splitFile == null && headFile == null && mergeFile != null) {
+            return 1;
+        }
+
+        if (splitFile == null && headFile == null && mergeFile != null) {
+            return 1;
+        }
+        if (splitFile != null && headFile != null && !splitFile.equals(headFile) && mergeFile != null
+                && !headFile.equals(mergeFile) && !mergeFile.equals(splitFile)) {
+            return 3;
+        }
+
+        // Case 9: if all three files r different and merged is missing
+        // result is combine head and merge and action is conflict
+        if (splitFile != null && headFile != null && splitFile.equals(headFile) && mergeFile == null) {
+            return 3;
+        }
+
 
         return 0;
     }
 
     public static ArrayList getAllFileNames(Commit splitHeadPointer, Commit HeadPointer, Commit MergePointer) {
         ArrayList<String> fileNames = new ArrayList<>(splitHeadPointer.getBlobs().keySet());
+//        System.out.println(fileNames);
 
         for (String key: HeadPointer.getBlobs().keySet()) {
             if (!fileNames.contains(key)) {
@@ -675,6 +794,7 @@ public class Repo implements Serializable {
                 fileNames.add(key);
             }
         }
+//        System.out.println(fileNames);
 
         return fileNames;
     }
@@ -691,19 +811,30 @@ public class Repo implements Serializable {
             tempHead = tempCommitHist.get(tempHead.getParentSHA());
         }
 
-        String branchSHA1 = branchesHash.get(branch);
+        headHistory.add(Utils.sha1(Utils.serialize(tempHead)));
+
+//        System.out.println(headHistory);
+
+        String branchSHA1 = branchesHash.get(branch); //returns the SHA of the HEAD of that branch
 
         Commit branchCommit = Utils.readObject(Utils.join(COMMIT_FOLDER, branchSHA1), Commit.class);
-        TreeMap<String, Commit> branchCommitClone = (TreeMap<String, Commit>) getBranches().clone();
+        // reads in the commit of that head
 
         String splitSHA = null;
 
         while (branchCommit.getParentSHA() != null) {
+//            System.out.println("branch commit: " + Utils.sha1(Utils.serialize(branchCommit)));
             if (headHistory.contains(Utils.sha1(Utils.serialize(branchCommit)))) {
+//                System.out.println("branch commit: " + Utils.sha1(Utils.serialize(branchCommit)));
                 splitSHA = Utils.sha1(Utils.serialize(branchCommit));
+                break;
             }
-            branchCommit = branchCommitClone.get(branchCommit.getParentSHA());
+
+            branchCommit = tempCommitHist.get(branchCommit.getParentSHA());
+
         }
+
+//        System.out.println("split sha " + splitSHA);
 
         return Utils.readObject(Utils.join(COMMIT_FOLDER, splitSHA), Commit.class);
     }
