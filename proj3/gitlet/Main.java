@@ -15,9 +15,11 @@ public class Main {
         }
         switch (args[0]) {
         case "init":
-            Repo.init(); break;
+            Repo.init();
+            break;
         case "add":
-            checkGitRepo(); Repo.add(args[1]); break;
+            checkGitRepo();
+            Repo.add(args[1]); break;
         case "commit":
             checkGitRepo(); Repo.commit(args[1]); break;
         case "log":

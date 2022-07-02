@@ -49,7 +49,7 @@ public class IntListTest {
         // TODO: remove the placeholder line below
         IntList L = IntList.list(1, 2, 3);
         IntList X = IntList.squareListRecursive(L);
-        assertEquals(IntList.list(1, 2, 3), L);
+        assertEquals(IntList.list(1, 2, 3), L); //makes sure that the original list hasn't been changed
         assertEquals(IntList.list(1, 4, 9), X);
     }
 

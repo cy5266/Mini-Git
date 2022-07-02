@@ -153,7 +153,6 @@ public class Repo implements Serializable {
                 setStage(stage);
             }
 
-
             stage.getStageAddition().put(fileName, newFile);
             setHeadCommit(head);
             setStage(stage);
@@ -282,7 +281,8 @@ public class Repo implements Serializable {
             return;
         }
 
-        head = getHeadCommit(); stage = getStage();
+        head = getHeadCommit();
+        stage = getStage();
         commitHistory = getCommitHistory();
 
         if (stage.getStageAddition().isEmpty()
@@ -313,7 +313,9 @@ public class Repo implements Serializable {
             commitClone.setBlobs(s, stage.getStageRemoval().get(s), "rm");
         }
 
-        stage.clear(); setStage(stage); setHeadCommit(commitClone);
+        stage.clear();
+        setStage(stage);
+        setHeadCommit(commitClone);
 
         String newCommitSHA1 = Utils.sha1(Utils.serialize(commitClone));
 
@@ -545,6 +547,7 @@ public class Repo implements Serializable {
 
         Commit commit = Utils.readObject(
                 Utils.join(COMMIT_FOLDER, commitID), Commit.class);
+
         for (String file: Utils.plainFilenamesIn(CWD)) {
             if (commit.getBlobs().containsKey(file)
                     && !head.getBlobs().containsKey(file)) {
@@ -586,8 +589,10 @@ public class Repo implements Serializable {
 
     /** commit method.*/
     public static void status() {
-        head = getHeadCommit(); branchesHash = getBranches();
-        String currentBranch = getCurrentBranchName(); stage = getStage();
+        head = getHeadCommit();
+        branchesHash = getBranches();
+        String currentBranch = getCurrentBranchName();
+        stage = getStage();
 
         System.out.println("=== Branches ===");
         for (String branchName: branchesHash.keySet()) {
@@ -597,11 +602,16 @@ public class Repo implements Serializable {
                 System.out.println(branchName);
             }
         }
-        System.out.println(); System.out.println("=== Staged Files ===");
+        System.out.println();
+
+        System.out.println("=== Staged Files ===");
         for (String addFiles: stage.getStageAddition().keySet()) {
             System.out.println(addFiles);
         }
-        System.out.println(); System.out.println("=== Removed Files ===");
+
+        System.out.println();
+
+        System.out.println("=== Removed Files ===");
         for (String removeFiles: stage.getStageRemoval().keySet()) {
             System.out.println(removeFiles);
         }
@@ -649,7 +659,8 @@ public class Repo implements Serializable {
     /** commit method.
      * @param mergeBranch djfkd */
     public static void merge(String mergeBranch) {
-        head = getHeadCommit(); branchesHash = getBranches();
+        head = getHeadCommit();
+        branchesHash = getBranches();
         String currentBranchName = getCurrentBranchName();
         stage = getStage();
 
@@ -708,8 +719,8 @@ public class Repo implements Serializable {
      * @param mergeBranchCommit dkjfdk
      * @param splitCommit kdjfkd*/
     public static void mergep2(
-            Commit mergeBranchCommit, Commit splitCommit,
-            Commit head2, String mergeBranch) {
+                Commit mergeBranchCommit, Commit splitCommit,
+                Commit head2, String mergeBranch) {
         ArrayList<String> fileNames =
                 getAllFileNames(splitCommit, head2, mergeBranchCommit);
         int action; boolean hasConflict = false;
@@ -948,12 +959,16 @@ public class Repo implements Serializable {
 
     /** remove remote.
      * @return remoteFile*/
+
+    //takes remote file into treemap
     public static TreeMap<String, File> getRemote() {
         return Utils.readObject(REMOTE_FILE, TreeMap.class);
     }
 
     /** remove remote.
      * @param remote remoteFile*/
+
+    //sets the remote name to remote file
     public static void setRemote(TreeMap<String, File>  remote) {
         Utils.writeObject(REMOTE_FILE, remote);
     }
@@ -961,6 +976,7 @@ public class Repo implements Serializable {
     /** remove remote.
      * @param remoteName remote name
      * @param remoteDir remoteDirectory name*/
+
     public static void addRemote(String remoteName, String remoteDir) {
         remotes = getRemote();
 
@@ -978,6 +994,9 @@ public class Repo implements Serializable {
     /** retrieve remote branches.
      * @param remoteName remote name
      * @return object read by branches*/
+
+    //get file by joining remote file to branches and read it into the treemap class
+    //key = name of branch, value = sha1 of the head of the branch
     public static TreeMap<String, String> getRemoteBranches(File remoteName) {
         return Utils.readObject(
                 Utils.join(remoteName, "/branches"), TreeMap.class);
@@ -1010,12 +1029,17 @@ public class Repo implements Serializable {
             return;
         }
 
+
         File dir = remotes.get(remoteName);
+
         remoteBranches = getRemoteBranches(dir);
         String remoteBranch = remoteBranches.get(remoteBranchName);
 
         TreeMap<String, Commit> tempCommitHist =
                 (TreeMap<String, Commit>) getCommitHistory().clone();
+
+
+        // if the remote branch's head is not in the history of the current local head
         if (!tempCommitHist.containsKey(remoteBranch)) {
             System.out.println(
                     "Please pull down remote changes before pushing.");
